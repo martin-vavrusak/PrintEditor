@@ -1,6 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Experimental
-Bundle-SymbolicName: cz.muni.fi.vavmar.experimental
+Bundle-SymbolicName: cz.muni.fi.vavmar.experimental;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
+ org.adempiere.plugin.utils;bundle-version="0.0.0"
+Bundle-Activator: org.adempiere.plugin.utils.AdempiereActivator
+Import-Package: org.osgi.util.tracker
