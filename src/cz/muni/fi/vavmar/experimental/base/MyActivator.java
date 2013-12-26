@@ -1,11 +1,11 @@
 package cz.muni.fi.vavmar.experimental.base;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import org.adempiere.plugin.utils.AdempiereActivator;
 import org.compiere.util.CLogger;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
+
 
 public class MyActivator extends AdempiereActivator {
 

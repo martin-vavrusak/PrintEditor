@@ -7,4 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.plugin.utils;bundle-version="0.0.0"
 Bundle-Activator: org.adempiere.plugin.utils.AdempiereActivator
-Import-Package: org.osgi.util.tracker
+Import-Package: org.osgi.util.tracker,
+ org.slf4j;version="1.6.1"
+Export-Package: cz.muni.fi.vavmar.experimental.base

@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension
+         id="cz.muni.fi.vavmar.experimental.base.MyCallout.help"
+         point="org.adempiere.base.IColumnCallout">
+      <callout
+            class="cz.muni.fi.vavmar.experimental.base.MyCallout"
+            columnName="Help"
+            priority="1"
+            tableName="M_Product">
+      </callout>
+   </extension>
+   <extension
+         id="cz.muni.fi.vavmar.experimental.base.MyProcess"
+         name="cz.muni.fi.vavmar.experimental.base.MyProcess"
+         point="org.adempiere.base.Process">
+      <process
+            class="cz.muni.fi.vavmar.experimental.base.MyProcess">
+      </process>
+   </extension>
 
 </plugin>
