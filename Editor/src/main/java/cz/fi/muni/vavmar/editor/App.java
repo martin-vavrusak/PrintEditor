@@ -2,6 +2,7 @@ package cz.fi.muni.vavmar.editor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -42,8 +43,9 @@ public class App
         canvas.getHorizontalScrollBar ().setBlockIncrement (256);
         canvas.getVerticalScrollBar ().setUnitIncrement (32);
         canvas.getVerticalScrollBar ().setBlockIncrement (256);
-        canvas.setBounds(0, 0, 300, 150);
-        //canvas.getViewport().setBackground(Color.ORANGE);
+//        canvas.setBounds(0, 0, 300, 150);     //Pouzije se pouze pokud neni nastaveny Layout nebo pro nektere layouty
+        canvas.setPreferredSize( new Dimension(300, 150) );
+
         
         
         //Create scene No. 2.
@@ -59,16 +61,16 @@ public class App
         scene2canvas.getHorizontalScrollBar ().setBlockIncrement (256);
         scene2canvas.getVerticalScrollBar ().setUnitIncrement (32);
         scene2canvas.getVerticalScrollBar ().setBlockIncrement (256);
-        scene2canvas.setBounds(0, 400, 300, 150);
-        
+//        scene2canvas.setBounds(0, 400, 300, 150);     //Pouzije se pouze pokud neni nastaveny Layout nebo pro nektere layouty
+        scene2canvas.setPreferredSize(new Dimension(300, 150));
         
         //Create basic frame and add previously created canvas
         int width=800,height=600;
         JFrame frame = new JFrame ();//new JDialog (), true);
         frame.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
         //frame.setLayout(new FlowLayout());
-        
-        frame.add (canvas, BorderLayout.CENTER);
+        frame.setLayout(new FlowLayout());
+        frame.add (canvas);
         //frame.add (scene.createSatelliteView(), BorderLayout.CENTER);
         
         JLabel label = new JLabel("Label1");
