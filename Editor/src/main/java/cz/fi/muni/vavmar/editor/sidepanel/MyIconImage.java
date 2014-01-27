@@ -20,20 +20,20 @@ import javax.swing.JComponent;
  * @author Martin
  */
 
-public class IconImage extends JComponent {
+public class MyIconImage extends JComponent {
 
     private Image image;
     private Dimension dim = new Dimension(128, 128);
     
-    public IconImage() {
+    public MyIconImage() {
         this(null);
     }
     
-    public IconImage(Image image) {        
+    public MyIconImage(Image image) {        
         setOpaque(true);
         
         if( image == null ){
-            this.image = createDefaultImage();
+            this.image = createDefaultImage(this.dim);
         } else {
             this.image = image;
         }
@@ -46,7 +46,7 @@ public class IconImage extends JComponent {
     }
     
     
-    private Image createDefaultImage(){
+    public static Image createDefaultImage(Dimension dim){
         int r = 0;
         int g = 0;
         int b = 0;
@@ -68,7 +68,7 @@ public class IconImage extends JComponent {
         return bi;
     }
     
-    private int getRGBA (int r, int g, int b, int a){
+    private static int getRGBA (int r, int g, int b, int a){
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 

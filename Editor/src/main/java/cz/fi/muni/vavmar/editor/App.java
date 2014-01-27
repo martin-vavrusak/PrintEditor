@@ -1,13 +1,14 @@
 package cz.fi.muni.vavmar.editor;
 
-import cz.fi.muni.vavmar.editor.sidepanel.Icon;
-import cz.fi.muni.vavmar.editor.sidepanel.IconImage;
+import cz.fi.muni.vavmar.editor.sidepanel.MyIcon;
+import cz.fi.muni.vavmar.editor.sidepanel.MyIconImage;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,6 +17,7 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.LabelView;
+import javax.swing.text.StyleConstants;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
@@ -85,7 +87,10 @@ public class App
         label.setBackground(Color.red);
         frame.add(label2);
 
-        frame.add( new Icon( new IconImage(), "Ikonka" ) );
+        JLabel ikona = new JLabel("Novy Nastroj", new ImageIcon(MyIconImage.createDefaultImage(new Dimension(128, 128))), JLabel.CENTER);
+        ikona.setVerticalTextPosition(JLabel.BOTTOM);
+        ikona.setHorizontalTextPosition(JLabel.CENTER);
+        frame.add( ikona );
         
         JLabel label3 = new JLabel("Label3");
         label.setBackground(Color.red);

@@ -21,22 +21,22 @@ import javax.swing.JLabel;
  *
  * @author Martin
  */
-public class Icon extends JComponent {
+public class MyIcon extends JComponent {
 
-    private IconImage iconImage;
+    private MyIconImage iconImage;
     private JLabel label;
     private Dimension dim;
     
-//    public Icon() {
+//    public MyIcon() {
 //        this(null, "DefaultLabel");
 //    }
     
-    public Icon(Image image, String labelText) {
+    public MyIcon(Image image, String labelText) {
         //vytvorit iconimage a zavolat dalsi konstruktor
-        this(new IconImage(image), labelText);
+        this(new MyIconImage(image), labelText);
     }
             
-    public Icon(IconImage image, String labelText) {        
+    public MyIcon(MyIconImage image, String labelText) {        
         setOpaque(true);
         labelText = labelText == null ? "Default label text" : labelText ;
         
