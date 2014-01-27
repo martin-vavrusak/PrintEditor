@@ -1,5 +1,7 @@
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.sidepanel.Icon;
+import cz.fi.muni.vavmar.editor.sidepanel.IconImage;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,6 +17,7 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.text.LabelView;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
@@ -46,7 +49,6 @@ public class App
 //        canvas.setBounds(0, 0, 300, 150);     //Pouzije se pouze pokud neni nastaveny Layout nebo pro nektere layouty
         canvas.setPreferredSize( new Dimension(300, 150) );
 
-        
         
         //Create scene No. 2.
         
@@ -82,6 +84,13 @@ public class App
         JLabel label2 = new JLabel("Label2");
         label.setBackground(Color.red);
         frame.add(label2);
+
+        frame.add( new Icon( new IconImage(), "Ikonka" ) );
+        
+        JLabel label3 = new JLabel("Label3");
+        label.setBackground(Color.red);
+        frame.add(label3);
+        
         
         //Set maximal size of frame
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
