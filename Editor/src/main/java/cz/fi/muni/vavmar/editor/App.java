@@ -92,6 +92,7 @@ public class App
         ikona.setHorizontalTextPosition(JLabel.CENTER);
         frame.add( ikona );
         
+        
         JLabel label3 = new JLabel("Label3");
         label.setBackground(Color.red);
         frame.add(label3);

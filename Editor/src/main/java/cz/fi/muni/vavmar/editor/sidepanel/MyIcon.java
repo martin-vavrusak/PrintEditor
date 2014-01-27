@@ -21,8 +21,13 @@ import javax.swing.JLabel;
  *
  * @author Martin
  */
-public class MyIcon extends JComponent {
+public class MyIcon extends JLabel {
 
+    public MyIcon(String text, Image img, Object tool) {
+    }
+
+    
+    
     private MyIconImage iconImage;
     private JLabel label;
     private Dimension dim;
