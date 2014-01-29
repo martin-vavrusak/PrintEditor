@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -21,6 +22,7 @@ import javax.swing.text.StyleConstants;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
+import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 
@@ -40,7 +42,28 @@ public class App
         //sceneView.setBounds(new Rectangle(400, 400));
         scene.getActions().addAction(ActionFactory.createZoomAction());
         
-        scene.addChild(new LabelWidget(scene, "Label"));
+        LayerWidget mainLayer = new LayerWidget(scene);
+        
+        
+        LabelWidget lw = new LabelWidget(scene, "Label");
+        lw.getActions().addAction(ActionFactory.createMoveAction());
+        lw.setOpaque(true);
+        lw.setPreferredLocation(new Point(0, 0));
+        mainLayer.addChild(lw);
+        
+        lw = new LabelWidget(scene, "Label22222");
+        lw.setOpaque(true);
+        lw.setPreferredLocation(new Point(30, 0));
+        lw.getActions().addAction(ActionFactory.createMoveAction());
+        mainLayer.addChild(lw);
+        
+        lw = new LabelWidget(scene, "Label33");
+        lw.setOpaque(true);
+        lw.setPreferredLocation(new Point(50, 30));
+        lw.getActions().addAction(ActionFactory.createMoveAction());
+        mainLayer.addChild(lw);
+        
+        scene.addChild(mainLayer);
         
         //Create new base canvas and asociate JScrollPane
         JScrollPane canvas = new JScrollPane ( scene.createView() );
