@@ -9,13 +9,22 @@ package editor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.ConnectorState;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Scene;
+import org.netbeans.api.visual.widget.Widget;
+import org.openide.util.Exceptions;
+import sun.awt.datatransfer.TransferableProxy;
 
 /**
  *
@@ -28,7 +37,7 @@ public class MainScene extends Scene {
     public MainScene() {
         setOpaque(true);
         
-        setBackground(Color.BLUE);
+//        setBackground(Color.BLUE);
         
         //Vyclenit do samostatne tridy pro lepsi prehlednost
         scrollPane = new JScrollPane ( createView(), 
@@ -44,10 +53,22 @@ public class MainScene extends Scene {
         scrollPane.setColumnHeader(null);
         scrollPane.setRowHeaderView(createRowRuler());
         scrollPane.setColumnHeaderView(createColumnRuler());
+        scrollPane.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
+        
+        LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
+        lw2.getActions().addAction(ActionFactory.createMoveAction());
+        lw2.setPreferredLocation(new Point(50, 50));
+        addChild(lw2);
+        
+        LabelWidget lw = new LabelWidget(this, "Widget 2");
+        lw.getActions().addAction(ActionFactory.createMoveAction());
+        lw.setPreferredLocation(new Point(50, 100));
+        addChild(lw);
+        
+        AcceptProvider ap = new AcceptProviderImpl(this);
         
         getActions().addAction(ActionFactory.createZoomAction());
-        
-        addChild(new LabelWidget(this, "Toto je hlavni scena!"));
+        getActions().addAction(ActionFactory.createAcceptAction( ap ) );
     }
     
     /*
@@ -103,4 +124,6 @@ public class MainScene extends Scene {
         
         return columnheader;
     }
+    
+    
 }

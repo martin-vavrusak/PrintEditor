@@ -12,6 +12,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
+import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -21,6 +22,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private MainScene mainScene = new MainScene();
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
+    private static final int COLUMN_BORDER_TEXT_LENGHT = 4;
 
     /**
      * Creates new form MainFrame
@@ -45,19 +47,25 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tablesListArea = new javax.swing.JList();
         tablesSearchField = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         mainScenePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         mainScenePanel.setName(""); // NOI18N
-        mainScenePanel.setLayout(new java.awt.GridLayout(1, 0));
+        mainScenePanel.setLayout(new java.awt.GridLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        columnsListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         columnsListArea.setModel(Util.createListModel(new ArrayList<String>())
         );
+        columnsListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        columnsListArea.setTransferHandler( new DnDListHandler() );
+        columnsListArea.setDragEnabled(true);
         jScrollPane1.setViewportView(columnsListArea);
 
+        tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesListArea.border.title"))); // NOI18N
         tablesListArea.setModel(Util.createListModel( dataFetcher.getAllTablesString() ));
         tablesListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tablesListArea.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -68,6 +76,7 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tablesListArea);
 
         tablesSearchField.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesSearchField.text")); // NOI18N
+        tablesSearchField.setDragEnabled(true);
         tablesSearchField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tablesSearchFieldFocusGained(evt);
@@ -79,18 +88,36 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jPanel2.border.title"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 95, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-            .addComponent(tablesSearchField)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(tablesSearchField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(70, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tablesSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -105,16 +132,14 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -123,7 +148,6 @@ public class MainFrame extends javax.swing.JFrame {
     private void tablesListAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablesListAreaMouseClicked
         System.out.println("Componenta vyvolala klik: " + evt.getComponent());
         JList list = (JList) evt.getComponent();
-        
         ListModel model = list.getModel();
         
         System.out.println("Model: " + model);
@@ -134,6 +158,11 @@ public class MainFrame extends javax.swing.JFrame {
             System.out.println("Nazev polozky: " + s);
 
             columnsListArea.setModel( Util.createListModel( dataFetcher.getColumns(new Table(s))) );
+            
+            if(s.length() > COLUMN_BORDER_TEXT_LENGHT){     //Shortening of border text
+                s = s.substring(0, COLUMN_BORDER_TEXT_LENGHT).concat("...");
+            }
+            ((TitledBorder) columnsListArea.getBorder()).setTitle(s);
         }
     }//GEN-LAST:event_tablesListAreaMouseClicked
 
@@ -190,6 +219,7 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList columnsListArea;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel mainScenePanel;

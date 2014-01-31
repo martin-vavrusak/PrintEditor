@@ -8,7 +8,6 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.eclipse.persistence.jpa.jpql.JPQLQueryProblemMessages;
 
 /**
  * Unit test for simple App.
@@ -37,7 +36,8 @@ public class DataFetcherTest
     /**
      * Rigourous Test :-)
      */
-    public void searchTables()
+
+    public void testSearchTables()
     {
         DataFetcher df = new DataFetcher();
         df.setData(createTables());

@@ -6,6 +6,11 @@
 
 package editor;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -13,7 +18,9 @@ import java.util.ArrayList;
  *
  * @author Martin
  */
-public class Table {
+public class Table implements Serializable, Transferable{
+    public static DataFlavor DATA_FLAVOUR = new DataFlavor(Table.class, "TableInformaitons");
+    private static final long serialVersionUID = 3234894312346698435L;
     private String name;
     private List<String> columns;
 
@@ -58,7 +65,22 @@ public class Table {
         return name.hashCode();
     }
 
-    
-    
-    
+    public DataFlavor[] getTransferDataFlavors() {
+        return new DataFlavor[] { new DataFlavor(Table.class, "TableInformations")};
+    }
+
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
+        System.out.println("Table.isDataFlavorSupported(DataFlavor flavor): Ziskany DF:" + flavor);
+        
+        System.out.println("flavor.equals( new DataFlavor(Table.class, \"BlaBla\"):" + flavor.equals( new DataFlavor(Table.class, "BlaBla")) );
+        return (flavor.equals( new DataFlavor(Table.class, "BlaBla")));
+    }
+
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        System.out.println("Table.getTransferData(DataFlavor flavor):");
+        System.out.println("flavor.getRepresentationClass():" + flavor.getRepresentationClass());
+//        return new Table("Aahaha Jsem tady!");
+        return this;
+    }
+
 }
