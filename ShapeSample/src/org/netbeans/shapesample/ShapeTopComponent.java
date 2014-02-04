@@ -8,10 +8,12 @@ package org.netbeans.shapesample;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.netbeans.shapesample.palette.PaletteSupport;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.Lookups;
 
 /**
  * Top component which displays something.
@@ -54,6 +56,8 @@ public final class ShapeTopComponent extends TopComponent {
 
         add(shapePane, BorderLayout.CENTER);
         add(scene.createSatelliteView(), BorderLayout.WEST);
+        
+        associateLookup( Lookups.singleton(PaletteSupport.createPalette() ));
     }
 
     /**
