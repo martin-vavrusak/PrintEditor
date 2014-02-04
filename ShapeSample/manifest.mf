@@ -4,4 +4,4 @@ Bundle-Name: %OpenIDE-Module-Name
 Bundle-SymbolicName: org.netbeans.shapesample
 Bundle-Version: 1.0
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
-
+Import-Package: javax.swing
