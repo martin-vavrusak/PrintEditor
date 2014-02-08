@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.netbeans.api.visual.widget.LayerWidget;
 
 /**
  *
@@ -18,7 +19,8 @@ import javax.swing.JPanel;
 public class TestClass extends JFrame {
     private MainScene1 mainScene = new MainScene1();
     private JPanel mainScenePanel = new JPanel();
-
+    
+    
     public TestClass() {
       
         mainScenePanel.setSize(600, 600);
