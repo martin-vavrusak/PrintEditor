@@ -15,6 +15,7 @@ import javax.swing.ListModel;
 /**
  *
  * @author Martin
+ * "Adaptuje" list v parametr una ListModel pouzitelny v JList
  */
 public class Util {
     public static ListModel createListModel(final List<String> list){
