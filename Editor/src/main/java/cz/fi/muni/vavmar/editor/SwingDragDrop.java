@@ -1,8 +1,10 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.tools.TextTool;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 import javax.swing.*;
 
 public class SwingDragDrop{
@@ -26,6 +28,7 @@ public class SwingDragDrop{
 				JComponent jc = (JComponent)e.getSource();
 				TransferHandler th = jc.getTransferHandler();
 				th.exportAsDrag(jc, e, TransferHandler.COPY);
+                                System.out.println("Mouse Pressed");
 			}
 		};
                 
@@ -33,6 +36,21 @@ public class SwingDragDrop{
 		
                 JPanel panel = new JPanel();
 		panel.add(txtField);
+                
+                
+//                panel.add(TextTool.getJLabelIcon());
+                
+//                URL url = getClass().getClassLoader().getResource("images/textTool.png");
+//                
+//                System.out.println("PNG located at: " + url );
+//                
+//                JLabel label = new JLabel("textTool", new ImageIcon(url), JLabel.CENTER );
+//                label.setVerticalTextPosition(JLabel.BOTTOM);
+//                label.setHorizontalTextPosition(JLabel.CENTER);
+//                panel.add(label);
+                
+               panel.add(new TextTool("Text2", "images/textTool.png"));
+                       
                 
                 JFrame frame = new JFrame("Drag Drop Demo");
 		frame.add(lbl, BorderLayout.CENTER);

@@ -6,11 +6,15 @@
 
 package editor;
 
+import cz.fi.muni.vavmar.editor.tools.AbstractTool;
+import cz.fi.muni.vavmar.editor.tools.Tool;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.ConnectorState;
@@ -24,7 +28,7 @@ import org.openide.util.Exceptions;
  * @author Martin
  */
 public class AcceptProviderImpl implements AcceptProvider {
-
+    private static final Logger logger = LogManager.getLogger(AcceptProviderImpl.class.getName());
     private final Scene scene;
     
     public AcceptProviderImpl(Scene scene) {
@@ -53,11 +57,16 @@ public class AcceptProviderImpl implements AcceptProvider {
             if( o instanceof Table){
                 System.out.println("Akceptuji: " + ((Table) o).getName() );
                 return ConnectorState.ACCEPT;
-            } else {
-                System.out.println("Objekt neni typu Table!!!!: " + o);
             }
+            
+            if(o instanceof AbstractTool){
+                logger.trace("Objekt je typu AbstractTool!! Huraaaa!" + o);
+                return ConnectorState.ACCEPT;
+            }
+            
+            
         }
-
+        logger.debug("Nerozpoznany objekt!" + o);
         return ConnectorState.REJECT;
     }
 
@@ -76,6 +85,11 @@ public class AcceptProviderImpl implements AcceptProvider {
                     getTableWidgetFromTransfer(widget, point, transferable);
                 } else {
                     System.out.println("Objekt neni typu Table! Nelze vytvorit widget: " + o);
+                }
+                
+                if ( o instanceof AbstractTool ){
+                    logger.trace("Vytvarim widget nastroje: " + o);
+                    scene.addChild( ((AbstractTool) o).createWidget(scene) );    //Vytvorime widget
                 }
             }
         } catch (UnsupportedFlavorException ex) {

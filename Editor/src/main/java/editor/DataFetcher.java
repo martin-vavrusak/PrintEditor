@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Staticka trida reprezentujici data z databaze, vytvarejici data pro zobrazeni v jListech
+ * V produkcni verzi musi byt nahrazena Tridou poskytujici data z databaze
  * @author Martin
  */
 public class DataFetcher {

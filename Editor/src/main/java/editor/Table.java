@@ -18,7 +18,7 @@ import java.util.ArrayList;
  *
  * @author Martin
  */
-public class Table implements Serializable, Transferable{
+public class Table implements Serializable, Transferable {
     public static DataFlavor DATA_FLAVOUR = new DataFlavor(Table.class, "TableInformaitons");
     private static final long serialVersionUID = 3234894312346698435L;
     private String name;
