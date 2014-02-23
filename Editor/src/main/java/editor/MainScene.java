@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
+import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
 
 /**
@@ -26,10 +27,18 @@ import org.netbeans.api.visual.widget.Scene;
 public class MainScene extends Scene {
 
     private JScrollPane scrollPane;
+    private LayerWidget mainLayer;
+    private ResizeParentByMoveActionProvider moveProvider;
     
     public MainScene() {
         setOpaque(true);
+        moveProvider = new ResizeParentByMoveActionProvider();
         
+        mainLayer = new LayerWidget(this);
+        mainLayer.getActions().addAction(ActionFactory.createResizeAction());
+        mainLayer.setPreferredBounds(new Rectangle(900, 900));
+        mainLayer.setVisible(true);
+        addChild(mainLayer);
 //        setBackground(Color.BLUE);
         
         //Vyclenit do samostatne tridy pro lepsi prehlednost
@@ -48,15 +57,18 @@ public class MainScene extends Scene {
         scrollPane.setColumnHeaderView(createColumnRuler());
         scrollPane.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
         
+        //TODO Smazat
         LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
-        lw2.getActions().addAction(ActionFactory.createMoveAction());
+        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw2.setPreferredLocation(new Point(50, 50));
-        addChild(lw2);
+        mainLayer.addChild(lw2);
+
         
         LabelWidget lw = new LabelWidget(this, "Widget 2");
-        lw.getActions().addAction(ActionFactory.createMoveAction());
+        lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw.setPreferredLocation(new Point(50, 100));
-        addChild(lw);
+        mainLayer.addChild(lw);
+        mainLayer.setOpaque(true);
         
         AcceptProvider ap = new AcceptProviderImpl(this);
         
