@@ -37,8 +37,9 @@ public class TextTool extends AbstractTool {
   
 
     public Widget createWidget(Scene scene) {
+        logger.trace("TextTool: vytvarim widget");
         LabelWidget lw = new LabelWidget(scene, "TextTool");
-        lw.getActions().addAction(ActionFactory.createMoveAction());
+//        lw.getActions().addAction(ActionFactory.createMoveAction());
         return lw;
     }
     

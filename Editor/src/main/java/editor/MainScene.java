@@ -19,6 +19,7 @@ import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
+import org.netbeans.api.visual.widget.Widget;
 
 /**
  *
@@ -74,6 +75,11 @@ public class MainScene extends Scene {
         
         getActions().addAction(ActionFactory.createZoomAction());
         getActions().addAction(ActionFactory.createAcceptAction( ap ) );
+    }
+    
+    public void addWidget(Widget widget){
+        widget.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+        mainLayer.addChild(widget);
     }
     
     /*

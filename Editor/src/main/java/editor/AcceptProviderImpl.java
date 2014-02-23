@@ -29,9 +29,9 @@ import org.openide.util.Exceptions;
  */
 public class AcceptProviderImpl implements AcceptProvider {
     private static final Logger logger = LogManager.getLogger(AcceptProviderImpl.class.getName());
-    private final Scene scene;
+    private final MainScene scene;  //TODO je to kvuli addWidget, zvazit predelani
     
-    public AcceptProviderImpl(Scene scene) {
+    public AcceptProviderImpl(MainScene scene) {
         this.scene = scene;
     }
     
@@ -89,7 +89,7 @@ public class AcceptProviderImpl implements AcceptProvider {
                 
                 if ( o instanceof AbstractTool ){
                     logger.trace("Vytvarim widget nastroje: " + o);
-                    scene.addChild( ((AbstractTool) o).createWidget(scene) );    //Vytvorime widget
+                    scene.addWidget(((AbstractTool) o).createWidget(scene) );    //Vytvorime widget
                 }
             }
         } catch (UnsupportedFlavorException ex) {
