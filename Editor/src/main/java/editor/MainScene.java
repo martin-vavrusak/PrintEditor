@@ -14,6 +14,8 @@ import java.awt.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
@@ -26,7 +28,7 @@ import org.netbeans.api.visual.widget.Widget;
  * @author Martin
  */
 public class MainScene extends Scene {
-
+    private static final Logger logger = LogManager.getLogger(MainScene.class);
     private JScrollPane scrollPane;
     private LayerWidget mainLayer;
     private ResizeParentByMoveActionProvider moveProvider;
@@ -69,7 +71,7 @@ public class MainScene extends Scene {
         lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw.setPreferredLocation(new Point(50, 100));
         mainLayer.addChild(lw);
-        mainLayer.setOpaque(true);
+//        mainLayer.setOpaque(true);
         
         AcceptProvider ap = new AcceptProviderImpl(this);
         
@@ -78,6 +80,7 @@ public class MainScene extends Scene {
     }
     
     public void addWidget(Widget widget){
+        logger.trace("Pridavam widget do sceny:" + widget);
         widget.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         mainLayer.addChild(widget);
     }

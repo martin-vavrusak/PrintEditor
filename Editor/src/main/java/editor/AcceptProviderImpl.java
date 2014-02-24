@@ -83,14 +83,18 @@ public class AcceptProviderImpl implements AcceptProvider {
                     System.out.println("Akceptuji: " + ((Table) o).getName() );
                     //Vytvorim novy widget
                     getTableWidgetFromTransfer(widget, point, transferable);
-                } else {
-                    System.out.println("Objekt neni typu Table! Nelze vytvorit widget: " + o);
+                    return;
                 }
                 
                 if ( o instanceof AbstractTool ){
                     logger.trace("Vytvarim widget nastroje: " + o);
-                    scene.addWidget(((AbstractTool) o).createWidget(scene) );    //Vytvorime widget
+                    
+                    Widget wg = ((AbstractTool) o).createWidget(scene);
+                    wg.setPreferredLocation(point);
+                    scene.addWidget( wg );    //Vytvorime widget
+                    return;
                 }
+                
             }
         } catch (UnsupportedFlavorException ex) {
             Exceptions.printStackTrace(ex);
@@ -98,7 +102,7 @@ public class AcceptProviderImpl implements AcceptProvider {
             Exceptions.printStackTrace(ex);
         }
 
-        
+     logger.debug("Nerozpoznany objekt nelze vlozit do sceny:" + o);
     }
 
     private Widget getTableWidgetFromTransfer(Widget widget, Point point, Transferable transferable) throws UnsupportedFlavorException, IOException{
