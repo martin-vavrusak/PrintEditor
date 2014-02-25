@@ -7,7 +7,6 @@
 package cz.fi.muni.vavmar.editor.tools;
 
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
-import cz.fi.muni.vavmar.editor.dialogs.TextDialogPanel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

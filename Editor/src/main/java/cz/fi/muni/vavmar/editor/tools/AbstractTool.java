@@ -154,7 +154,7 @@ public abstract class AbstractTool extends JLabel implements Tool, Transferable,
             System.out.println("Mouse Dragg");
             JComponent c = (JComponent) e.getSource();
             
-            c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);
+            c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);    //Proto nefunguje move :D
         }
 
         @Override
