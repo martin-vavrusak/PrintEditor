@@ -98,7 +98,7 @@ public abstract class AbstractTool extends JLabel implements Tool, Transferable,
 
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         logger.trace("Recieved flavour:" + flavor);
-        return this;
+        return this;        //return this instance of tool to work with (for retrieving windget - getWidget())
     }
    
     /**
@@ -126,12 +126,12 @@ public abstract class AbstractTool extends JLabel implements Tool, Transferable,
 
         /**
          * 
-         * @param c
+         * @param Jelikoz trida AbstractTool implemntuje transferable, vracime primo instanci AbstractTool resp jeji dedici tridy
          * @return should return itself
          */
         @Override
         protected Transferable createTransferable(JComponent c) {
-            logger.trace("Ziskan komponenta: " + c);
+            logger.trace("Ziskana komponenta: " + c);
             return AbstractTool.this;
         }
 

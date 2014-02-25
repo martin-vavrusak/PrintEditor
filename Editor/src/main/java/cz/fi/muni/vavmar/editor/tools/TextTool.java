@@ -6,10 +6,13 @@
 
 package cz.fi.muni.vavmar.editor.tools;
 
+import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
+import cz.fi.muni.vavmar.editor.dialogs.TextDialogPanel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.apache.logging.log4j.LogManager;
@@ -59,6 +62,10 @@ public class TextTool extends AbstractTool {
      */
     protected void showEditDialog(Widget widget){
         logger.trace("Zobrazuji dialogove okno!");
+        JDialog dialog = new TextDialog(widget);
+        dialog.setVisible(true);
+//        TextDialogPanel panel = new TextDialogPanel();
+//        panel.setVisible(true);
     }
 
     
