@@ -7,6 +7,7 @@
 package editor;
 
 import cz.fi.muni.vavmar.editor.tools.TextTool;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
@@ -15,13 +16,18 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.border.TitledBorder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.persistence.logging.SessionLog;
+import org.netbeans.api.visual.widget.Widget;
 
 /**
  *
  * @author Martin
  */
 public class MainFrame extends javax.swing.JFrame {
-
+    private static final Logger logger = LogManager.getLogger(MainFrame.class);
+    
     private MainScene mainScene = new MainScene();
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
     private static final int COLUMN_BORDER_TEXT_LENGHT = 4;
@@ -31,6 +37,13 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
+        
+        //centering to screen
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        Rectangle bounds = getBounds();
+        setBounds( (screenSize.width - bounds.width)/2,
+                    (screenSize.height - bounds.height)/2,
+                    bounds.width, bounds.height);
     }
 
     /**
@@ -50,6 +63,7 @@ public class MainFrame extends javax.swing.JFrame {
         tablesListArea = new javax.swing.JList();
         tablesSearchField = new javax.swing.JTextField();
         toolPanel = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -91,6 +105,14 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         toolPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.toolPanel.border.title"))); // NOI18N
+
+        jButton1.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        toolPanel.add(jButton1);
 
         toolPanel.add (new TextTool("Text", "images/textTool.png"));
 
@@ -174,6 +196,22 @@ public class MainFrame extends javax.swing.JFrame {
         tablesListArea.setModel(Util.createListModel(l));
     }//GEN-LAST:event_tablesSearchFieldKeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+//        List<Widget> widgets = mainScene.getChildren();
+        for( Widget w : mainScene.getChildren() ){
+            logger.trace(w.getBounds());
+            printChildrens(w.getChildren());
+        }
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void printChildrens (List<Widget> widgets){
+        for( Widget w : widgets ){
+            logger.trace("| " + w.getBounds());
+            printChildrens(w.getChildren());
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -211,6 +249,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList columnsListArea;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
