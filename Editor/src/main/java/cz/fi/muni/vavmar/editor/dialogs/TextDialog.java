@@ -465,17 +465,24 @@ private class TextDialogPanel extends javax.swing.JPanel {
         ownerWidget.setFont( previewTextField.getFont() );      //Ordering is important!!!!
 //        setPrefferedSizeAdjusted(ownerWidget);                  //Adjust bounds to new text
         
-//        logger.trace("After font set: Bounds: " + ownerWidget.getBounds() + " Preffered bounds: " + ownerWidget.getPreferredBounds());
+        logger.trace("After font set: Bounds: " + ownerWidget.getBounds() + " Preffered bounds: " + ownerWidget.getPreferredBounds());
 //        DebugGraphics dg = new DebugGraphics();
 //        dg.create();
 //        FontMetrics metric = dg.getFontMetrics(ownerWidget.getFont());
 //        int width = metric.stringWidth( ((LabelWidget) ownerWidget).getLabel() );
+//        logger.trace("width by metrics:" + width);
+        
 //        String labelText = ((LabelWidget) ownerWidget).getLabel();
 //        Font setFont = previewTextField.getFont();
 //        FontRenderContext frc = new FontRenderContext(setFont.getTransform(), true, true);
 //        
 //        Rectangle2D textBounds = setFont.getStringBounds(labelText, frc);
 //        logger.trace("Measured string width:" + textBounds);
+        
+//        FontMetrics fm = previewTextField.getFontMetrics(previewTextField.getFont());
+//        int width = fm.stringWidth( ((LabelWidget) ownerWidget).getLabel() );
+//        logger.trace("Width by FontMetrics:" + width);
+        
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
