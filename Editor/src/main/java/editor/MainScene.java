@@ -11,6 +11,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -18,6 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.WidgetAction;
+import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
@@ -31,16 +35,33 @@ public class MainScene extends Scene {
     private static final Logger logger = LogManager.getLogger(MainScene.class);
     private JScrollPane scrollPane;
     private LayerWidget mainLayer;
+    private LayerWidget backgroundLayer;
     private ResizeParentByMoveActionProvider moveProvider;
+    private WidgetAction hoverAction;
+    private WidgetAction rectangularSelectionAction;
+    private List<Widget> selectedWidgets;
     
     public MainScene() {
         setOpaque(true);
-        moveProvider = new ResizeParentByMoveActionProvider();
+        selectedWidgets = new ArrayList<Widget>();
         
+        moveProvider = new ResizeParentByMoveActionProvider();
+        hoverAction = ActionFactory.createHoverAction(new WidgetHoverActionProvider());
+        
+        backgroundLayer = new LayerWidget(this);
         mainLayer = new LayerWidget(this);
+//        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(this, mainLayer);
+        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(
+                                    new WidgetRectangularSelectDecorator(this), backgroundLayer,    //layer where rectangle of selection will be painted
+                                    new WidgetRectangularSelectionProvider(this, mainLayer));       //layer whose widgets will be tested for selection
+        
+        
         mainLayer.getActions().addAction(ActionFactory.createResizeAction());
+//        mainLayer.getActions().addAction( rectangularSelectionAction );
         mainLayer.setPreferredBounds(new Rectangle(900, 900));
         mainLayer.setVisible(true);
+        
+        addChild(0, backgroundLayer);
         addChild(mainLayer);
 //        setBackground(Color.BLUE);
         
@@ -63,12 +84,16 @@ public class MainScene extends Scene {
         //TODO Smazat
         LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
         lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+        lw2.getActions().addAction( ActionFactory.createSelectAction(new WidgetSelectProvider()) );
+        lw2.getActions().addAction( rectangularSelectionAction );
         lw2.setPreferredLocation(new Point(50, 50));
         mainLayer.addChild(lw2);
 
         
         LabelWidget lw = new LabelWidget(this, "Widget 2");
+        
         lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+        lw.getActions().addAction(0, ActionFactory.createSelectAction(new WidgetSelectProvider()) );
         lw.setPreferredLocation(new Point(50, 100));
         mainLayer.addChild(lw);
 //        mainLayer.setOpaque(true);
@@ -77,12 +102,25 @@ public class MainScene extends Scene {
         
         getActions().addAction(ActionFactory.createZoomAction());
         getActions().addAction(ActionFactory.createAcceptAction( ap ) );
+        getActions().addAction( rectangularSelectionAction );
+        getActions().addAction(hoverAction);
+//        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
+        
+
+        
     }
     
     public void addWidget(Widget widget){
         logger.trace("Pridavam widget do sceny:" + widget);
+//        widget.getActions().addAction( 0, ActionFactory.createSelectAction(new WidgetSelectProvider()) );   //selection action has to be first, It's not consuming action
         widget.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+        widget.getActions().addAction( hoverAction );
+        
         mainLayer.addChild(widget);
+    }
+    
+    public LayerWidget getMainLayer(){
+        return mainLayer;
     }
     
     /*
@@ -90,6 +128,17 @@ public class MainScene extends Scene {
     */
     public JComponent getSceneEnvelope(){
         return scrollPane;
+    }
+
+    public List<Widget> getSelectedWidgets() {
+        return selectedWidgets;
+    }
+
+    public void setSelectedWidgets(List<Widget> selectedWidgets) {
+        //Nastaveni borderu musi byt volano v Providerovi, jinak pri opakovanem
+        //oznaceni nedojde ke spravnemu nastaveni borderu (resp se mu nastavi ale tady by se mu hned zase zrusil)
+        this.selectedWidgets = selectedWidgets;
+        logger.trace("Selection set: " + selectedWidgets.size() + " " + selectedWidgets);
     }
     
     private JComponent createRowRuler(){

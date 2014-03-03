@@ -14,7 +14,7 @@ import org.netbeans.api.visual.action.MoveProvider;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
- *
+ *  Zvetsi scenu pri presunuti widgetu mimo rozsah sceny
  * @author Martin
  */
 public class ResizeParentByMoveActionProvider implements MoveProvider {
@@ -39,6 +39,10 @@ public class ResizeParentByMoveActionProvider implements MoveProvider {
                     + "Bounds: " + widget.getParentWidget().getBounds() 
                     + " insets: " + widget.getParentWidget().getBorder().getInsets());
         widget.setPreferredLocation (location);
+//        Rectangle bounds = widget.getBounds();
+//        bounds.setLocation(location);
+//        
+//        widget.setPreferredBounds(bounds);
         
         Widget parent = widget.getParentWidget();
         Rectangle parentBounds = parent.getBounds();    //get parent bounds
