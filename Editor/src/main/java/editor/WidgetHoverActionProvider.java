@@ -25,7 +25,7 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
         public void unsetHovering(Widget widget) {
             if (widget != null) {
                 logger.trace( ((LabelWidget) widget).getLabel() );
-                widget.setBackground (Color.RED);
+                widget.setBackground (Color.WHITE);
                 widget.setForeground (Color.BLACK);
             }
         }
@@ -33,8 +33,8 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
         public void setHovering(Widget widget) {
             if (widget != null) {
                 logger.trace( ((LabelWidget) widget).getLabel() );
-                widget.setBackground (new Color (52, 124, 150));
-                widget.setForeground (Color.GREEN);
+                widget.setBackground (Color.GRAY);
+                widget.setForeground (Color.WHITE);
             }
         }
     

@@ -84,7 +84,7 @@ public class MainScene extends Scene {
         //TODO Smazat
         LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
         lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
-        lw2.getActions().addAction( ActionFactory.createSelectAction(new WidgetSelectProvider()) );
+        lw2.getActions().addAction( ActionFactory.createSelectAction(new WidgetSelectProvider(this)) );
         lw2.getActions().addAction( rectangularSelectionAction );
         lw2.setPreferredLocation(new Point(50, 50));
         mainLayer.addChild(lw2);
@@ -93,7 +93,7 @@ public class MainScene extends Scene {
         LabelWidget lw = new LabelWidget(this, "Widget 2");
         
         lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
-        lw.getActions().addAction(0, ActionFactory.createSelectAction(new WidgetSelectProvider()) );
+        lw.getActions().addAction(0, ActionFactory.createSelectAction(new WidgetSelectProvider(this)) );
         lw.setPreferredLocation(new Point(50, 100));
         mainLayer.addChild(lw);
 //        mainLayer.setOpaque(true);
@@ -103,7 +103,7 @@ public class MainScene extends Scene {
         getActions().addAction(ActionFactory.createZoomAction());
         getActions().addAction(ActionFactory.createAcceptAction( ap ) );
         getActions().addAction( rectangularSelectionAction );
-        getActions().addAction(hoverAction);
+        getActions().addAction( hoverAction );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
         
 
@@ -112,7 +112,7 @@ public class MainScene extends Scene {
     
     public void addWidget(Widget widget){
         logger.trace("Pridavam widget do sceny:" + widget);
-//        widget.getActions().addAction( 0, ActionFactory.createSelectAction(new WidgetSelectProvider()) );   //selection action has to be first, It's not consuming action
+        widget.getActions().addAction( 0, ActionFactory.createSelectAction(new WidgetSelectProvider(this)) );   //selection action has to be first, It's not consuming action
         widget.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         widget.getActions().addAction( hoverAction );
         

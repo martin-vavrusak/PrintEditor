@@ -7,6 +7,7 @@
 package editor;
 
 import java.awt.Point;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.SelectProvider;
@@ -18,6 +19,13 @@ import org.netbeans.api.visual.widget.Widget;
  */
 public class WidgetSelectProvider implements SelectProvider {
     private static final Logger logger = LogManager.getLogger(WidgetSelectProvider.class);
+    
+    private MainScene scene;
+
+    public WidgetSelectProvider(MainScene scene) {
+        this.scene = scene;
+    }
+    
     
     public boolean isAimingAllowed(Widget widget, Point localLocation, boolean invertSelection) {
         logger.trace("");
@@ -33,6 +41,11 @@ public class WidgetSelectProvider implements SelectProvider {
         logger.trace("Selected widget: " + widget);
         logger.trace("At: " + localLocation + "Inverted selection: " + invertSelection);
         
+        List<Widget> selectedWidgets = scene.getSelectedWidgets();
+        
+        if( selectedWidgets != null && selectedWidgets.size() > 0 ){
+            
+        }
         //test na CTRL
         //setBorder
         //scene.addSelectedWidget(widget)

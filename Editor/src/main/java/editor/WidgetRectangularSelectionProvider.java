@@ -19,6 +19,7 @@ import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
+import org.netbeans.modules.visual.action.SelectAction;
 
 
 /**
@@ -100,7 +101,15 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                     w.setBorder(BorderFactory.createDashedBorder(Color.BLACK, 1, 1));
                     selectedWidgets.add(w);
                     
-                    w.getActions().addAction(0, multipleMovementAction);
+                    List<WidgetAction> actions = w.getActions().getActions();
+                    if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
+                        w.getActions().addAction(1, multipleMovementAction);    //vloz movement hned za select
+                        
+                    } else if ( actions.size() == 1 && actions.get(0) instanceof SelectAction ){
+                        w.getActions().addAction(multipleMovementAction);
+                    } else {
+                        w.getActions().addAction(0, multipleMovementAction);
+                    }
                     
                     logger.trace("Do vyberu pridan widget: " + w);
                 }

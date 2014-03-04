@@ -1,10 +1,11 @@
 package cz.fi.muni.vavmar.editor;
 
 import editor.Table;
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.eclipse.persistence.jpa.jpql.JPQLQueryProblemMessages;
 
 /**
  * Unit test for simple App.
@@ -46,4 +47,9 @@ public class AppTest
         assertFalse(t2.equals(t1));
         assertFalse(t1.equals(t2));
     }
+    
+//    public void testArrayList(){
+//        List<Integer> list = new ArrayList<Integer>(10);
+//        list.add(2, new Integer(20));
+//    }
 }
