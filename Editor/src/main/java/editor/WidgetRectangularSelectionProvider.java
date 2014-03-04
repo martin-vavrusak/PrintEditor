@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.RectangularSelectProvider;
+import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
@@ -26,6 +28,7 @@ import org.netbeans.api.visual.widget.Widget;
 public class WidgetRectangularSelectionProvider implements RectangularSelectProvider {
     private static final Logger logger = LogManager.getLogger(WidgetRectangularSelectionProvider.class);
 
+    private static WidgetAction multipleMovementAction;       //TODO mozna presunout do MainScene a get/set -ovat to
     private MainScene scene;
     private LayerWidget layerOfWidgets;
     
@@ -37,6 +40,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
     public WidgetRectangularSelectionProvider(MainScene scene, LayerWidget layerOfWidgets) {
         this.scene = scene;
         this.layerOfWidgets = layerOfWidgets;
+        multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider(scene));
     }
     
     
@@ -95,6 +99,9 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                 if( sceneSelection.intersects( widgetPosition ) ){
                     w.setBorder(BorderFactory.createDashedBorder(Color.BLACK, 1, 1));
                     selectedWidgets.add(w);
+                    
+                    w.getActions().addAction(0, multipleMovementAction);
+                    
                     logger.trace("Do vyberu pridan widget: " + w);
                 }
                 
@@ -113,8 +120,12 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
         List<Widget> oldWidgetSelection = scene.getSelectedWidgets();
         if(oldWidgetSelection != null && oldWidgetSelection.size() > 0){
             for(Widget w : scene.getSelectedWidgets()){
-                 //TODO zrusit nastaveni borderu
+                //reset border
                 w.setBorder(BorderFactory.createEmptyBorder());
+                
+                //Cancel multiple moving provider
+                w.getActions().removeAction(0);
+//                w.getActions().removeAction(multipleMovementAction); //TODO put MultiMove provider to scene and use it single instance change to this type
                 logger.trace("Selection cancelled: " + w);
             }
         }
