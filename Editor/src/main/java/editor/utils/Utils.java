@@ -7,6 +7,9 @@
 package editor.utils;
 
 import java.util.List;
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
 import org.netbeans.modules.visual.action.MouseHoverAction;
@@ -58,5 +61,22 @@ public class Utils {
 //        } else {
 //            widget.getActions().addAction(0, action);
 //        }
+    }
+    
+    public static ListModel createListModel(final List<String> list){
+        if(list == null | list.size() <= 0) {
+            return new DefaultListModel();
+        }
+        
+        return new AbstractListModel() {
+            
+            public int getSize() {
+                return list.size();
+            }
+
+            public Object getElementAt(int index) {
+                return list.get(index);
+            }
+        };
     }
 }

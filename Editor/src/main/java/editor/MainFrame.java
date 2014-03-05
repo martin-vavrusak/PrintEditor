@@ -7,18 +7,16 @@
 package editor;
 
 import cz.fi.muni.vavmar.editor.tools.TextTool;
+import editor.utils.Utils;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractListModel;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.border.TitledBorder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.persistence.logging.SessionLog;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
@@ -74,7 +72,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         columnsListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        columnsListArea.setModel(Util.createListModel(new ArrayList<String>())
+        columnsListArea.setModel(Utils.createListModel(new ArrayList<String>())
         );
         columnsListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         columnsListArea.setTransferHandler( new DnDListHandler() );
@@ -82,7 +80,7 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(columnsListArea);
 
         tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesListArea.border.title"))); // NOI18N
-        tablesListArea.setModel(Util.createListModel( dataFetcher.getAllTablesString() ));
+        tablesListArea.setModel(Utils.createListModel( dataFetcher.getAllTablesString() ));
         tablesListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tablesListArea.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -172,7 +170,7 @@ public class MainFrame extends javax.swing.JFrame {
             String s = (String) model.getElementAt( list.getSelectedIndex() );
             System.out.println("Nazev polozky: " + s);
 
-            columnsListArea.setModel( Util.createListModel( dataFetcher.getColumns(new Table(s))) );
+            columnsListArea.setModel( Utils.createListModel( dataFetcher.getColumns(new Table(s))) );
             
             if(s.length() > COLUMN_BORDER_TEXT_LENGHT){     //Shortening of border text
                 s = s.substring(0, COLUMN_BORDER_TEXT_LENGHT).concat("...");
@@ -193,7 +191,7 @@ public class MainFrame extends javax.swing.JFrame {
         String s = ((JTextField) evt.getComponent()).getText();
         System.out.println("Searching for: " + s);
         List<String> l = dataFetcher.searchTables( s );
-        tablesListArea.setModel(Util.createListModel(l));
+        tablesListArea.setModel(Utils.createListModel(l));
     }//GEN-LAST:event_tablesSearchFieldKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
