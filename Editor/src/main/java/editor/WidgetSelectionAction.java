@@ -6,68 +6,61 @@
 
 package editor;
 
-import editor.utils.Utils;
 import java.awt.Color;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
-import static oracle.jrockit.jfr.events.Bits.length;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.netbeans.api.visual.action.SelectProvider;
+import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
  *
  * @author Martin
  */
-public class WidgetSelectProvider implements SelectProvider {
-    private static final Logger logger = LogManager.getLogger(WidgetSelectProvider.class);
+public class WidgetSelectionAction extends WidgetAction.Adapter {
+    private static final Logger logger = LogManager.getLogger(WidgetSelectionAction.class);
     
     private MainScene scene;
 
-    public WidgetSelectProvider(MainScene scene) {
+    public WidgetSelectionAction(MainScene scene) {
         this.scene = scene;
     }
     
     
-    public boolean isAimingAllowed(Widget widget, Point localLocation, boolean invertSelection) {
-        logger.trace("");
-        return false;   //Pro kooperaci s RectangleSelection by melo byt udajne true, ale aby fungovalo s MoveAction musi bt false :D :D
-    }
-
-    public boolean isSelectionAllowed(Widget widget, Point localLocation, boolean invertSelection) {
-        logger.trace("");
-        return true;
-    }
-
-    public void select(Widget widget, Point localLocation, boolean invertSelection) {
+    @Override
+    public State mouseClicked(Widget widget, WidgetMouseEvent event) {
         Border selectedBorder = BorderFactory.createDashedBorder(Color.ORANGE, 3, 2, 1, false);
         logger.trace("Selected widget: " + widget);
-        logger.trace("At: " + localLocation + "Inverted selection: " + invertSelection);
+        logger.trace("At: " + event.getPoint() + "CTRL pressed selection: " + event.isControlDown());
+
         
         List<Widget> selectedWidgets = scene.getSelectedWidgets();
         logger.trace("Selected widgets: " + selectedWidgets);
         
         if( selectedWidgets == null ) selectedWidgets = new ArrayList<Widget>();
         
-        if(!invertSelection) {  //without CRTL we want only select this widget (single selection)
+        if(!event.isControlDown()) {  //without CRTL we want only select this widget (single selection)
             logger.trace("Invertion is not set performing single selection.");
             scene.clearSelection();
             widget.setBorder( selectedBorder );
             //set Resize Action pro obrazek!!!
             selectedWidgets.add(widget);
             
+            scene.setSelectedWidgets(selectedWidgets);
+            
         } else {
-            if ( selectedWidgets.size() == 1 ) {
+            if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement
+                                                    //set or just one widget with multimovement action set
+                                                    //so simply clear selection and make new selection
                 logger.trace("One widget is selected and invertion is set. Adding second widget.");
                 //ulozit widget
                 Widget previouslySelected = selectedWidgets.get(0);
                 
                 //smazat selekci
-                scene.clearSelection();
+                selectedWidgets = scene.clearSelection();
                 
                 //nastavit ho na multiple movement
                 previouslySelected.setBorder( selectedBorder );
@@ -80,8 +73,19 @@ public class WidgetSelectProvider implements SelectProvider {
                 selectedWidgets.add(previouslySelected);
                 selectedWidgets.add(widget);
                 
-            } else if ( selectedWidgets.size() > 2 ){
+            } else if ( selectedWidgets.size() >= 2 ){
                 logger.trace("Two widgets are selected and invertion is set. Resolving adding/removing.");
+                
+                if( selectedWidgets.contains(widget) ){     //if widget is allready selected unselect it
+                    selectedWidgets.remove(widget);
+                    widget.setBorder(BorderFactory.createEmptyBorder());
+                    widget.getActions().removeAction( scene.getMultipleMovementAction() );
+                    
+                } else {        //Otherwise select it
+                    widget.setBorder(selectedBorder);
+                    scene.setMultiMoveAction(widget, scene.getMultipleMovementAction() );
+                    scene.getSelectedWidgets().add(widget);
+                }
                 
             } else {
                 logger.warn("Something weird happend during selection of widgets!");
@@ -108,6 +112,7 @@ public class WidgetSelectProvider implements SelectProvider {
         //setBorder
         //scene.addSelectedWidget(widget)
         //Resize action
+        return State.REJECTED;  //we still need to allow moving of widget
     }
-    
+
 }

@@ -13,12 +13,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.HoverProvider;
 import org.netbeans.api.visual.action.RectangularSelectProvider;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
+import org.netbeans.modules.visual.action.MouseHoverAction;
 import org.netbeans.modules.visual.action.SelectAction;
 
 
@@ -41,7 +43,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
     public WidgetRectangularSelectionProvider(MainScene scene, LayerWidget layerOfWidgets) {
         this.scene = scene;
         this.layerOfWidgets = layerOfWidgets;
-        multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider(scene));
+        multipleMovementAction = scene.getMultipleMovementAction();
     }
     
     
@@ -101,15 +103,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                     w.setBorder(BorderFactory.createDashedBorder(Color.BLACK, 1, 1));
                     selectedWidgets.add(w);
                     
-                    List<WidgetAction> actions = w.getActions().getActions();
-                    if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
-                        w.getActions().addAction(1, multipleMovementAction);    //vloz movement hned za select
-                        
-                    } else if ( actions.size() == 1 && actions.get(0) instanceof SelectAction ){
-                        w.getActions().addAction(multipleMovementAction);
-                    } else {
-                        w.getActions().addAction(0, multipleMovementAction);
-                    }
+                    scene.setMultiMoveAction(w, multipleMovementAction);
                     
                     logger.trace("Do vyberu pridan widget: " + w);
                 }
@@ -125,6 +119,48 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
         
     }
     
+//    private void setMultiMoveAction(Widget widget, WidgetAction action){
+//        List<WidgetAction> actions = widget.getActions().getActions();
+//        if(actions.size() >= 2){
+//            WidgetAction firstAction = actions.get(0);
+//            WidgetAction secondAction = actions.get(1);
+//            if( (firstAction instanceof SelectAction || firstAction instanceof MouseHoverAction) ||
+//                (secondAction instanceof SelectAction || secondAction instanceof MouseHoverAction)  ){
+//                
+//                if(actions.size() > 2){
+//                    widget.getActions().addAction(2, action);
+//                    return;
+//                } else {
+//                    widget.getActions().addAction(action);
+//                    return;
+//                }
+//            }
+//        }
+//        
+//        
+//        if(actions.size() >= 1) {
+//            WidgetAction widgetAction = actions.get(0);
+//            if( widgetAction instanceof SelectAction || widgetAction instanceof MouseHoverAction ) {
+//                if(actions.size() > 1){
+//                    widget.getActions().addAction(1, action);
+//                    return;
+//                } else {
+//                    widget.getActions().addAction(action);
+//                    return;
+//                }
+//            }
+//        }
+//        
+////        if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
+////            widget.getActions().addAction(1, action);    //vloz movement hned za select
+////
+////        } else if ( actions.size() == 1 && actions.get(0) instanceof SelectAction ){
+////            widget.getActions().addAction(action);
+////        } else {
+////            widget.getActions().addAction(0, action);
+////        }
+//    }
+    
     private void clearSceneSelection(){
         List<Widget> oldWidgetSelection = scene.getSelectedWidgets();
         if(oldWidgetSelection != null && oldWidgetSelection.size() > 0){
@@ -133,8 +169,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                 w.setBorder(BorderFactory.createEmptyBorder());
                 
                 //Cancel multiple moving provider
-                w.getActions().removeAction(0);
-//                w.getActions().removeAction(multipleMovementAction); //TODO put MultiMove provider to scene and use it single instance change to this type
+                w.getActions().removeAction( multipleMovementAction );
                 logger.trace("Selection cancelled: " + w);
             }
         }

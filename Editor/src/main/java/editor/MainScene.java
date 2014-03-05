@@ -26,6 +26,8 @@ import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
+import org.netbeans.modules.visual.action.MouseHoverAction;
+import org.netbeans.modules.visual.action.SelectAction;
 
 /**
  *
@@ -39,7 +41,10 @@ public class MainScene extends Scene {
     private ResizeParentByMoveActionProvider moveProvider;
     private WidgetAction hoverAction;
     private WidgetAction rectangularSelectionAction;
+    private WidgetAction multipleMovementAction;
     private List<Widget> selectedWidgets;
+    
+    private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
     
     public MainScene() {
         setOpaque(true);
@@ -47,6 +52,7 @@ public class MainScene extends Scene {
         
         moveProvider = new ResizeParentByMoveActionProvider();
         hoverAction = ActionFactory.createHoverAction(new WidgetHoverActionProvider());
+        multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
         
         backgroundLayer = new LayerWidget(this);
         mainLayer = new LayerWidget(this);
@@ -56,7 +62,8 @@ public class MainScene extends Scene {
                                     new WidgetRectangularSelectionProvider(this, mainLayer));       //layer whose widgets will be tested for selection
         
         
-        mainLayer.getActions().addAction(ActionFactory.createResizeAction());
+        
+        mainLayer.getActions().addAction( ActionFactory.createResizeAction() );
 //        mainLayer.getActions().addAction( rectangularSelectionAction );
         mainLayer.setPreferredBounds(new Rectangle(900, 900));
         mainLayer.setVisible(true);
@@ -106,14 +113,17 @@ public class MainScene extends Scene {
         getActions().addAction( hoverAction );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
         
-
-        
     }
-    
+
+    public WidgetAction getMultipleMovementAction() {
+        return multipleMovementAction;
+    }
+
     public void addWidget(Widget widget){
         logger.trace("Pridavam widget do sceny:" + widget);
-        widget.getActions().addAction( 0, ActionFactory.createSelectAction(new WidgetSelectProvider(this)) );   //selection action has to be first, It's not consuming action
-        widget.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+//        widget.getActions().addAction( 0, ActionFactory.createSelectAction(new WidgetSelectProvider(this)) );   //selection action has to be first, It's not consuming action
+        widget.getActions().addAction( singleSelectActino );
+        widget.getActions().addAction( ActionFactory.createMoveAction(null, moveProvider ));
         widget.getActions().addAction( hoverAction );
         
         mainLayer.addChild(widget);
@@ -135,10 +145,75 @@ public class MainScene extends Scene {
     }
 
     public void setSelectedWidgets(List<Widget> selectedWidgets) {
-        //Nastaveni borderu musi byt volano v Providerovi, jinak pri opakovanem
+        //Nastaveni borderu znazornujiciho oznaceny widget (dashed) musi byt volano v Providerovi, jinak pri opakovanem
         //oznaceni nedojde ke spravnemu nastaveni borderu (resp se mu nastavi ale tady by se mu hned zase zrusil)
         this.selectedWidgets = selectedWidgets;
         logger.trace("Selection set: " + selectedWidgets.size() + " " + selectedWidgets);
+    }
+    
+    /**
+     * Clears selection and set all widgets as unselected
+     * If used, then must be used before <b>setSelectedWidgets<b> method
+     */
+    public List<Widget> clearSelection(){
+        logger.trace("Cleaning selection.");
+        List<Widget> selectedList = getSelectedWidgets();
+        for(Widget w : selectedList){
+            w.setBorder(BorderFactory.createEmptyBorder());
+            w.getActions().removeAction( multipleMovementAction );
+            logger.trace("Selection cancelled: " + w);
+        }
+        selectedWidgets = new ArrayList<Widget>();
+        return selectedWidgets;
+    }
+
+    public void setMultiMoveAction(Widget widget, WidgetAction action){
+        logger.trace("");
+        List<WidgetAction> actions = widget.getActions().getActions();
+        if(actions.size() >= 2){
+            WidgetAction firstAction = actions.get(0);
+            WidgetAction secondAction = actions.get(1);
+            if( (firstAction instanceof SelectAction || firstAction instanceof MouseHoverAction) ||
+                (secondAction instanceof SelectAction || secondAction instanceof MouseHoverAction)  ){
+                
+                if(actions.size() > 2){
+                    widget.getActions().addAction(2, action);
+                    return;
+                } else {
+                    widget.getActions().addAction(action);
+                    return;
+                }
+            }
+        }
+        
+        
+        if(actions.size() >= 1) {
+            WidgetAction widgetAction = actions.get(0);
+            if( widgetAction instanceof SelectAction || widgetAction instanceof MouseHoverAction ) {
+                if(actions.size() > 1){
+                    widget.getActions().addAction(1, action);
+                    return;
+                } else {
+                    widget.getActions().addAction(action);
+                    return;
+                }
+                
+            } else {    //there is no action
+                widget.getActions().addAction(0, action);
+                return;
+            }
+        } else { //there is no action
+            widget.getActions().addAction(action);
+        }
+        
+//        if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
+//            widget.getActions().addAction(1, action);    //vloz movement hned za select
+//
+//        } else if ( actions.size() == 1 && actions.get(0) instanceof SelectAction ){
+//            widget.getActions().addAction(action);
+//        } else {
+//            widget.getActions().addAction(0, action);
+//        }
     }
     
     private JComponent createRowRuler(){
