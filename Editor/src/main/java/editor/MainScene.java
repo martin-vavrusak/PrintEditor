@@ -40,12 +40,18 @@ public class MainScene extends Scene {
     private LayerWidget mainLayer;
     private LayerWidget backgroundLayer;
     private ResizeParentByMoveActionProvider moveProvider;
+    
     private WidgetAction hoverAction;
     private WidgetAction rectangularSelectionAction;
     private WidgetAction multipleMovementAction;
+    private WidgetAction keyProcessor = new KeyProcessingAction(this);
+    private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
+    
     private List<Widget> selectedWidgets;
     
-    private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
+    private boolean CONTROL_PRESSED = false;
+    
+    
     
     public MainScene() {
         setOpaque(true);
@@ -112,6 +118,7 @@ public class MainScene extends Scene {
         getActions().addAction(ActionFactory.createAcceptAction( ap ) );
         getActions().addAction( rectangularSelectionAction );
         getActions().addAction( hoverAction );
+        getActions().addAction( keyProcessor );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
         
     }
@@ -171,6 +178,15 @@ public class MainScene extends Scene {
         logger.trace("");
         Utils.setMultiMoveAction(widget, action);
     }
+
+    public boolean isControlPressed() {
+        return CONTROL_PRESSED;
+    }
+
+    public void setControlPressed(boolean pressed) {
+        this.CONTROL_PRESSED = pressed;
+    }
+    
     
     private JComponent createRowRuler(){
         JLabel rowheader = new JLabel() {
