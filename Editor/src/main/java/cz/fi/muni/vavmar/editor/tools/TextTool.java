@@ -7,8 +7,6 @@
 package cz.fi.muni.vavmar.editor.tools;
 
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
-import editor.WidgetSelectProvider;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,8 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.EditProvider;
 import org.netbeans.api.visual.action.PopupMenuProvider;
-import org.netbeans.api.visual.action.TwoStateHoverProvider;
-import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
@@ -58,7 +54,7 @@ public class TextTool extends AbstractTool {
 //        lw.getActions().addAction(ActionFactory.createMoveAction());
         lw.getActions().addAction(ActionFactory.createEditAction( new EditTextProvider() ));
         lw.getActions().addAction(ActionFactory.createPopupMenuAction( new TextPopupMenuProvider() ));
-//        lw.getActions().addAction(ActionFactory.createSelectAction(new WidgetSelectProvider()));
+
         lw.setOpaque(true);
         return lw;
     }
