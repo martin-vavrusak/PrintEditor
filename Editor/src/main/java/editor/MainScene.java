@@ -6,6 +6,7 @@
 
 package editor;
 
+import editor.utils.Utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -168,51 +169,7 @@ public class MainScene extends Scene {
 
     public void setMultiMoveAction(Widget widget, WidgetAction action){
         logger.trace("");
-        List<WidgetAction> actions = widget.getActions().getActions();
-        if(actions.size() >= 2){
-            WidgetAction firstAction = actions.get(0);
-            WidgetAction secondAction = actions.get(1);
-            if( (firstAction instanceof SelectAction || firstAction instanceof MouseHoverAction) ||
-                (secondAction instanceof SelectAction || secondAction instanceof MouseHoverAction)  ){
-                
-                if(actions.size() > 2){
-                    widget.getActions().addAction(2, action);
-                    return;
-                } else {
-                    widget.getActions().addAction(action);
-                    return;
-                }
-            }
-        }
-        
-        
-        if(actions.size() >= 1) {
-            WidgetAction widgetAction = actions.get(0);
-            if( widgetAction instanceof SelectAction || widgetAction instanceof MouseHoverAction ) {
-                if(actions.size() > 1){
-                    widget.getActions().addAction(1, action);
-                    return;
-                } else {
-                    widget.getActions().addAction(action);
-                    return;
-                }
-                
-            } else {    //there is no action
-                widget.getActions().addAction(0, action);
-                return;
-            }
-        } else { //there is no action
-            widget.getActions().addAction(action);
-        }
-        
-//        if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
-//            widget.getActions().addAction(1, action);    //vloz movement hned za select
-//
-//        } else if ( actions.size() == 1 && actions.get(0) instanceof SelectAction ){
-//            widget.getActions().addAction(action);
-//        } else {
-//            widget.getActions().addAction(0, action);
-//        }
+        Utils.setMultiMoveAction(widget, action);
     }
     
     private JComponent createRowRuler(){

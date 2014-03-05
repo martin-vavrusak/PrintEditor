@@ -22,7 +22,7 @@ import org.netbeans.modules.visual.action.SelectAction;
 public class Utils {
     
     public static void setMultiMoveAction(Widget widget, WidgetAction action){
-        List<WidgetAction> actions = widget.getActions().getActions();
+               List<WidgetAction> actions = widget.getActions().getActions();
         if(actions.size() >= 2){
             WidgetAction firstAction = actions.get(0);
             WidgetAction secondAction = actions.get(1);
@@ -50,7 +50,13 @@ public class Utils {
                     widget.getActions().addAction(action);
                     return;
                 }
+                
+            } else {    //there is no action
+                widget.getActions().addAction(0, action);
+                return;
             }
+        } else { //there is no action
+            widget.getActions().addAction(action);
         }
         
 //        if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
