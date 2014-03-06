@@ -13,6 +13,7 @@
     </root>
     
     <logger name="editor.ResizeParentByMoveActionProvider" level="debug" /> <!-- logging settings set for particular class -->
+    <logger name="editor.KeyProcessingAction" level="debug" /> <!-- logging settings set for particular class -->
 
   </loggers>
 </configuration>

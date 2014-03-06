@@ -66,11 +66,11 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                 logger.trace("Do vyberu pridan widget: " + w);
             }
 
-            scene.setSelectedWidgets( new ArrayList<Widget>(selectedWidgets) );
+            scene.setSelectedWidgets( selectedWidgets );
             
         } else {    //otherwise perform differencial selection (select unselected and unselect selected)
             logger.trace("Performing differencial selection.");
-            List<Widget> oldSelestion = scene.getSelectedWidgets();
+            Set<Widget> oldSelestion = scene.getSelectedWidgets();
             
             for(Widget w: selectedWidgets){
                 if(oldSelestion.contains(w)){

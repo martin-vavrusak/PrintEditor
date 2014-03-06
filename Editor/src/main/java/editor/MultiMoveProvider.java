@@ -9,8 +9,9 @@ package editor;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.MoveProvider;
@@ -55,7 +56,7 @@ public class MultiMoveProvider implements MoveProvider {
      * @param location - new location of mouse
      */
     public void setNewLocation(Widget widget, Point location) {
-        int dx = location.x - originalRepresentativeWidgetPosition.x;
+        int dx = location.x - originalRepresentativeWidgetPosition.x;   //get movement vector
         int dy = location.y - originalRepresentativeWidgetPosition.y;
         
         logger.trace("original position: " + originalPositions);
@@ -78,12 +79,16 @@ public class MultiMoveProvider implements MoveProvider {
      * All widgets must be in the same layer!
      */
     private void revalidateParentLayerBounds(){
-        List<Widget> selectedWidgets = scene.getSelectedWidgets();
+        Set<Widget> selectedWidgets = scene.getSelectedWidgets();
         
         if(selectedWidgets != null && selectedWidgets.size() > 0){
-            
+            Rectangle parentBounds;
+                    
             //Retrieve bounds of parent LayerWidget
-            Rectangle parentBounds = selectedWidgets.get(0).getParentWidget().getBounds();
+            Iterator<Widget> iterator = selectedWidgets.iterator();
+             
+                            //no need of checking for next checket at outern if() clause
+            parentBounds = iterator.next().getParentWidget().getBounds();   //need to get parent layer so use anyone of widget moved
             logger.trace("Parent bounds: " + parentBounds);
 
             for( Widget w: selectedWidgets ){

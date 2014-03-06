@@ -8,7 +8,9 @@ package editor;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
@@ -37,10 +39,10 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
         logger.trace("At: " + event.getPoint() + "CTRL pressed selection: " + event.isControlDown());
 
         
-        List<Widget> selectedWidgets = scene.getSelectedWidgets();
+        Set<Widget> selectedWidgets = scene.getSelectedWidgets();
         logger.trace("Selected widgets: " + selectedWidgets);
         
-        if( selectedWidgets == null ) selectedWidgets = new ArrayList<Widget>();
+        if( selectedWidgets == null ) selectedWidgets = new HashSet<Widget>();
         
         if(!event.isControlDown()) {  //without CRTL we want only select this widget (single selection)
             logger.trace("Invertion is not set performing single selection.");
@@ -57,7 +59,8 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
                                                     //so simply clear selection and make new selection
                 logger.trace("One widget is selected and invertion is set. Adding second widget.");
                 //ulozit widget
-                Widget previouslySelected = selectedWidgets.get(0);
+                Iterator<Widget> iterator = selectedWidgets.iterator();
+                Widget previouslySelected = iterator.next();
                 
                 //smazat selekci
                 selectedWidgets = scene.clearSelection();

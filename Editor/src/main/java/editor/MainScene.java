@@ -13,7 +13,9 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -27,8 +29,6 @@ import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
-import org.netbeans.modules.visual.action.MouseHoverAction;
-import org.netbeans.modules.visual.action.SelectAction;
 
 /**
  *
@@ -47,7 +47,7 @@ public class MainScene extends Scene {
     private WidgetAction keyProcessor = new KeyProcessingAction(this);
     private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
     
-    private List<Widget> selectedWidgets;
+    private Set<Widget> selectedWidgets;
     
     private boolean CONTROL_PRESSED = false;
     
@@ -55,7 +55,7 @@ public class MainScene extends Scene {
     
     public MainScene() {
         setOpaque(true);
-        selectedWidgets = new ArrayList<Widget>();
+        selectedWidgets = new HashSet<Widget>();
         
         moveProvider = new ResizeParentByMoveActionProvider();
         hoverAction = ActionFactory.createHoverAction(new WidgetHoverActionProvider());
@@ -147,11 +147,11 @@ public class MainScene extends Scene {
         return scrollPane;
     }
 
-    public List<Widget> getSelectedWidgets() {
+    public Set<Widget> getSelectedWidgets() {
         return selectedWidgets;
     }
 
-    public void setSelectedWidgets(List<Widget> selectedWidgets) {
+    public void setSelectedWidgets(Set<Widget> selectedWidgets) {
         //Nastaveni borderu znazornujiciho oznaceny widget (dashed) musi byt volano v Providerovi, jinak pri opakovanem
         //oznaceni nedojde ke spravnemu nastaveni borderu (resp se mu nastavi ale tady by se mu hned zase zrusil)
         this.selectedWidgets = selectedWidgets;
@@ -162,15 +162,15 @@ public class MainScene extends Scene {
      * Clears selection and set all widgets as unselected
      * If used, then must be used before <b>setSelectedWidgets<b> method
      */
-    public List<Widget> clearSelection(){
+    public Set<Widget> clearSelection(){
         logger.trace("Cleaning selection.");
-        List<Widget> selectedList = getSelectedWidgets();
+        Set<Widget> selectedList = getSelectedWidgets();
         for(Widget w : selectedList){
             w.setBorder(BorderFactory.createEmptyBorder());
             w.getActions().removeAction( multipleMovementAction );
             logger.trace("Selection cancelled: " + w);
         }
-        selectedWidgets = new ArrayList<Widget>();
+        selectedWidgets = new HashSet<Widget>();
         return selectedWidgets;
     }
 
