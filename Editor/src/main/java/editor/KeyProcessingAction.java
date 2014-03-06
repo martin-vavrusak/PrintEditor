@@ -38,12 +38,23 @@ public class KeyProcessingAction extends WidgetAction.Adapter{
                 w.getParentWidget().removeChild(w);
             }
         }
+        
+        if(event.getKeyCode() == KeyEvent.VK_CONTROL){
+            logger.trace("Control pressed");
+            scene.setControlPressed(true);
+        }
+        
         return State.REJECTED;
     }
 
     @Override
     public State keyReleased(Widget widget, WidgetKeyEvent event) {
         logger.trace("");
+        
+        if(event.getKeyCode() == KeyEvent.VK_CONTROL){
+            logger.trace("Control released.");
+            scene.setControlPressed(false);
+        }
         return State.REJECTED;
     }
     

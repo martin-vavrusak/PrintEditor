@@ -9,7 +9,9 @@ package editor;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
@@ -48,24 +50,44 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
     
     public void performSelection(Rectangle sceneSelection) {
         logger.trace("Selection: " + sceneSelection);
-       
-       scene.clearSelection();  //"mazani" musi byt volano v teto tride jinak by
-                                //nedoslo k spravnemu nastaveni borderu v pripade
-                                //kdy je opakovane vybran ten samy widget
-       
-       List<Widget> selectedWidgets = getSelectedWidgets(sceneSelection, layerOfWidgets);
-       for(Widget w : selectedWidgets){
-                    
-            w.setBorder( selectedBorder );
-            scene.setMultiMoveAction( w, multipleMovementAction );
+        
+        Set<Widget> selectedWidgets = getSelectedWidgets(sceneSelection, layerOfWidgets);
+        
+        if(!scene.isControlPressed()){  //if CTRL is not pressed make siple selection
+            //delete previously selected widgets
+            scene.clearSelection();  //"mazani" musi byt volano v teto tride jinak by
+                                    //nedoslo k spravnemu nastaveni borderu v pripade
+                                    //kdy je opakovane vybran ten samy widget
+            
+            for(Widget w : selectedWidgets){    //edit all selected widgets to have decorated border and action
+                
+                w.setBorder( selectedBorder );
+                scene.setMultiMoveAction( w, multipleMovementAction );
+                logger.trace("Do vyberu pridan widget: " + w);
+            }
 
-            logger.trace("Do vyberu pridan widget: " + w);
-       }
-        
-        scene.setSelectedWidgets(selectedWidgets);
-//        scene.setSelectedObjects(selectedWidgetsSet);
-        
-        
+            scene.setSelectedWidgets( new ArrayList<Widget>(selectedWidgets) );
+            
+        } else {    //otherwise perform differencial selection (select unselected and unselect selected)
+            logger.trace("Performing differencial selection.");
+            List<Widget> oldSelestion = scene.getSelectedWidgets();
+            
+            for(Widget w: selectedWidgets){
+                if(oldSelestion.contains(w)){
+                    //unselect
+                    w.setBorder(BorderFactory.createEmptyBorder());
+                    w.getActions().removeAction( multipleMovementAction );
+                    oldSelestion.remove(w);
+                    
+                } else {
+                    //select & add
+                    w.setBorder(selectedBorder);
+                    scene.setMultiMoveAction(w, multipleMovementAction);
+                    oldSelestion.add(w);
+                }
+            }
+            
+        }
     }
     
     /**
@@ -74,9 +96,9 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
      * @param selectionRectangle
      * @return List list of selected widgets or empty list. Never returns null.
      */
-    private List<Widget> getSelectedWidgets(Rectangle selectionRectangle, LayerWidget selectionLayer){
+    private Set<Widget> getSelectedWidgets(Rectangle selectionRectangle, LayerWidget selectionLayer){
          
-        List<Widget> selectedWidgets = new ArrayList<Widget>();
+        Set<Widget> selectedWidgets = new HashSet<Widget>();
 
         //vyber je mozne provest:
         //      1. zleva doprava a dolu, nebo
