@@ -10,18 +10,15 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.action.HoverProvider;
 import org.netbeans.api.visual.action.RectangularSelectProvider;
 import org.netbeans.api.visual.action.WidgetAction;
-import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
-import org.netbeans.modules.visual.action.MouseHoverAction;
-import org.netbeans.modules.visual.action.SelectAction;
 
 
 /**
@@ -30,7 +27,8 @@ import org.netbeans.modules.visual.action.SelectAction;
  */
 public class WidgetRectangularSelectionProvider implements RectangularSelectProvider {
     private static final Logger logger = LogManager.getLogger(WidgetRectangularSelectionProvider.class);
-
+    public static final Border selectedBorder = BorderFactory.createDashedBorder(Color.BLACK, 3, 2, 1, true);
+    
     private static WidgetAction multipleMovementAction;       //TODO mozna presunout do MainScene a get/set -ovat to
     private MainScene scene;
     private LayerWidget layerOfWidgets;
@@ -50,68 +48,19 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
     
     public void performSelection(Rectangle sceneSelection) {
         logger.trace("Selection: " + sceneSelection);
-        
-        List<Widget> selectedWidgets = new ArrayList<Widget>();
-
-        clearSceneSelection();  //"mazani" musi byt volano v teto tride jinak by
+       
+       scene.clearSelection();  //"mazani" musi byt volano v teto tride jinak by
                                 //nedoslo k spravnemu nastaveni borderu v pripade
                                 //kdy je opakovane vybran ten samy widget
-        
-        //vyber je mozne provest:
-        //      1. zleva doprava a dolu, nebo
-        //      2. zespod doleva nahoru
-        
-        if (sceneSelection.width < 0) {
-            sceneSelection.x += sceneSelection.width;   //prevedeni zpusobu 2. na zpusob 1.
-            sceneSelection.width *= -1;
-        }
-        if (sceneSelection.height < 0) {
-            sceneSelection.y += sceneSelection.height;  //prevedeni zpusobu 2. na zpusob 1.
-            sceneSelection.height *= -1;
-        }
-        
-        logger.trace("scene position:" + scene.getBounds());
-        for( Widget w : scene.getChildren() ){
-            logger.trace("Layer position:" + w.getBounds());
-        }
-        
-        for ( Widget w : layerOfWidgets.getChildren() ){
-            logger.trace(">>>> Selection rectangle: " + sceneSelection );
-            if(w instanceof LabelWidget){
-                
-                
-                logger.trace("Widget bounds: " + w.getBounds());
-                logger.trace("Widget prefferedBounds: " + w.getPreferredBounds());
-                logger.trace("Widget location: " + w.getLocation());
-                logger.trace("Widget prefferedLocation: " + w.getPreferredLocation());
-                logger.trace("Widget prefferedSize:" + w.getPreferredSize() );
-                
-                Rectangle widgetPosition = w.getBounds();
-                //sometimes bounds of widget are not changed after moving widget
-                if( !widgetPosition.getLocation().equals( w.getPreferredLocation() ) ){
-                    widgetPosition.setLocation( w.getPreferredLocation());
-                }
-                
-                logger.trace("Test:");
-                logger.trace("Pozice widgetu: " + widgetPosition);
-                logger.trace("Pozice vyberu: " + sceneSelection + "(prepoctena do kladnych hodnot)");
-                logger.trace("sceneSelection.intersects( widgetPosition ): " + sceneSelection.intersects( widgetPosition ) );
-                logger.trace( " widgetPosition.intersects(sceneSelection): " + widgetPosition.intersects( sceneSelection ) );
-                logger.trace("converted Bounds: " + scene.convertLocalToScene(widgetPosition) );
+       
+       List<Widget> selectedWidgets = getSelectedWidgets(sceneSelection, layerOfWidgets);
+       for(Widget w : selectedWidgets){
+                    
+            w.setBorder( selectedBorder );
+            scene.setMultiMoveAction( w, multipleMovementAction );
 
-                if( sceneSelection.intersects( widgetPosition ) ){
-                    w.setBorder(BorderFactory.createDashedBorder(Color.BLACK, 1, 1));
-                    selectedWidgets.add(w);
-                    
-                    scene.setMultiMoveAction(w, multipleMovementAction);
-                    
-                    logger.trace("Do vyberu pridan widget: " + w);
-                }
-                
-            } else {
-                logger.error("This is not a LayerWidget:" + w);
-            }
-        }
+            logger.trace("Do vyberu pridan widget: " + w);
+       }
         
         scene.setSelectedWidgets(selectedWidgets);
 //        scene.setSelectedObjects(selectedWidgetsSet);
@@ -119,60 +68,69 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
         
     }
     
-//    private void setMultiMoveAction(Widget widget, WidgetAction action){
-//        List<WidgetAction> actions = widget.getActions().getActions();
-//        if(actions.size() >= 2){
-//            WidgetAction firstAction = actions.get(0);
-//            WidgetAction secondAction = actions.get(1);
-//            if( (firstAction instanceof SelectAction || firstAction instanceof MouseHoverAction) ||
-//                (secondAction instanceof SelectAction || secondAction instanceof MouseHoverAction)  ){
-//                
-//                if(actions.size() > 2){
-//                    widget.getActions().addAction(2, action);
-//                    return;
-//                } else {
-//                    widget.getActions().addAction(action);
-//                    return;
-//                }
-//            }
-//        }
-//        
-//        
-//        if(actions.size() >= 1) {
-//            WidgetAction widgetAction = actions.get(0);
-//            if( widgetAction instanceof SelectAction || widgetAction instanceof MouseHoverAction ) {
-//                if(actions.size() > 1){
-//                    widget.getActions().addAction(1, action);
-//                    return;
-//                } else {
-//                    widget.getActions().addAction(action);
-//                    return;
-//                }
-//            }
-//        }
-//        
-////        if( actions.size() > 1 && actions.get(0) instanceof SelectAction ){ //jestlize widget ma vice nez 1 akci a prvni je SelectAction
-////            widget.getActions().addAction(1, action);    //vloz movement hned za select
-////
-////        } else if ( actions.size() == 1 && actions.get(0) instanceof SelectAction ){
-////            widget.getActions().addAction(action);
-////        } else {
-////            widget.getActions().addAction(0, action);
-////        }
-//    }
-    
-    private void clearSceneSelection(){
-        List<Widget> oldWidgetSelection = scene.getSelectedWidgets();
-        if(oldWidgetSelection != null && oldWidgetSelection.size() > 0){
-            for(Widget w : scene.getSelectedWidgets()){
-                //reset border
-                w.setBorder(BorderFactory.createEmptyBorder());
-                
-                //Cancel multiple moving provider
-                w.getActions().removeAction( multipleMovementAction );
-                logger.trace("Selection cancelled: " + w);
-            }
+    /**
+     * Check all widgets on the layer whether are contained in selection
+     * 
+     * @param selectionRectangle
+     * @return List list of selected widgets or empty list. Never returns null.
+     */
+    private List<Widget> getSelectedWidgets(Rectangle selectionRectangle, LayerWidget selectionLayer){
+         
+        List<Widget> selectedWidgets = new ArrayList<Widget>();
+
+        //vyber je mozne provest:
+        //      1. zleva doprava a dolu, nebo
+        //      2. zespod doleva nahoru
+        
+        if (selectionRectangle.width < 0) {
+            selectionRectangle.x += selectionRectangle.width;   //prevedeni zpusobu 2. na zpusob 1.
+            selectionRectangle.width *= -1;
+        }
+        if (selectionRectangle.height < 0) {
+            selectionRectangle.y += selectionRectangle.height;  //prevedeni zpusobu 2. na zpusob 1.
+            selectionRectangle.height *= -1;
         }
         
+        
+        logger.trace("scene position:" + scene.getBounds());
+        for( Widget w : scene.getChildren() ){
+            logger.trace("Layer position:" + w.getBounds());
+        }
+        
+        for ( Widget w : selectionLayer.getChildren() ){
+            logger.trace(">>>> Selection rectangle: " + selectionRectangle );
+            
+            if(w instanceof LabelWidget){
+                                
+                        logger.trace("Widget bounds: " + w.getBounds());
+                        logger.trace("Widget prefferedBounds: " + w.getPreferredBounds());
+                        logger.trace("Widget location: " + w.getLocation());
+                        logger.trace("Widget prefferedLocation: " + w.getPreferredLocation());
+                        logger.trace("Widget prefferedSize:" + w.getPreferredSize() );
+                
+                Rectangle widgetPosition = w.getBounds();
+                //sometimes bounds of widget are not changed after moving widget
+                if( !widgetPosition.getLocation().equals( w.getPreferredLocation() ) ){
+                    widgetPosition.setLocation( w.getPreferredLocation());
+                }
+                
+                        logger.trace("Test:");
+                        logger.trace("Pozice widgetu: " + widgetPosition);
+                        logger.trace("Pozice vyberu: " + selectionRectangle + "(prepoctena do kladnych hodnot)");
+                        logger.trace("sceneSelection.intersects( widgetPosition ): " + selectionRectangle.intersects( widgetPosition ) );
+                        logger.trace( " widgetPosition.intersects(sceneSelection): " + widgetPosition.intersects( selectionRectangle ) );
+                        logger.trace("converted Bounds: " + scene.convertLocalToScene(widgetPosition) );
+
+                if( selectionRectangle.intersects( widgetPosition ) ){
+                    
+                    selectedWidgets.add(w);    
+                    logger.trace("Do vyberu pridan widget: " + w);
+                }
+                
+            } else {
+                logger.error("This is not a LayerWidget:" + w);
+            }
+        }
+        return selectedWidgets;
     }
 }
