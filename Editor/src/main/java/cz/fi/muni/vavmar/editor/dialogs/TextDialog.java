@@ -6,20 +6,17 @@
 
 package cz.fi.muni.vavmar.editor.dialogs;
 
+import editor.MainScene;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
-import java.util.List;
-import javax.swing.DebugGraphics;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -39,10 +36,18 @@ import org.netbeans.api.visual.widget.Widget;
 public class TextDialog extends JDialog {
     private static final Logger logger = LogManager.getLogger(TextDialog.class);
     private Widget ownerWidget; // widget which properities should be affected by this dialog
-    
-    public TextDialog(Widget widget) {
+    private boolean isMultipleSelection;
+    /**
+     * 
+     * @param widget Widget whose text parameters souhould be changed
+     * @param isMultiple determine if changes should be aplied only on this
+     * widget or to all widgets selected in the scene
+     */
+    public TextDialog(Widget widget, boolean isMultiple) {
         super();
         ownerWidget = widget;
+        isMultipleSelection = isMultiple;
+        
         setLayout(new BorderLayout());
         add(new TextDialogPanel());
         setModal(true);
@@ -74,6 +79,8 @@ private class TextDialogPanel extends javax.swing.JPanel {
     private final Logger logger = LogManager.getLogger(TextDialogPanel.class);
     private GraphicsEnvironment graphicEnvironment;
     private Font oldWidgetFont;
+    private Map<Widget, Font> selectionOldFonts = new HashMap<Widget, Font>();
+    private Set<Widget> selectedWidgets = ((MainScene) ownerWidget.getScene()).getSelectedWidgets();
     
     public TextDialogPanel() {
 //        this.parent = parent;
@@ -93,6 +100,11 @@ private class TextDialogPanel extends javax.swing.JPanel {
         
         //Save old font to be able to cancel changes
         oldWidgetFont = ownerWidget.getFont();
+        if (isMultipleSelection) {
+            for(Widget w : selectedWidgets){
+                selectionOldFonts.put(w, w.getFont());
+            }
+        }
         
         //Set actual font of widget to preview window and all items
         setFromWidget();
@@ -157,17 +169,30 @@ private class TextDialogPanel extends javax.swing.JPanel {
         return f.deriveFont(fontStyle);
     }
     
-    private void setPrefferedSizeAdjusted(Widget w){
-        String labelText = ((LabelWidget) w).getLabel();
-        Font setFont = w.getFont();
-        FontRenderContext frc = new FontRenderContext( setFont.getTransform(), true, true );
-        
-        Rectangle2D textBounds = setFont.getStringBounds(labelText, frc);
-        logger.trace("Measured:" + textBounds);
-        
-        w.setPreferredBounds(textBounds.getBounds());
-        logger.trace("Measured string width:" + textBounds.getBounds());
+    private void revertChanges(){
+        for(Widget w : selectedWidgets){
+            w.setFont( selectionOldFonts.get(w) );
+        }
     }
+    
+    private void setToSelection(Font f){
+        for(Widget w : selectedWidgets){
+            w.setFont( f );
+        }
+    }
+    //Pokus o vyreseni orezu etxtu kdyz je nastaven Italic
+//    private void setPrefferedSizeAdjusted(Widget w){
+//        String labelText = ((LabelWidget) w).getLabel();
+//        Font setFont = w.getFont();
+//        FontRenderContext frc = new FontRenderContext( setFont.getTransform(), true, true );
+//        
+//        Rectangle2D textBounds = setFont.getStringBounds(labelText, frc);
+//        logger.trace("Measured:" + textBounds);
+//        
+//        w.setPreferredBounds(textBounds.getBounds());
+//        logger.trace("Measured string width:" + textBounds.getBounds());
+//    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -351,12 +376,13 @@ private class TextDialogPanel extends javax.swing.JPanel {
 
         if(applyDirectlyCeckBox.getSelectedObjects() != null ) {
             ownerWidget.setFont(oldWidgetFont);     //when we apply changes directly we need to undo all changes
+            revertChanges();
         }
+        
         TextDialog.this.dispose();  //Close this dialog by calling outerns class method
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void fontSelectionListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontSelectionListMouseClicked
-        //TODO TODO TODO TODO - Set font from widget
 
         //nastaveni pisma previewBoxu
         JList list = (JList) evt.getComponent();
@@ -386,6 +412,7 @@ private class TextDialogPanel extends javax.swing.JPanel {
         previewTextField.setFont(f);
         if(applyDirectlyCeckBox.getSelectedObjects() != null){
             ownerWidget.setFont(f);
+            setToSelection(f);
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontSelectionListMouseClicked
@@ -395,48 +422,59 @@ private class TextDialogPanel extends javax.swing.JPanel {
         String value = (String) evt.getItem();
         
         Font oldFont = previewTextField.getFont();
-        previewTextField.setFont(oldFont.deriveFont(Float.parseFloat(value)));
+        Font newFont = oldFont.deriveFont(Float.parseFloat(value));
+        previewTextField.setFont( newFont );
         
         if(applyDirectlyCeckBox.getSelectedObjects() != null){
-            ownerWidget.setFont(previewTextField.getFont());
+            
+            ownerWidget.setFont(newFont);
+            setToSelection(newFont);
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontSizeComboBoxItemStateChanged
 
     private void fontBoldCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fontBoldCheckBoxItemStateChanged
+        
+        Font newFont;
         if( evt.getStateChange() == ItemEvent.SELECTED ){
-            Font newFont = setBold(previewTextField.getFont(), true);
+            newFont = setBold(previewTextField.getFont(), true);
             previewTextField.setFont(newFont);
             
         } else if ( evt.getStateChange() == ItemEvent.DESELECTED ){
-            Font newFont = setBold(previewTextField.getFont(), false);
+            newFont = setBold(previewTextField.getFont(), false);
             previewTextField.setFont(newFont);
             
         } else {
+            newFont = previewTextField.getFont();
             logger.warn("Something really weird happend when checkbox setting bold properties of text has been changed!!!");
         }
         
        if(applyDirectlyCeckBox.getSelectedObjects() != null){
-            ownerWidget.setFont(previewTextField.getFont());
+            ownerWidget.setFont(newFont);
+            setToSelection(newFont);
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontBoldCheckBoxItemStateChanged
 
     private void fontItalicCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fontItalicCheckBoxItemStateChanged
-         if( evt.getStateChange() == ItemEvent.SELECTED ){
-            Font newFont = setItalic(previewTextField.getFont(), true);
+         
+        Font newFont;
+        if( evt.getStateChange() == ItemEvent.SELECTED ){
+            newFont = setItalic(previewTextField.getFont(), true);
             previewTextField.setFont(newFont);
             
         } else if ( evt.getStateChange() == ItemEvent.DESELECTED ){
-            Font newFont = setItalic(previewTextField.getFont(), false);
+            newFont = setItalic(previewTextField.getFont(), false);
             previewTextField.setFont(newFont);
             
         } else {
+            newFont = previewTextField.getFont();
             logger.warn("Something really weird happend when checkbox setting bold properties of text has been changed!!!");
         }
          
         if(applyDirectlyCeckBox.getSelectedObjects() != null){
-            ownerWidget.setFont(previewTextField.getFont());
+            ownerWidget.setFont(newFont);
+            setToSelection(newFont);
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontItalicCheckBoxItemStateChanged
@@ -445,11 +483,13 @@ private class TextDialogPanel extends javax.swing.JPanel {
         
         if( evt.getStateChange() == ItemEvent.SELECTED ){
             ownerWidget.setFont( previewTextField.getFont() );
+            setToSelection(previewTextField.getFont());
             ownerWidget.revalidate();
             ownerWidget.getScene().validate();
             
         } else if ( evt.getStateChange() == ItemEvent.DESELECTED ){
             ownerWidget.setFont(oldWidgetFont);
+            revertChanges();
             ownerWidget.revalidate();
             ownerWidget.getScene().validate();
             
@@ -464,6 +504,7 @@ private class TextDialogPanel extends javax.swing.JPanel {
         
         ownerWidget.setFont( previewTextField.getFont() );      //Ordering is important!!!!
 //        setPrefferedSizeAdjusted(ownerWidget);                  //Adjust bounds to new text
+        setToSelection( previewTextField.getFont() );
         
         logger.trace("After font set: Bounds: " + ownerWidget.getBounds() + " Preffered bounds: " + ownerWidget.getPreferredBounds());
 //        DebugGraphics dg = new DebugGraphics();

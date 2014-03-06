@@ -7,9 +7,11 @@
 package cz.fi.muni.vavmar.editor.tools;
 
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
+import editor.MainScene;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
@@ -63,9 +65,9 @@ public class TextTool extends AbstractTool {
      * Shows dialog for fillin parameters of text and set all parameters to widget
      * @param widget - widget which parameters should be changed
      */
-    protected void showEditDialog(Widget widget){
+    protected void showEditDialog(Widget widget, boolean multipleEdit){
         logger.trace("Zobrazuji dialogove okno!");
-        JDialog dialog = new TextDialog(widget);
+        JDialog dialog = new TextDialog(widget, multipleEdit);
         dialog.setVisible(true);
 //        TextDialogPanel panel = new TextDialogPanel();
 //        panel.setVisible(true);
@@ -80,7 +82,7 @@ public class TextTool extends AbstractTool {
         
         public void edit(Widget widget) {
             logger.trace("Edit firing");
-            showEditDialog(widget);
+            showEditDialog(widget, false);
         }
         
     }
@@ -94,31 +96,56 @@ public class TextTool extends AbstractTool {
         private final Logger logger = LogManager.getLogger(TextPopupMenuProvider.class);
 
         private final JPopupMenu menu;
-        private final String PROPERTIES = "Properties";
+        private final String TEXT_PROPERTIES_COMMAND = "TEXT_PROPERTIES";   //NOI18N
+        private final String TEXT_PROPERTIES_LABEL = "Properties";
+        private final String CHANGE_TEXT_COMMAND = "CHANGE_TEXT";   //NOI18N
+        private final String CHANGE_TEXT_LABEL = "Change text";
         private Widget ownerWidget;
         
         public TextPopupMenuProvider() {
             menu = new JPopupMenu("Menu");
             JMenuItem menuItem;
             
-            menuItem = new JMenuItem(PROPERTIES);
-            menuItem.setActionCommand(PROPERTIES);
+            menuItem = new JMenuItem(TEXT_PROPERTIES_LABEL);
+            menuItem.setActionCommand(TEXT_PROPERTIES_COMMAND);
+            menuItem.addActionListener(this);
+            menu.add(menuItem);
+            
+            menuItem = new JMenuItem(CHANGE_TEXT_LABEL);
+            menuItem.setActionCommand(CHANGE_TEXT_COMMAND);
             menuItem.addActionListener(this);
             menu.add(menuItem);
         }
         
         
         public JPopupMenu getPopupMenu(Widget widget, Point localLocation) {
-            logger.trace("Owner Widget:" + widget);
+            logger.trace("Owner Widget: " + widget + " at: " + localLocation);
             ownerWidget = widget;           //Nastavi widget na kterem bylo vyvolano menu pro dalsi zpracovani v "actionPerformed()"
             return menu;
         }
 
         public void actionPerformed(ActionEvent e) {
             logger.trace("");
-            if ( PROPERTIES.equals(e.getActionCommand()) ){
+            if ( TEXT_PROPERTIES_COMMAND.equals(e.getActionCommand()) ){
                 logger.trace("Zobrazit menu!");
-                showEditDialog(ownerWidget);        //deleguje zobrazeni dialogoveho okna a nastaveni hodnot na metodu materske tridy
+                logger.trace("ownerWidget.getScene(): " + ownerWidget.getScene());
+                //test na multiple
+                ownerWidget.getScene();
+                
+                Set<Widget> selectedWidgets = ((MainScene) ownerWidget.getScene()).getSelectedWidgets();
+                
+                //when there is more than one widget selected and action is performed at one of them
+                if(selectedWidgets.size() > 1 && selectedWidgets.contains(ownerWidget)){
+                    //multiple selection edit
+                    showEditDialog(ownerWidget, true);
+                } else {
+                    showEditDialog(ownerWidget, false); //deleguje zobrazeni dialogoveho okna a nastaveni hodnot na metodu materske tridy
+                }
+                
+                        
+                
+            } else if ( CHANGE_TEXT_COMMAND.equals(e.getActionCommand()) ){
+                logger.trace("Nastavit text!!");
             }
         }
         
