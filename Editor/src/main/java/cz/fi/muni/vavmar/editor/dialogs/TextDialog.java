@@ -376,7 +376,9 @@ private class TextDialogPanel extends javax.swing.JPanel {
 
         if(applyDirectlyCeckBox.getSelectedObjects() != null ) {
             ownerWidget.setFont(oldWidgetFont);     //when we apply changes directly we need to undo all changes
-            revertChanges();
+            if(isMultipleSelection){
+                revertChanges();
+            }
         }
         
         TextDialog.this.dispose();  //Close this dialog by calling outerns class method
@@ -412,7 +414,8 @@ private class TextDialogPanel extends javax.swing.JPanel {
         previewTextField.setFont(f);
         if(applyDirectlyCeckBox.getSelectedObjects() != null){
             ownerWidget.setFont(f);
-            setToSelection(f);
+            if(isMultipleSelection) { setToSelection(f); }
+            
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontSelectionListMouseClicked
@@ -428,7 +431,8 @@ private class TextDialogPanel extends javax.swing.JPanel {
         if(applyDirectlyCeckBox.getSelectedObjects() != null){
             
             ownerWidget.setFont(newFont);
-            setToSelection(newFont);
+            if(isMultipleSelection) { setToSelection(newFont); }
+            
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontSizeComboBoxItemStateChanged
@@ -451,7 +455,8 @@ private class TextDialogPanel extends javax.swing.JPanel {
         
        if(applyDirectlyCeckBox.getSelectedObjects() != null){
             ownerWidget.setFont(newFont);
-            setToSelection(newFont);
+            if(isMultipleSelection) { setToSelection(newFont); }
+            
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontBoldCheckBoxItemStateChanged
@@ -474,7 +479,8 @@ private class TextDialogPanel extends javax.swing.JPanel {
          
         if(applyDirectlyCeckBox.getSelectedObjects() != null){
             ownerWidget.setFont(newFont);
-            setToSelection(newFont);
+            if(isMultipleSelection) { setToSelection(newFont); }
+            
             ownerWidget.getScene().validate();
         }
     }//GEN-LAST:event_fontItalicCheckBoxItemStateChanged
@@ -483,13 +489,15 @@ private class TextDialogPanel extends javax.swing.JPanel {
         
         if( evt.getStateChange() == ItemEvent.SELECTED ){
             ownerWidget.setFont( previewTextField.getFont() );
-            setToSelection(previewTextField.getFont());
+            if(isMultipleSelection) { setToSelection(previewTextField.getFont()); } 
+            
             ownerWidget.revalidate();
             ownerWidget.getScene().validate();
             
         } else if ( evt.getStateChange() == ItemEvent.DESELECTED ){
             ownerWidget.setFont(oldWidgetFont);
-            revertChanges();
+            if(isMultipleSelection) { revertChanges(); }
+            
             ownerWidget.revalidate();
             ownerWidget.getScene().validate();
             
@@ -501,10 +509,10 @@ private class TextDialogPanel extends javax.swing.JPanel {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         logger.trace("Ok button action performed");
 //        logger.trace("Bounds: " + ownerWidget.getBounds() + " Preffered bounds: " + ownerWidget.getPreferredBounds());
-        
-        ownerWidget.setFont( previewTextField.getFont() );      //Ordering is important!!!!
+        Font f = previewTextField.getFont();
+        ownerWidget.setFont( f );      //Ordering is important!!!!
 //        setPrefferedSizeAdjusted(ownerWidget);                  //Adjust bounds to new text
-        setToSelection( previewTextField.getFont() );
+        if(isMultipleSelection) { setToSelection( f ); }
         
         logger.trace("After font set: Bounds: " + ownerWidget.getBounds() + " Preffered bounds: " + ownerWidget.getPreferredBounds());
 //        DebugGraphics dg = new DebugGraphics();
