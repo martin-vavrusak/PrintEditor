@@ -6,16 +6,14 @@
 
 package editor;
 
-import editor.utils.Utils;
-import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.ResizeProvider;
 import org.netbeans.api.visual.action.ResizeStrategy;
+import org.netbeans.api.visual.border.Border;
 import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.Widget;
 
@@ -27,6 +25,7 @@ public class ImageResizeStrategy implements ResizeStrategy {
     private static final Logger logger = LogManager.getLogger(ImageResizeStrategy.class);
     private Rectangle startedRectangle;
     MyResizeProvider provider;
+    Point initialWidgetPosition;
 
     Image originalImage;
     
@@ -39,6 +38,7 @@ public class ImageResizeStrategy implements ResizeStrategy {
         
         logger.trace("original bounds: " + originalBounds);
         logger.trace("suggested bounds: " + suggestedBounds);
+        logger.trace("Widget location: " + widget.getPreferredLocation());
         ImageWidget iw = ((ImageWidget) widget);
 //        BufferedImage bi = (BufferedImage) iw.getImage();
 //        
@@ -65,10 +65,21 @@ public class ImageResizeStrategy implements ResizeStrategy {
 //        iw.repaint();
         
         int borderThickness = widget.getBorder().getInsets().right;
-        logger.trace("Border thickness: " + borderThickness);
+        logger.trace("Border thickness: " + borderThickness + "ControlPoint: " + controlPoint);
         Image newImage = originalImage.getScaledInstance(suggestedBounds.width - (2*borderThickness), suggestedBounds.height - (2*borderThickness), Image.SCALE_SMOOTH);
         iw.setImage(newImage);
-        return suggestedBounds;
+        
+        int dx = originalBounds.x - suggestedBounds.x;
+        int dy = originalBounds.y - suggestedBounds.y;
+        Point p = iw.getPreferredLocation();
+        
+        logger.trace("dx: " + dx + " dy: " + dy + " suggestedBounds.width: " + suggestedBounds.width + " suggestedBounds.height: " + suggestedBounds.height);
+        logger.trace("PrefferedLocation: " + p);
+
+        iw.setPreferredBounds(new Rectangle(-borderThickness, -borderThickness, suggestedBounds.width, suggestedBounds.height));
+//        iw.setPreferredLocation(new Point( initialWidgetPosition.x - dx, initialWidgetPosition.y - dy));
+        
+        return iw.getPreferredBounds();
     }
 
     public ResizeProvider getProvider(){
@@ -80,6 +91,7 @@ public class ImageResizeStrategy implements ResizeStrategy {
             startedRectangle = widget.getBounds();
             logger.trace("startedRectangle: " + startedRectangle);
             originalImage = ((ImageWidget) widget).getImage();
+            initialWidgetPosition = widget.getPreferredLocation();
         }
 
         public void resizingFinished(Widget widget) {
