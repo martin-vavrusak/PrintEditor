@@ -6,8 +6,12 @@
 
 package editor.utils;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.AbstractListModel;
@@ -100,7 +104,7 @@ public class Utils {
      */
     public static Image darkerImage (Image img){
 //        Graphics imageGraphic = img.getGraphics();
-        BufferedImage bi = (BufferedImage) img;
+        BufferedImage bi = createBufferedImage(img);
         
         
         int height = bi.getHeight();
@@ -121,7 +125,7 @@ public class Utils {
     
     public static Image brighterImage (Image img){
 //        Graphics imageGraphic = img.getGraphics();
-        BufferedImage bi = (BufferedImage) img;
+        BufferedImage bi = createBufferedImage(img);
         
         
         int height = bi.getHeight();
@@ -140,6 +144,66 @@ public class Utils {
         return bi;
     }
     
+    
+    public static BufferedImage resizeImageWithHint(BufferedImage originalImage, int newWidth, int newHight, int type){
+ 
+	BufferedImage resizedImage = new BufferedImage(newWidth, newHight, type);
+	Graphics2D g = resizedImage.createGraphics();
+	g.drawImage(originalImage, 0, 0, newWidth, newHight, null);
+	g.dispose();	
+	g.setComposite(AlphaComposite.Src);
+ 
+	g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+	RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	g.setRenderingHint(RenderingHints.KEY_RENDERING,
+	RenderingHints.VALUE_RENDER_QUALITY);
+	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+	RenderingHints.VALUE_ANTIALIAS_ON);
+ 
+        
+	return resizedImage;
+    }
+    
+    /**
+ * scale image
+ * 
+ * @param sbi image to scale
+ * @param imageType type of image
+ * @param dWidth width of destination image
+ * @param dHeight height of destination image
+ * @param fWidth x-factor for transformation / scaling
+ * @param fHeight y-factor for transformation / scaling
+ * @return scaled image
+ */
+public static BufferedImage scale(BufferedImage sbi, int imageType, int dWidth, int dHeight, double fWidth, double fHeight) {
+    BufferedImage dbi = null;
+    if(sbi != null) {
+        dbi = new BufferedImage(dWidth, dHeight, imageType);
+        Graphics2D g = dbi.createGraphics();
+        AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
+        g.drawRenderedImage(sbi, at);
+    }
+    return dbi;
+}
+
+public static BufferedImage createBufferedImage(Image img){
+     if (img instanceof BufferedImage)
+    {
+        return (BufferedImage) img;
+    }
+
+    // Create a buffered image with transparency
+    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+    // Draw the image on to the buffered image
+    Graphics2D bGr = bimage.createGraphics();
+    bGr.drawImage(img, 0, 0, null);
+    bGr.dispose();
+
+    // Return the buffered image
+    return bimage;
+}
+
 //    private static int getRGBA (int r, int g, int b, int a){
 //        return (a << 24) | (r << 16) | (g << 8) | b;
 //    }

@@ -23,6 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.ResizeProvider;
+import org.netbeans.api.visual.action.ResizeStrategy;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
@@ -46,6 +48,8 @@ public class MainScene extends Scene {
     private WidgetAction multipleMovementAction;
     private WidgetAction keyProcessor = new KeyProcessingAction(this);
     private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
+    private ImageResizeStrategy resizeStrategyProvider = new ImageResizeStrategy();
+    private WidgetAction imageResizeAction = ActionFactory.createResizeAction(resizeStrategyProvider, resizeStrategyProvider.getProvider());
     
     private Set<Widget> selectedWidgets;
     
@@ -127,6 +131,10 @@ public class MainScene extends Scene {
         return multipleMovementAction;
     }
 
+    public WidgetAction getImageResizeAction(){
+        return imageResizeAction;
+    }
+    
     public void addWidget(Widget widget){
         logger.trace("Pridavam widget do sceny:" + widget);
         widget.getActions().addAction( singleSelectActino );
@@ -168,6 +176,7 @@ public class MainScene extends Scene {
         for(Widget w : selectedList){
             w.setBorder(BorderFactory.createEmptyBorder());
             w.getActions().removeAction( multipleMovementAction );
+            w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
             logger.trace("Selection cancelled: " + w);
         }
         selectedWidgets = new HashSet<Widget>();

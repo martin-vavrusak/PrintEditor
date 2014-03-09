@@ -58,7 +58,7 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
             if(widget instanceof ImageWidget){
 //                widget.getActions().getActions().clear();
                 widget.setBorder(org.netbeans.api.visual.border.BorderFactory.createResizeBorder(7));
-                widget.getActions().addAction(0, ActionFactory.createResizeAction());
+                widget.getActions().addAction(0, scene.getImageResizeAction());
             }
         } else {
             if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement
