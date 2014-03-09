@@ -51,7 +51,7 @@ public class TextDialog extends JDialog {
         setLayout(new BorderLayout());
         add(new TextDialogPanel());
         setModal(true);
-        
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 //        setBounds(new Rectangle(400, 325));     //TODO Smazat!!! Nechat vypocitat dynamicky
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(screenSize.width / 2, screenSize.height / 2, 450, 325);
@@ -83,6 +83,14 @@ private class TextDialogPanel extends javax.swing.JPanel {
     private Set<Widget> selectedWidgets = ((MainScene) ownerWidget.getScene()).getSelectedWidgets();
     
     public TextDialogPanel() {
+        logger.trace("New Instance created.");
+        oldWidgetFont = ownerWidget.getFont();
+        if (isMultipleSelection) {
+            for(Widget w : selectedWidgets){
+                selectionOldFonts.put(w, w.getFont());
+            }
+        }
+        
 //        this.parent = parent;
         initComponents();        
         
@@ -99,15 +107,11 @@ private class TextDialogPanel extends javax.swing.JPanel {
         fontSelectionList.setModel(model);
         
         //Save old font to be able to cancel changes
-        oldWidgetFont = ownerWidget.getFont();
-        if (isMultipleSelection) {
-            for(Widget w : selectedWidgets){
-                selectionOldFonts.put(w, w.getFont());
-            }
-        }
+        
         
         //Set actual font of widget to preview window and all items
         setFromWidget();
+        previewPanel.setFont(oldWidgetFont);
     }
 
     private void setFromWidget(){
@@ -288,7 +292,8 @@ private class TextDialogPanel extends javax.swing.JPanel {
         previewPanel.setMaximumSize(new java.awt.Dimension(130, 46));
         previewPanel.setLayout(new javax.swing.BoxLayout(previewPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        previewTextField.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        previewTextField.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        previewTextField.setFont(oldWidgetFont);
         previewTextField.setText(org.openide.util.NbBundle.getMessage(TextDialog.class, "TextDialog.previewTextField.text")); // NOI18N
         previewTextField.setBorder(null);
         previewTextField.setHorizontalAlignment (JTextField.CENTER);
