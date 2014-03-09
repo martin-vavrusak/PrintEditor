@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import org.apache.logging.log4j.LogManager;
+import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
@@ -90,6 +92,9 @@ public class ImageTool extends AbstractTool {
                 }
                 iw.setImage(bi);
                 iw.setOpaque(true);
+                
+//                iw.setBorder(BorderFactory.createResizeBorder(7));
+//                iw.getActions().addAction(ActionFactory.createResizeAction());
             } else {
                 logger.warn("extension missing or not recognized: " + filePath);
             }

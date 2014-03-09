@@ -7,7 +7,6 @@
 package editor;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -15,7 +14,9 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
+import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
@@ -34,7 +35,7 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
     
     @Override
     public State mouseClicked(Widget widget, WidgetMouseEvent event) {
-        Border selectedBorder = BorderFactory.createDashedBorder(Color.ORANGE, 3, 2, 1, false);
+        Border selectedBorder = BorderFactory.createDashedBorder(Color.ORANGE, 6, 2, 1, false);
         logger.trace("Selected widget: " + widget);
         logger.trace("At: " + event.getPoint() + "CTRL pressed selection: " + event.isControlDown());
 
@@ -54,6 +55,11 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
             
             scene.setSelectedWidgets(selectedWidgets);
             
+            if(widget instanceof ImageWidget){
+//                widget.getActions().getActions().clear();
+                widget.setBorder(org.netbeans.api.visual.border.BorderFactory.createResizeBorder(7));
+                widget.getActions().addAction(0, ActionFactory.createResizeAction());
+            }
         } else {
             if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement
                                                     //set or just one widget with multimovement action set
