@@ -122,7 +122,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
         for ( Widget w : selectionLayer.getChildren() ){
             logger.trace(">>>> Selection rectangle: " + selectionRectangle );
             
-            if(w instanceof LabelWidget){
+//            if(w instanceof LabelWidget){
                                 
                         logger.trace("Widget bounds: " + w.getBounds());
                         logger.trace("Widget prefferedBounds: " + w.getPreferredBounds());
@@ -149,9 +149,9 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                     logger.trace("Do vyberu pridan widget: " + w);
                 }
                 
-            } else {
-                logger.error("This is not a LayerWidget:" + w);
-            }
+//            } else {
+//                logger.error("This is not a LayerWidget:" + w);
+//            }
         }
         return selectedWidgets;
     }

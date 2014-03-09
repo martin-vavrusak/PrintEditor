@@ -46,6 +46,7 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
         
         if(!event.isControlDown()) {  //without CRTL we want only select this widget (single selection)
             logger.trace("Invertion is not set performing single selection.");
+            logger.trace("Widget bounds: " + widget.getBounds());
             selectedWidgets = scene.clearSelection();
             widget.setBorder( selectedBorder );
             //set Resize Action pro obrazek!!!
