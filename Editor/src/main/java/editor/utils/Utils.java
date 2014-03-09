@@ -6,10 +6,15 @@
 
 package editor.utils;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.Widget;
 import org.netbeans.modules.visual.action.MouseHoverAction;
@@ -20,6 +25,7 @@ import org.netbeans.modules.visual.action.SelectAction;
  * @author Martin
  */
 public class Utils {
+    public static final Logger logger = LogManager.getLogger(Utils.class);
     
     public static void setMultiMoveAction(Widget widget, WidgetAction action){
                List<WidgetAction> actions = widget.getActions().getActions();
@@ -85,4 +91,63 @@ public class Utils {
             }
         };
     }
+    
+    
+    /**
+     * Make image darker
+     * @param img
+     * @return 
+     */
+    public static Image darkerImage (Image img){
+//        Graphics imageGraphic = img.getGraphics();
+        BufferedImage bi = (BufferedImage) img;
+        
+        
+        int height = bi.getHeight();
+        int width = bi.getWidth();
+        logger.trace("Image height: " + height + " width: " + width);
+        
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                int rgb = bi.getRGB(j, i);
+                Color color = new Color( rgb );
+                
+                bi.setRGB( j, i, color.darker().getRGB() );
+            }
+        }
+        
+        return bi;
+    }
+    
+    public static Image brighterImage (Image img){
+//        Graphics imageGraphic = img.getGraphics();
+        BufferedImage bi = (BufferedImage) img;
+        
+        
+        int height = bi.getHeight();
+        int width = bi.getWidth();
+        logger.trace("Image height: " + height + " width: " + width);
+        
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                int rgb = bi.getRGB(j, i);
+                Color color = new Color( rgb );
+                
+                bi.setRGB( j, i, color.brighter().getRGB());
+            }
+        }
+        
+        return bi;
+    }
+    
+//    private static int getRGBA (int r, int g, int b, int a){
+//        return (a << 24) | (r << 16) | (g << 8) | b;
+//    }
+//    
+//    private static int[] getRGBA (int compoundColor){
+//        int[] rGBA = new int[4];
+//        
+//        return rGBA;
+//    }
+//    }
 }

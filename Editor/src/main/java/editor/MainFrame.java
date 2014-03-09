@@ -6,6 +6,7 @@
 
 package editor;
 
+import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import editor.utils.Utils;
 import java.awt.Rectangle;
@@ -113,6 +114,7 @@ public class MainFrame extends javax.swing.JFrame {
         toolPanel.add(jButton1);
 
         toolPanel.add (new TextTool("Text", "images/textTool.png"));
+        toolPanel.add (new ImageTool("Image", "images/imageIcon.png"));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

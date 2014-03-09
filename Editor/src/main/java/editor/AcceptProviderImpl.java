@@ -90,6 +90,9 @@ public class AcceptProviderImpl implements AcceptProvider {
                     logger.trace("Vytvarim widget nastroje: " + o);
                     
                     Widget wg = ((AbstractTool) o).createWidget(scene);
+                    
+                    if(wg == null) return;
+                    
                     wg.setPreferredLocation(point);
                     scene.addWidget( wg );    //Vytvorime widget
                     return;

@@ -169,7 +169,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="toolPanel.add (new TextTool(&quot;Text&quot;, &quot;images/textTool.png&quot;));"/>
+            <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="toolPanel.add (new TextTool(&quot;Text&quot;, &quot;images/textTool.png&quot;));&#xa;toolPanel.add (new ImageTool(&quot;Image&quot;, &quot;images/imageIcon.png&quot;));"/>
           </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>

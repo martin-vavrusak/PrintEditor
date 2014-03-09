@@ -6,10 +6,13 @@
 
 package editor;
 
+import editor.utils.Utils;
 import java.awt.Color;
+import java.awt.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.TwoStateHoverProvider;
+import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Widget;
 
@@ -24,17 +27,49 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
         //Copied from VisualLibrary Demo "ActionDemo"
         public void unsetHovering(Widget widget) {
             if (widget != null) {
-                logger.trace( ((LabelWidget) widget).getLabel() );
-                widget.setBackground (Color.WHITE);
-                widget.setForeground (Color.BLACK);
+                if(widget instanceof ImageWidget){
+                    ImageWidget iw = (ImageWidget) widget;
+                    Image image = iw.getImage();
+                    
+                    Image darkerImage = Utils.brighterImage(image);
+                    
+                    iw.setImage(darkerImage);
+                    widget.repaint();
+                    
+                } else if(widget instanceof LabelWidget){
+                    logger.trace( ((LabelWidget) widget).getLabel() );
+                    widget.setBackground (Color.WHITE);
+                    widget.setForeground (Color.BLACK);
+                    logger.trace( ((LabelWidget) widget).getLabel() );
+                    
+                } else {
+                    logger.warn("Unrecognizet widget: " + widget);
+                }
+
             }
         }
 
         public void setHovering(Widget widget) {
             if (widget != null) {
-                logger.trace( ((LabelWidget) widget).getLabel() );
-                widget.setBackground (Color.GRAY);
-                widget.setForeground (Color.WHITE);
+                if(widget instanceof ImageWidget){
+                    ImageWidget iw = (ImageWidget) widget;
+                    Image image = iw.getImage();
+                    
+                    Image darkerImage = Utils.darkerImage(image);
+                    
+                    iw.setImage(darkerImage);
+                    widget.repaint();
+                    
+                } else if(widget instanceof LabelWidget){
+                    logger.trace( ((LabelWidget) widget).getLabel() );
+                    widget.setBackground (Color.GRAY);
+                    widget.setForeground (Color.WHITE);
+                    
+                    
+                } else {
+                    logger.warn("Unrecognizet widget: " + widget);
+                }
+                
             }
         }
     
