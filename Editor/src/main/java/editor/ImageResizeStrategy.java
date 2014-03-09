@@ -77,7 +77,7 @@ public class ImageResizeStrategy implements ResizeStrategy {
         logger.trace("PrefferedLocation: " + p);
 
         iw.setPreferredBounds(new Rectangle(-borderThickness, -borderThickness, suggestedBounds.width, suggestedBounds.height));
-//        iw.setPreferredLocation(new Point( initialWidgetPosition.x - dx, initialWidgetPosition.y - dy));
+        iw.setPreferredLocation(new Point( initialWidgetPosition.x - dx, initialWidgetPosition.y - dy));
         
         return iw.getPreferredBounds();
     }
