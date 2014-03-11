@@ -54,7 +54,12 @@ public class TextTool extends AbstractTool {
         logger.trace("TextTool: vytvarim widget");
         LabelWidget lw = new LabelWidget(scene, "TextTool");
 //        lw.getActions().addAction( scene.crea ));
-        
+        String s = (String) JOptionPane.showInputDialog(null, "Please enter text:", "Input text.", JOptionPane.PLAIN_MESSAGE);
+                    logger.trace("String written: " + s);
+                    if(s != null && s.trim().length() > 0){
+                        lw.setLabel(s);
+                    }
+                    
 //        lw.getActions().addAction(ActionFactory.createMoveAction());
         lw.getActions().addAction(ActionFactory.createEditAction( new EditTextProvider() ));
         lw.getActions().addAction(ActionFactory.createPopupMenuAction( new TextPopupMenuProvider() ));
