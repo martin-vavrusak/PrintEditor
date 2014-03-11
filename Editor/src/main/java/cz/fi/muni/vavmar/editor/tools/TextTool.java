@@ -8,6 +8,7 @@ package cz.fi.muni.vavmar.editor.tools;
 
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
 import editor.MainScene;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -146,9 +148,39 @@ public class TextTool extends AbstractTool {
                 
             } else if ( CHANGE_TEXT_COMMAND.equals(e.getActionCommand()) ){
                 logger.trace("Nastavit text!!");
+//                ownerWidget.getActions().addAction(0, ActionFactory.createInplaceEditorAction(new LabelTextFieldEditor()));
+                
+                
+                
+                if(ownerWidget instanceof LabelWidget){
+                    String s = (String) JOptionPane.showInputDialog(null, "Please enter new text:", "Input new text.", JOptionPane.PLAIN_MESSAGE);
+                    logger.trace("String written: " + s);
+                    if(s != null && s.trim().length() > 0){
+                        ((LabelWidget) ownerWidget).setLabel(s);
+                    }
+                    
+                } else {
+                    logger.warn("Change text called on object which is not LabelWidget!");
+                }
             }
         }
         
     }
+    
+//    private class LabelTextFieldEditor implements TextFieldInplaceEditor {
+//
+//        public boolean isEnabled (Widget widget) {
+//            return true;
+//        }
+//
+//        public String getText (Widget widget) {
+//            return ((LabelWidget) widget).getLabel ();
+//        }
+//
+//        public void setText (Widget widget, String text) {
+//            ((LabelWidget) widget).setLabel (text);
+//        }
+//
+//    }
     
 }
