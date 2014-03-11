@@ -6,7 +6,7 @@
 
 package cz.fi.muni.vavmar.editor.dialogs;
 
-import editor.MainScene;
+import cz.fi.muni.vavmar.editor.MainScene;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;

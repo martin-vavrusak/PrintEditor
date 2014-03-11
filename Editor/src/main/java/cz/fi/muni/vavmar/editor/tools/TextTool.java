@@ -7,7 +7,7 @@
 package cz.fi.muni.vavmar.editor.tools;
 
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
-import editor.MainScene;
+import cz.fi.muni.vavmar.editor.MainScene;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;

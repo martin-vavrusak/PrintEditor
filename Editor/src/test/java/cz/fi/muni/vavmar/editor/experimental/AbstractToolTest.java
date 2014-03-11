@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.experimental;
 
 import cz.fi.muni.vavmar.editor.tools.AbstractTool;
 import javax.swing.Icon;

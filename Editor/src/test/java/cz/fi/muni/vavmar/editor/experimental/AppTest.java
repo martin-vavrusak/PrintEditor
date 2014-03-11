@@ -1,6 +1,6 @@
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.experimental;
 
-import editor.Table;
+import cz.fi.muni.vavmar.editor.Table;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Test;

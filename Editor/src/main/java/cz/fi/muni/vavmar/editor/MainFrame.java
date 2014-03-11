@@ -4,11 +4,11 @@
  * and open the template in the editor.
  */
 
-package editor;
+package cz.fi.muni.vavmar.editor;
 
 import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
-import editor.utils.Utils;
+import cz.fi.muni.vavmar.editor.utils.Utils;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;

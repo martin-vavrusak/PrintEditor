@@ -1,4 +1,4 @@
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.experimental;
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *

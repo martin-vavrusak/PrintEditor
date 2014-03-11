@@ -1,5 +1,5 @@
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.experimental;
 
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import java.awt.*;

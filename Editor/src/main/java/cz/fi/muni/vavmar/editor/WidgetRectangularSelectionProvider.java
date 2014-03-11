@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package editor;
+package cz.fi.muni.vavmar.editor;
 
 import java.awt.Color;
 import java.awt.Rectangle;

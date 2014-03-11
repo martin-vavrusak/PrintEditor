@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package editor;
+package cz.fi.muni.vavmar.editor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

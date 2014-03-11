@@ -100,7 +100,7 @@
            </descriptorRefs>
            <archive>
                <manifest>
-                   <mainClass>cz.fi.muni.vavmar.editor.SwingDragDrop</mainClass>
+                   <mainClass>cz.fi.muni.vavmar.editor.experimental.SwingDragDrop</mainClass>
                    <!-- <mainClass>editor.MainFrame</mainClass> -->
                </manifest>
            </archive>

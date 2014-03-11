@@ -130,8 +130,8 @@
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Dostupne tabulky">
-                      <ResourceString PropertyName="titleX" bundle="editor/Bundle.properties" key="MainFrame.tablesListArea.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                    <TitledBorder title="&lt;MainFrame.tablesListArea.border.title&gt;">
+                      <ResourceString PropertyName="titleX" bundle="cz/fi/muni/vavmar/editor/Bundle.properties" key="MainFrame.tablesListArea.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                     </TitledBorder>
                   </Border>
                 </Property>
@@ -149,7 +149,7 @@
         <Component class="javax.swing.JTextField" name="tablesSearchField">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="editor/Bundle.properties" key="MainFrame.tablesSearchField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="cz/fi/muni/vavmar/editor/Bundle.properties" key="MainFrame.tablesSearchField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
             <Property name="dragEnabled" type="boolean" value="true"/>
           </Properties>
@@ -162,8 +162,8 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Nastroje">
-                  <ResourceString PropertyName="titleX" bundle="editor/Bundle.properties" key="MainFrame.toolPanel.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                <TitledBorder title="&lt;MainFrame.toolPanel.border.title&gt;">
+                  <ResourceString PropertyName="titleX" bundle="cz/fi/muni/vavmar/editor/Bundle.properties" key="MainFrame.toolPanel.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </TitledBorder>
               </Border>
             </Property>
@@ -177,7 +177,7 @@
             <Component class="javax.swing.JButton" name="jButton1">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="editor/Bundle.properties" key="MainFrame.jButton1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                  <ResourceString bundle="cz/fi/muni/vavmar/editor/Bundle.properties" key="MainFrame.jButton1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </Property>
               </Properties>
               <Events>

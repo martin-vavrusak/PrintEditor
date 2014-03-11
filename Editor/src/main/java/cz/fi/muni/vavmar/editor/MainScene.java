@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 
-package editor;
+package cz.fi.muni.vavmar.editor;
 
-import editor.utils.Utils;
+import cz.fi.muni.vavmar.editor.utils.Utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

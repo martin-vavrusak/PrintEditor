@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package editor.utils;
+package cz.fi.muni.vavmar.editor.utils;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

@@ -1,7 +1,7 @@
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.experimental;
 
-import editor.DataFetcher;
-import editor.Table;
+import cz.fi.muni.vavmar.editor.DataFetcher;
+import cz.fi.muni.vavmar.editor.Table;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
