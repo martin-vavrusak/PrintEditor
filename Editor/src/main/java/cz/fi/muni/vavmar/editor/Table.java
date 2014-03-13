@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -21,18 +23,44 @@ import java.util.ArrayList;
 public class Table implements Serializable, Transferable {
     public static DataFlavor DATA_FLAVOUR = new DataFlavor(Table.class, "TableInformaitons");
     private static final long serialVersionUID = 3234894312346698435L;
+    private static final Logger logger = LogManager.getLogger(Table.class);
+    
+    private String description;	
+    private String selectSQL;
     private String name;
     private List<String> columns;
 
-    public Table(String name) {
-        this.name = name;
-        columns = new ArrayList<String>();
+    public Table(){
+        this(null, null, null, new ArrayList<String>() );
     }
-
     
-    public Table(String name, List<String> columns) {
+    public Table(String name, String description) {
+        this(name, description, null, new ArrayList<String>() );
+    }
+    
+    public Table(String name, String description, String selectSQL, List<String> columns) {
+        this.description = description;
+        this.selectSQL = selectSQL;
         this.name = name;
         this.columns = columns;
+    }
+    
+    
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSelectSQL() {
+        return selectSQL;
+    }
+
+    public void setSelectSQL(String selectSQL) {
+        this.selectSQL = selectSQL;
     }
 
     public String getName() {
@@ -66,19 +94,20 @@ public class Table implements Serializable, Transferable {
     }
 
     public DataFlavor[] getTransferDataFlavors() {
+        logger.trace("");
         return new DataFlavor[] { new DataFlavor(Table.class, "TableInformations")};
     }
 
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        System.out.println("Table.isDataFlavorSupported(DataFlavor flavor): Ziskany DF:" + flavor);
+        logger.trace("Table.isDataFlavorSupported(DataFlavor flavor): Ziskany DF:" + flavor);
         
-        System.out.println("flavor.equals( new DataFlavor(Table.class, \"BlaBla\"):" + flavor.equals( new DataFlavor(Table.class, "BlaBla")) );
+        logger.trace("flavor.equals( new DataFlavor(Table.class, \"BlaBla\"):" + flavor.equals( new DataFlavor(Table.class, "BlaBla")) );
         return (flavor.equals( new DataFlavor(Table.class, "BlaBla")));
     }
 
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-        System.out.println("Table.getTransferData(DataFlavor flavor):");
-        System.out.println("flavor.getRepresentationClass():" + flavor.getRepresentationClass());
+//        logger.trace("Table.getTransferData(DataFlavor flavor):");
+        logger.trace("flavor.getRepresentationClass():" + flavor.getRepresentationClass());
 //        return new Table("Aahaha Jsem tady!");
         return this;
     }

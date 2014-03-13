@@ -6,6 +6,7 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.DAO.DataProvider;
 import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import cz.fi.muni.vavmar.editor.utils.Utils;
@@ -30,6 +31,7 @@ public class MainFrame extends javax.swing.JFrame {
     private MainScene mainScene = new MainScene();
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
     private static final int COLUMN_BORDER_TEXT_LENGHT = 4;
+    private DataProvider dataProvider = new DataProvider();
 
     /**
      * Creates new form MainFrame
@@ -65,9 +67,9 @@ public class MainFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.title")); // NOI18N
 
         mainScenePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        mainScenePanel.setName(""); // NOI18N
         mainScenePanel.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -81,7 +83,7 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(columnsListArea);
 
         tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesListArea.border.title"))); // NOI18N
-        tablesListArea.setModel(Utils.createListModel( dataFetcher.getAllTablesString() ));
+        tablesListArea.setModel(Utils.createListModel( dataProvider.getTables(null) ));
         tablesListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tablesListArea.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -172,7 +174,7 @@ public class MainFrame extends javax.swing.JFrame {
             String s = (String) model.getElementAt( list.getSelectedIndex() );
             System.out.println("Nazev polozky: " + s);
 
-            columnsListArea.setModel( Utils.createListModel( dataFetcher.getColumns(new Table(s))) );
+            columnsListArea.setModel( Utils.createListModel( dataProvider.getTable(s).getColumns() ));
             
             if(s.length() > COLUMN_BORDER_TEXT_LENGHT){     //Shortening of border text
                 s = s.substring(0, COLUMN_BORDER_TEXT_LENGHT).concat("...");

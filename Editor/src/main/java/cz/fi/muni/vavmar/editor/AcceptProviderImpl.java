@@ -7,6 +7,8 @@
 package cz.fi.muni.vavmar.editor;
 
 import cz.fi.muni.vavmar.editor.tools.AbstractTool;
+import cz.fi.muni.vavmar.editor.tools.TableWidget;
+import cz.fi.muni.vavmar.editor.tools.TextTool;
 import cz.fi.muni.vavmar.editor.tools.Tool;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -43,30 +45,29 @@ public class AcceptProviderImpl implements AcceptProvider {
         System.out.println("\tpoint" + point);
         System.out.println("\ttransferable:" + transferable);
 
-        Object o = null;
+        
         try {
-            o = transferable.getTransferData(Table.DATA_FLAVOUR);
+            if(transferable.isDataFlavorSupported(Table.DATA_FLAVOUR)){
 
+                logger.trace("Transferable je  Tabulka: " + transferable.getTransferData(Table.DATA_FLAVOUR));
+                return ConnectorState.ACCEPT;
+
+            } else if(transferable.isDataFlavorSupported(AbstractTool.DATA_FLAVOUR)) {
+                logger.trace("Transferable je  Tool: " + transferable.getTransferData(AbstractTool.DATA_FLAVOUR));
+                return ConnectorState.ACCEPT;
+
+            } else {
+                logger.debug("Nerozpoznany objekt!" + transferable);
+                return ConnectorState.REJECT;
+            }
+            
         } catch (UnsupportedFlavorException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-
-        if( o != null ){
-            if( o instanceof Table){
-                System.out.println("Akceptuji: " + ((Table) o).getName() );
-                return ConnectorState.ACCEPT;
-            }
-            
-            if(o instanceof AbstractTool){
-                logger.trace("Objekt je typu AbstractTool!! Huraaaa!" + o);
-                return ConnectorState.ACCEPT;
-            }
-            
-            
-        }
-        logger.debug("Nerozpoznany objekt!" + o);
+        
+        logger.warn("It soulhdn't be here!!! Something rond happened.");
         return ConnectorState.REJECT;
     }
 
@@ -76,48 +77,55 @@ public class AcceptProviderImpl implements AcceptProvider {
         Object o = null;
         
         try {
-            o = transferable.getTransferData(Table.DATA_FLAVOUR);
+            DataFlavor[] df = transferable.getTransferDataFlavors();
             
-            if( o != null ){
-                if( o instanceof Table){
-                    System.out.println("Akceptuji: " + ((Table) o).getName() );
-                    //Vytvorim novy widget
-                    getTableWidgetFromTransfer(widget, point, transferable);
-                    return;
+            if(df != null && df.length > 0) {
+                o = transferable.getTransferData(df[0]);
+
+                if( o != null ){
+                    if( o instanceof Table){
+                        System.out.println("Akceptuji: " + ((Table) o).getName() );
+                        //Vytvorim novy widget
+                        getTableWidgetFromTransfer(widget, point, transferable);
+                        return;
+                    }
+
+                    if ( o instanceof AbstractTool ){
+                        logger.trace("Vytvarim widget nastroje: " + o);
+
+                        Widget wg = ((AbstractTool) o).createWidget(scene);
+
+                        if(wg == null) return;
+
+                        wg.setPreferredLocation(point);
+                        scene.addWidget( wg );    //Vytvorime widget
+                        return;
+                    }
+
                 }
-                
-                if ( o instanceof AbstractTool ){
-                    logger.trace("Vytvarim widget nastroje: " + o);
-                    
-                    Widget wg = ((AbstractTool) o).createWidget(scene);
-                    
-                    if(wg == null) return;
-                    
-                    wg.setPreferredLocation(point);
-                    scene.addWidget( wg );    //Vytvorime widget
-                    return;
-                }
-                
+            } else {
+                logger.warn("Unable to get DataFlavour.");
             }
         } catch (UnsupportedFlavorException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-
+        
      logger.debug("Nerozpoznany objekt nelze vlozit do sceny:" + o);
     }
 
     private Widget getTableWidgetFromTransfer(Widget widget, Point point, Transferable transferable) throws UnsupportedFlavorException, IOException{
         System.out.println("Widget: " + widget);
-        LabelWidget lw = new LabelWidget(scene);
+        TableWidget lw = new TableWidget(scene);
         Table tbl = (Table) transferable.getTransferData(DataFlavor.imageFlavor);
         
         lw.setLabel(tbl.getName());
         lw.setToolTipText("SQL: ???");
         lw.getActions().addAction(ActionFactory.createMoveAction());
         lw.setPreferredLocation(point);
-        scene.addChild(lw);
+        lw.setOpaque(true);
+        scene.addWidget(lw);
         return lw;
     }
 }

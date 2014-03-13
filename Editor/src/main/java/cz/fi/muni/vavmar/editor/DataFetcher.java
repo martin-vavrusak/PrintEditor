@@ -77,24 +77,24 @@ public class DataFetcher {
         columns.add("jmeno");
         columns.add("prijmeni");
         
-        tables.put(new Table("Osoby"), columns);
+        tables.put(new Table("Osoby", null), columns);
         
         columns = new ArrayList<String>();
         columns.add("jedna");
         columns.add("dve");
-        tables.put(new Table("Ostatni"), columns);
+        tables.put(new Table("Ostatni", null), columns);
         
         columns = new ArrayList<String>();
         columns.add("Vaha");
         columns.add("Vyska");
         columns.add("Vek");
-        tables.put(new Table("Olina"), columns);
+        tables.put(new Table("Olina", null), columns);
         
         columns = new ArrayList<String>();
         columns.add("Euro");
         columns.add("Koruna");
         columns.add("Dolar");
-        tables.put(new Table("obezivo"), columns);
+        tables.put(new Table("obezivo", null), columns);
     };
 
     public void setData(Map<Table, List<String>> data){

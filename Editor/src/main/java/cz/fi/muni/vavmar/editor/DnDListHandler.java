@@ -52,7 +52,7 @@ public class DnDListHandler extends TransferHandler {
              s = (String) list.getSelectedValue();
         }
         
-        return new Table("Exportovana tabulka:" + s);
+        return new Table("Exportovana tabulka:" + s, null);
 //        return super.createTransferable(c); //To change body of generated methods, choose Tools | Templates.
     }
     
