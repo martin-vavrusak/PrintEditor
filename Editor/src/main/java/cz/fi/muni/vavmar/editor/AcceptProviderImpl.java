@@ -6,6 +6,8 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.actions.EditTextProvider;
+import cz.fi.muni.vavmar.editor.actions.TextPopupMenuProvider;
 import cz.fi.muni.vavmar.editor.tools.AbstractTool;
 import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import cz.fi.muni.vavmar.editor.tools.TextTool;

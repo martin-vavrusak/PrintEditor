@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.actions;
 
+import cz.fi.muni.vavmar.editor.MainScene;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

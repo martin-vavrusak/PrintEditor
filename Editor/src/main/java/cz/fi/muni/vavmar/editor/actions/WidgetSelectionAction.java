@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.actions;
 
+import cz.fi.muni.vavmar.editor.MainScene;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,7 +15,6 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.Widget;

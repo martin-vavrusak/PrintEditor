@@ -6,6 +6,14 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.actions.ResizeParentByMoveActionProvider;
+import cz.fi.muni.vavmar.editor.actions.ImageResizeStrategy;
+import cz.fi.muni.vavmar.editor.actions.WidgetRectangularSelectDecorator;
+import cz.fi.muni.vavmar.editor.actions.WidgetSelectionAction;
+import cz.fi.muni.vavmar.editor.actions.WidgetHoverActionProvider;
+import cz.fi.muni.vavmar.editor.actions.KeyProcessingAction;
+import cz.fi.muni.vavmar.editor.actions.MultiMoveProvider;
+import cz.fi.muni.vavmar.editor.actions.WidgetRectangularSelectionProvider;
 import cz.fi.muni.vavmar.editor.DAO.DataProvider;
 import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import cz.fi.muni.vavmar.editor.utils.Utils;

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.actions;
 
 import java.awt.Image;
 import java.awt.Point;

@@ -4,9 +4,11 @@
  * and open the template in the editor.
  */
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.actions;
 
+import cz.fi.muni.vavmar.editor.MainScene;
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
+import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import java.awt.Dialog;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -29,32 +31,32 @@ import org.netbeans.api.visual.widget.Widget;
 public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener {
         private final Logger logger = LogManager.getLogger(TextPopupMenuProvider.class);
 
-        private final JPopupMenu menu;
         private final String TEXT_PROPERTIES_COMMAND = "TEXT_PROPERTIES";   //NOI18N
         private final String TEXT_PROPERTIES_LABEL = "Properties";
         private final String CHANGE_TEXT_COMMAND = "CHANGE_TEXT";   //NOI18N
         private final String CHANGE_TEXT_LABEL = "Change text";
         private Widget ownerWidget;
-        
-        public TextPopupMenuProvider() {
-            menu = new JPopupMenu("Menu");
-            JMenuItem menuItem;
+
+        public JPopupMenu getPopupMenu(Widget widget, Point localLocation) {
+            logger.trace("Owner Widget: " + widget + " at: " + localLocation);
+            ownerWidget = widget;           //Nastavi widget na kterem bylo vyvolano menu pro dalsi zpracovani v "actionPerformed()"
+            
+            JPopupMenu menu = new JPopupMenu("Menu");
+            JMenuItem menuItem;       
             
             menuItem = new JMenuItem(TEXT_PROPERTIES_LABEL);
             menuItem.setActionCommand(TEXT_PROPERTIES_COMMAND);
             menuItem.addActionListener(this);
             menu.add(menuItem);
             
-            menuItem = new JMenuItem(CHANGE_TEXT_LABEL);
-            menuItem.setActionCommand(CHANGE_TEXT_COMMAND);
-            menuItem.addActionListener(this);
-            menu.add(menuItem);
-        }
-        
-        
-        public JPopupMenu getPopupMenu(Widget widget, Point localLocation) {
-            logger.trace("Owner Widget: " + widget + " at: " + localLocation);
-            ownerWidget = widget;           //Nastavi widget na kterem bylo vyvolano menu pro dalsi zpracovani v "actionPerformed()"
+            if( ! (ownerWidget instanceof ColumnWidget) ){
+                menuItem = new JMenuItem(CHANGE_TEXT_LABEL);
+                menuItem.setActionCommand(CHANGE_TEXT_COMMAND);
+                menuItem.addActionListener(this);
+                menu.add(menuItem);
+            }
+            
+            
             return menu;
         }
 

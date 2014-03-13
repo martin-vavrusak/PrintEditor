@@ -1,8 +1,8 @@
 package cz.fi.muni.vavmar.editor.experimental;
 
-import cz.fi.muni.vavmar.editor.WidgetRectangularSelectDecorator;
-import cz.fi.muni.vavmar.editor.WidgetRectangularSelectionProvider;
-import cz.fi.muni.vavmar.editor.WidgetHoverActionProvider;
+import cz.fi.muni.vavmar.editor.actions.WidgetRectangularSelectDecorator;
+import cz.fi.muni.vavmar.editor.actions.WidgetRectangularSelectionProvider;
+import cz.fi.muni.vavmar.editor.actions.WidgetHoverActionProvider;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;

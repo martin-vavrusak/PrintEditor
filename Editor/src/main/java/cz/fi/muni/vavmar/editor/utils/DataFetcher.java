@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package cz.fi.muni.vavmar.editor;
+package cz.fi.muni.vavmar.editor.utils;
 
+import cz.fi.muni.vavmar.editor.Table;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

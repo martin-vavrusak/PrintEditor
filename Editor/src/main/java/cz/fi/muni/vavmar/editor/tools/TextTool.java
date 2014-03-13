@@ -6,9 +6,9 @@
 
 package cz.fi.muni.vavmar.editor.tools;
 
-import cz.fi.muni.vavmar.editor.EditTextProvider;
+import cz.fi.muni.vavmar.editor.actions.EditTextProvider;
 import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
-import cz.fi.muni.vavmar.editor.TextPopupMenuProvider;
+import cz.fi.muni.vavmar.editor.actions.TextPopupMenuProvider;
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;

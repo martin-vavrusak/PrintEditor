@@ -6,6 +6,7 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.utils.DataFetcher;
 import cz.fi.muni.vavmar.editor.DAO.DataProvider;
 import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
