@@ -32,6 +32,7 @@ public class DataProvider implements DBManager {
     DataSource  ds = new DataSourceImpl("localhost", "5432", "idempiere", "adempiere", "adempiere");
     
 
+    //TODO Udelat vypleni SQL
     public Table getTable(String tableName){
         Table table = new Table();
         List<String> columns = new ArrayList<String>();

@@ -7,9 +7,8 @@
 package cz.fi.muni.vavmar.editor;
 
 import cz.fi.muni.vavmar.editor.tools.AbstractTool;
-import cz.fi.muni.vavmar.editor.tools.TableWidget;
+import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
-import cz.fi.muni.vavmar.editor.tools.Tool;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,8 +19,6 @@ import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.ConnectorState;
-import org.netbeans.api.visual.widget.LabelWidget;
-import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.Exceptions;
 
@@ -73,7 +70,7 @@ public class AcceptProviderImpl implements AcceptProvider {
 
     @Override
     public void accept(Widget widget, Point point, Transferable transferable) {
-        System.out.println("AcceptProviderImpl.accept(Widget widget, Point point, Transferable transferable)");
+        logger.trace("AcceptProviderImpl.accept(Widget widget, Point point, Transferable transferable)");
         Object o = null;
         
         try {
@@ -84,7 +81,7 @@ public class AcceptProviderImpl implements AcceptProvider {
 
                 if( o != null ){
                     if( o instanceof Table){
-                        System.out.println("Akceptuji: " + ((Table) o).getName() );
+                        logger.trace("Akceptuji: " + ((Table) o).getName() );
                         //Vytvorim novy widget
                         getTableWidgetFromTransfer(widget, point, transferable);
                         return;
@@ -117,15 +114,25 @@ public class AcceptProviderImpl implements AcceptProvider {
 
     private Widget getTableWidgetFromTransfer(Widget widget, Point point, Transferable transferable) throws UnsupportedFlavorException, IOException{
         System.out.println("Widget: " + widget);
-        TableWidget lw = new TableWidget(scene);
-        Table tbl = (Table) transferable.getTransferData(DataFlavor.imageFlavor);
+        ColumnWidget lw = new ColumnWidget(scene);
+        Table table = (Table) transferable.getTransferData(DataFlavor.imageFlavor);
         
-        lw.setLabel(tbl.getName());
-        lw.setToolTipText("SQL: ???");
+        lw.setLabel(table.getName() + ": " + table.getSelectedColumn());
+        lw.setToolTipText("SQL: " + table.getSelectSQL());
+        lw.resetBorder();
+        lw.setParentTable(table);
+                
         lw.getActions().addAction(ActionFactory.createMoveAction());
+        lw.getActions().addAction(ActionFactory.createEditAction( new EditTextProvider() ));
+        lw.getActions().addAction(ActionFactory.createPopupMenuAction( new TextPopupMenuProvider() ));
+        
         lw.setPreferredLocation(point);
         lw.setOpaque(true);
         scene.addWidget(lw);
+        
+        //Create table object
+        Table tableObject = scene.getDataProvider().getTable( table.getName() );
+        //TODO udelat vkladani do sceny
         return lw;
     }
 }

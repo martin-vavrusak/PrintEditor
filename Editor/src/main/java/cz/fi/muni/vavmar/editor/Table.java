@@ -21,10 +21,13 @@ import org.apache.logging.log4j.Logger;
  * @author Martin
  */
 public class Table implements Serializable, Transferable {
-    public static DataFlavor DATA_FLAVOUR = new DataFlavor(Table.class, "TableInformaitons");
-    private static final long serialVersionUID = 3234894312346698435L;
     private static final Logger logger = LogManager.getLogger(Table.class);
     
+    public static DataFlavor DATA_FLAVOUR = new DataFlavor(Table.class, "TableInformaitons");
+    private static final long serialVersionUID = 3234894312346698435L;
+
+    
+    private String selectedColumn;
     private String description;	
     private String selectSQL;
     private String name;
@@ -43,6 +46,14 @@ public class Table implements Serializable, Transferable {
         this.selectSQL = selectSQL;
         this.name = name;
         this.columns = columns;
+    }
+
+    public String getSelectedColumn() {
+        return selectedColumn;
+    }
+
+    public void setSelectedColumn(String selectedColumn) {
+        this.selectedColumn = selectedColumn;
     }
     
     

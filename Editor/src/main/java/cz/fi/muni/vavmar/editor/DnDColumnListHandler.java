@@ -10,8 +10,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
-import javax.activation.DataHandler;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.TransferHandler;
 import org.apache.logging.log4j.LogManager;
@@ -21,39 +21,57 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Martin
  */
-public class DnDListHandler extends TransferHandler {
-    private static final Logger logger = LogManager.getLogger(DnDListHandler.class);
+public class DnDColumnListHandler extends TransferHandler {
+    private static final Logger logger = LogManager.getLogger(DnDColumnListHandler.class);
+    private MainFrame mainFrame;
+
+    public DnDColumnListHandler(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
+    }
+    
     
     //Do listu zobrazujiciho sloupce tabulky nechceme nic vkladat
     @Override
     public boolean canImport(TransferSupport support) {
-//        System.out.println("DnDListHandler.canImport(TransferSupport support)");
+//        System.out.println("DnDColumnListHandler.canImport(TransferSupport support)");
         logger.trace("");
         return false;
     }
 
     @Override
     public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
-//        System.out.println("DnDListHandler.canImport(JComponent comp, DataFlavor[] transferFlavors)");
+//        System.out.println("DnDColumnListHandler.canImport(JComponent comp, DataFlavor[] transferFlavors)");
         logger.trace("");
         return false;
     }
     
 
-    
+    /**
+     * Pouze vytvoreni "servisnich informaci" realny objekt a data ziskavat az pomoci accept() na prijmaci strane
+     * @param c
+     * @return 
+     */
     @Override
     protected Transferable createTransferable(JComponent c) {
         logger.trace("");
         System.out.println("DnDListHandler.createTransferable: Objekt:" + c);
         
+        String tableName = (String) mainFrame.getTablesListArea().getSelectedValue();
+        if(tableName == null){
+            logger.error("Error preparing transfer of column. Unable to get table name from Table List. Table retrieved: ");
+        }
+        
+        logger.trace("Retrieved table from table list: " + tableName);
         String s = "";
         if(c instanceof JList){
             JList list = (JList) c;
-             s = (String) list.getSelectedValue();
+             s = (String) list.getSelectedValue();      //Get selected item from list (returns string prepresenting column)
         }
         
-        return new Table("Exportovana tabulka:" + s, null);
-//        return super.createTransferable(c); //To change body of generated methods, choose Tools | Templates.
+        Table t = new Table(tableName, null);                      //pass the name for future use
+        t.setSelectedColumn(s);
+        
+        return t;
     }
     
     //Must be Owerriden otherwise DnD will not work

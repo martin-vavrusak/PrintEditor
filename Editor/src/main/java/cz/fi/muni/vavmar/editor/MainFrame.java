@@ -31,8 +31,8 @@ public class MainFrame extends javax.swing.JFrame {
     private MainScene mainScene = new MainScene();
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
     private static final int COLUMN_BORDER_TEXT_LENGHT = 4;
-    private DataProvider dataProvider = new DataProvider();
-
+    private List<String> tablesList;
+    
     /**
      * Creates new form MainFrame
      */
@@ -78,12 +78,13 @@ public class MainFrame extends javax.swing.JFrame {
         columnsListArea.setModel(Utils.createListModel(new ArrayList<String>())
         );
         columnsListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        columnsListArea.setTransferHandler( new DnDListHandler() );
+        columnsListArea.setTransferHandler( new cz.fi.muni.vavmar.editor.DnDColumnListHandler(this) );
         columnsListArea.setDragEnabled(true);
         jScrollPane1.setViewportView(columnsListArea);
 
         tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesListArea.border.title"))); // NOI18N
-        tablesListArea.setModel(Utils.createListModel( dataProvider.getTables(null) ));
+        tablesList = mainScene.getDataProvider().getTables(null);
+        tablesListArea.setModel(Utils.createListModel( tablesList ));
         tablesListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tablesListArea.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -174,7 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
             String s = (String) model.getElementAt( list.getSelectedIndex() );
             System.out.println("Nazev polozky: " + s);
 
-            columnsListArea.setModel( Utils.createListModel( dataProvider.getTable(s).getColumns() ));
+            columnsListArea.setModel( Utils.createListModel( mainScene.getDataProvider().getTable(s).getColumns() ));
             
             if(s.length() > COLUMN_BORDER_TEXT_LENGHT){     //Shortening of border text
                 s = s.substring(0, COLUMN_BORDER_TEXT_LENGHT).concat("...");
@@ -194,8 +195,19 @@ public class MainFrame extends javax.swing.JFrame {
     private void tablesSearchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tablesSearchFieldKeyReleased
         String s = ((JTextField) evt.getComponent()).getText();
         System.out.println("Searching for: " + s);
-        List<String> l = dataFetcher.searchTables( s );
-        tablesListArea.setModel(Utils.createListModel(l));
+        
+        if(tablesList != null){
+             List<String> list = new ArrayList<String>();
+        
+            for(String t: tablesList){
+                if(t.length() < s.length()) break;
+
+                if( t.substring(0, s.length()).equalsIgnoreCase(s) ){
+                    list.add(t);
+                }
+            }
+            tablesListArea.setModel(Utils.createListModel(list));
+        }
     }//GEN-LAST:event_tablesSearchFieldKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -212,6 +224,10 @@ public class MainFrame extends javax.swing.JFrame {
             logger.trace("| " + w.getBounds());
             printChildrens(w.getChildren());
         }
+    }
+
+    public JList getTablesListArea() {
+        return tablesListArea;
     }
     
     /**

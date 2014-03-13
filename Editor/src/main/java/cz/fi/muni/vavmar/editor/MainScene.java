@@ -6,15 +6,15 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.DAO.DataProvider;
+import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import cz.fi.muni.vavmar.editor.utils.Utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -23,8 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.action.ResizeProvider;
-import org.netbeans.api.visual.action.ResizeStrategy;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.LabelWidget;
@@ -42,6 +40,8 @@ public class MainScene extends Scene {
     private LayerWidget mainLayer;
     private LayerWidget backgroundLayer;
     private ResizeParentByMoveActionProvider moveProvider;
+    
+    private DataProvider dataProvider = new DataProvider();
     
     private WidgetAction hoverAction;
     private WidgetAction rectangularSelectionAction;
@@ -178,6 +178,8 @@ public class MainScene extends Scene {
             w.getActions().removeAction( multipleMovementAction );
             w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
             logger.trace("Selection cancelled: " + w);
+            
+            if(w instanceof ColumnWidget) { ((ColumnWidget) w).resetBorder(); }
         }
         selectedWidgets = new HashSet<Widget>();
         return selectedWidgets;
@@ -195,6 +197,15 @@ public class MainScene extends Scene {
     public void setControlPressed(boolean pressed) {
         this.CONTROL_PRESSED = pressed;
     }
+
+    public DataProvider getDataProvider() {
+        return dataProvider;
+    }
+
+    public void setDataProvider(DataProvider dataProvider) {
+        this.dataProvider = dataProvider;
+    }
+    
     
     
     private JComponent createRowRuler(){
