@@ -7,7 +7,7 @@
 package cz.fi.muni.vavmar.editor.actions;
 
 import cz.fi.muni.vavmar.editor.MainScene;
-import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
+import cz.fi.muni.vavmar.editor.dialogs.TextPropertiesDialog;
 import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import java.awt.Dialog;
 import java.awt.Point;
@@ -75,9 +75,9 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
                 //when there is more than one widget selected and action is performed at one of them
                 if(selectedWidgets.size() > 1 && selectedWidgets.contains(ownerWidget)){
                     //multiple selection edit
-                    dialog = new TextDialog(ownerWidget, true);
+                    dialog = new TextPropertiesDialog(ownerWidget, true);
                 } else {
-                    dialog = new TextDialog(ownerWidget, false); //deleguje zobrazeni dialogoveho okna a nastaveni hodnot na metodu materske tridy
+                    dialog = new TextPropertiesDialog(ownerWidget, false); //deleguje zobrazeni dialogoveho okna a nastaveni hodnot na metodu materske tridy
                 }
                 
                 dialog.setVisible(true);
@@ -90,7 +90,14 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
                 
                 
                 if(ownerWidget instanceof LabelWidget){
-                    String s = (String) JOptionPane.showInputDialog(null, "Please enter new text:", "Input new text.", JOptionPane.PLAIN_MESSAGE);
+//                    String s = (String) JOptionPane.showInputDialog(null, "Please enter new text:", "Input new text.", JOptionPane.PLAIN_MESSAGE);
+                    String s = (String) JOptionPane.showInputDialog(null, 
+                                                            "Please enter new text:",
+                                                            "Input new text.",
+                                                            JOptionPane.PLAIN_MESSAGE,
+                                                            null,
+                                                            null,
+                                                            ((LabelWidget)ownerWidget).getLabel());
                     logger.trace("String written: " + s);
                     if(s != null && s.trim().length() > 0){
                         ((LabelWidget) ownerWidget).setLabel(s);

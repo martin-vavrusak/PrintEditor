@@ -7,7 +7,7 @@
 package cz.fi.muni.vavmar.editor.tools;
 
 import cz.fi.muni.vavmar.editor.actions.EditTextProvider;
-import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
+import cz.fi.muni.vavmar.editor.dialogs.TextPropertiesDialog;
 import cz.fi.muni.vavmar.editor.actions.TextPopupMenuProvider;
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -44,8 +44,9 @@ public class TextTool extends AbstractTool {
     public Widget createWidget(Scene scene) {
         logger.trace("TextTool: vytvarim widget");
         LabelWidget lw = new LabelWidget(scene, "TextTool");
-//        lw.getActions().addAction( scene.crea ));
-        String s = (String) JOptionPane.showInputDialog(null, "Please enter text:", "Input text.", JOptionPane.PLAIN_MESSAGE);
+
+//        String s = (String) JOptionPane.showInputDialog(null, "Please enter text:", "Input text.", JOptionPane.PLAIN_MESSAGE);
+        String s = (String) JOptionPane.showInputDialog(null, "Please enter text:", "Create new text label.", JOptionPane.PLAIN_MESSAGE, null, null, "TextTool");
                     logger.trace("String written: " + s);
                     if(s != null && s.trim().length() > 0){
                         lw.setLabel(s);
@@ -65,7 +66,7 @@ public class TextTool extends AbstractTool {
      */
     protected void showEditDialog(Widget widget, boolean multipleEdit){
         logger.trace("Zobrazuji dialogove okno!");
-        JDialog dialog = new TextDialog(widget, multipleEdit);
+        JDialog dialog = new TextPropertiesDialog(widget, multipleEdit);
         dialog.setVisible(true);
 //        TextDialogPanel panel = new TextDialogPanel();
 //        panel.setVisible(true);

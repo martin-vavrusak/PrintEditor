@@ -6,7 +6,7 @@
 
 package cz.fi.muni.vavmar.editor.actions;
 
-import cz.fi.muni.vavmar.editor.dialogs.TextDialog;
+import cz.fi.muni.vavmar.editor.dialogs.TextPropertiesDialog;
 import javax.swing.JDialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +23,7 @@ public class EditTextProvider implements EditProvider {
         public void edit(Widget widget) {
             logger.trace("Edit firing");
             
-            JDialog dialog = new TextDialog(widget, false);     //This is fired by double click which should change selection only to one Widged
+            JDialog dialog = new TextPropertiesDialog(widget, false);     //This is fired by double click which should change selection only to one Widged
                                                                 //therefore its just single edit
             dialog.setVisible(true);
         }
