@@ -11,6 +11,8 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ItemEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -37,6 +39,10 @@ public class TextPropertiesDialog extends JDialog {
     private static final Logger logger = LogManager.getLogger(TextPropertiesDialog.class);
     private Widget ownerWidget; // widget which properities should be affected by this dialog
     private boolean isMultipleSelection;
+    private Font oldWidgetFontP;
+    private Map<Widget, Font> selectionOldFontsP = new HashMap<Widget, Font>();
+    private Set<Widget> selectedWidgetsP;
+    
     /**
      * 
      * @param widget Widget whose text parameters souhould be changed
@@ -47,11 +53,35 @@ public class TextPropertiesDialog extends JDialog {
         super();
         ownerWidget = widget;
         isMultipleSelection = isMultiple;
+        selectedWidgetsP = ((MainScene) ownerWidget.getScene()).getSelectedWidgets();
+        
+        oldWidgetFontP = ownerWidget.getFont();
+        if (isMultipleSelection) {
+            for(Widget w : selectedWidgetsP){
+                selectionOldFontsP.put(w, w.getFont());
+            }
+        }
+        
         
         setLayout(new BorderLayout());
         add(new TextDialogPanel());
         setModal(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() { //nikdy nebude zavirano bez inicializace obsahu proto je mozne proves uz tady a ne az v TextSialogPanelu
+                                @Override
+                                public void windowClosing(WindowEvent e) {
+                                    logger.trace("is closing!");
+                                    ownerWidget.setFont(oldWidgetFontP);
+                                    if(isMultipleSelection){
+                                        for(Widget w : selectedWidgetsP ){
+                                            w.setFont( selectionOldFontsP.get(w) );
+                                        }
+                                    }
+                                    logger.trace("And close.");
+                                    dispose();
+                                }
+                            });
+        
 //        setBounds(new Rectangle(400, 325));     //TODO Smazat!!! Nechat vypocitat dynamicky
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(screenSize.width / 2, screenSize.height / 2, 450, 325);
@@ -112,6 +142,7 @@ private class TextDialogPanel extends javax.swing.JPanel {
         //Set actual font of widget to preview window and all items
         setFromWidget();
         previewPanel.setFont(oldWidgetFont);
+        
     }
 
     private void setFromWidget(){
