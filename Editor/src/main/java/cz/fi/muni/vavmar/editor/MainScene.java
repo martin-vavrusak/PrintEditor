@@ -22,21 +22,28 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.plaf.DimensionUIResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
+import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -62,10 +69,12 @@ public class MainScene extends Scene {
     private Set<Widget> selectedWidgets;
     
     private boolean CONTROL_PRESSED = false;
-    
+    private static final int SCENE_WIDTH = 600; //width of scene
+    private static final int SCENE_HEIGHT = 900; //width of scene
     
     
     public MainScene() {
+        
         setOpaque(true);
         selectedWidgets = new HashSet<Widget>();
         
@@ -74,6 +83,8 @@ public class MainScene extends Scene {
         multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
         
         backgroundLayer = new LayerWidget(this);
+        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, SCENE_WIDTH + 150, SCENE_HEIGHT));
+        
         mainLayer = new LayerWidget(this);
 //        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(this, mainLayer);
         rectangularSelectionAction = ActionFactory.createRectangularSelectAction(
@@ -84,7 +95,7 @@ public class MainScene extends Scene {
         
         mainLayer.getActions().addAction( ActionFactory.createResizeAction() );
 //        mainLayer.getActions().addAction( rectangularSelectionAction );
-        mainLayer.setPreferredBounds(new Rectangle(900, 900));
+        mainLayer.setPreferredBounds(new Rectangle(SCENE_WIDTH, SCENE_HEIGHT));
         mainLayer.setVisible(true);
         
         addChild(0, backgroundLayer);
@@ -107,6 +118,18 @@ public class MainScene extends Scene {
         scrollPane.setColumnHeaderView(createColumnRuler());
         scrollPane.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
         
+        
+        URL url = getClass().getClassLoader().getResource("images/canvasImage.png");
+        ImageWidget canvasPicture = null;
+        try {
+            canvasPicture = new ImageWidget(this, ImageIO.read( url ) );
+        } catch (IOException ex) {
+            logger.error("Error loading canvas background picture: " + ex);
+        }
+        canvasPicture.setOpaque(true);
+        canvasPicture.setPreferredLocation(new Point(0, 0));
+        backgroundLayer.addChild(canvasPicture);
+        
         //TODO Smazat
         LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
         lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
@@ -127,6 +150,7 @@ public class MainScene extends Scene {
         AcceptProvider ap = new AcceptProviderImpl(this);
         
         getActions().addAction(ActionFactory.createZoomAction());
+        getActions().addAction(ActionFactory.createPanAction());
         getActions().addAction(ActionFactory.createAcceptAction( ap ) );
         getActions().addAction( rectangularSelectionAction );
         getActions().addAction( hoverAction );
