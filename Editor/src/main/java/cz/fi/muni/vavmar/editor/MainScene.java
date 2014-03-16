@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.plaf.DimensionUIResource;
+import javax.swing.text.LabelView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
@@ -71,8 +72,9 @@ public class MainScene extends Scene {
     private boolean CONTROL_PRESSED = false;
     private static final int SCENE_WIDTH = 600; //width of scene
     private static final int SCENE_HEIGHT = 900; //width of scene
-    
-    
+    private static final int A4_ASPECT_RATION = 3;
+    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, 210 * A4_ASPECT_RATION + 2,
+                                                                   279 * A4_ASPECT_RATION + 2);
     public MainScene() {
         
         setOpaque(true);
@@ -81,9 +83,16 @@ public class MainScene extends Scene {
         moveProvider = new ResizeParentByMoveActionProvider();
         hoverAction = ActionFactory.createHoverAction(new WidgetHoverActionProvider());
         multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
-        
+
         backgroundLayer = new LayerWidget(this);
-        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, SCENE_WIDTH + 150, SCENE_HEIGHT));
+        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.width + 20));
+        
+        LabelWidget paperRectangle = new LabelWidget(this);
+        paperRectangle.setPreferredBounds(A4_BOUNDS);   //velikost A4
+        paperRectangle.setBorder(javax.swing.BorderFactory.createLineBorder(Color.RED, 1));
+        
+        backgroundLayer.addChild(paperRectangle);
+        
         
         mainLayer = new LayerWidget(this);
 //        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(this, mainLayer);
@@ -119,16 +128,7 @@ public class MainScene extends Scene {
         scrollPane.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
         
         
-        URL url = getClass().getClassLoader().getResource("images/canvasImage.png");
-        ImageWidget canvasPicture = null;
-        try {
-            canvasPicture = new ImageWidget(this, ImageIO.read( url ) );
-        } catch (IOException ex) {
-            logger.error("Error loading canvas background picture: " + ex);
-        }
-        canvasPicture.setOpaque(true);
-        canvasPicture.setPreferredLocation(new Point(0, 0));
-        backgroundLayer.addChild(canvasPicture);
+        
         
         //TODO Smazat
         LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
