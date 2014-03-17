@@ -8,6 +8,7 @@ package cz.fi.muni.vavmar.editor;
 
 import cz.fi.muni.vavmar.editor.utils.DataFetcher;
 import cz.fi.muni.vavmar.editor.DAO.DataProvider;
+import cz.fi.muni.vavmar.editor.jasper.ReportWriter;
 import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import cz.fi.muni.vavmar.editor.utils.Utils;
@@ -218,6 +219,7 @@ public class MainFrame extends javax.swing.JFrame {
             printChildrens(w.getChildren());
         }
         
+        ReportWriter.writeXML(mainScene, "output");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void printChildrens (List<Widget> widgets){
