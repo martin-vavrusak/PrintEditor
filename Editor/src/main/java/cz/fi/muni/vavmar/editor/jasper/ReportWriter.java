@@ -7,9 +7,12 @@
 package cz.fi.muni.vavmar.editor.jasper;
 
 import cz.fi.muni.vavmar.editor.MainScene;
+import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +30,7 @@ import org.netbeans.api.visual.widget.Widget;
  */
 public class ReportWriter {
     private static Logger logger = LogManager.getLogger(ReportWriter.class);
+    private StringBuilder mainSQL = new StringBuilder("SELECT ");
     
     public static void writeXML(MainScene scene, String outputPath){
         Document document = DocumentHelper.createDocument();
@@ -52,15 +56,37 @@ public class ReportWriter {
         //--------------- Widgets parsing -------------
         LayerWidget mainLayer = scene.getMainLayer();
         
+        //create detail field:
+        Element detailElement = root.addElement("detail");
+        Element detailElementBand = root.addElement("band");
+        
+        
+        Set<String> columns = new HashSet<String>();
+        Set<String> tables = new HashSet<String>();
+        
+        int bandMaxHeight = 0;
         for(Widget w: mainLayer.getChildren()){
             logger.trace("Zapisuju widget: " + w);
             
-            Element e = root.addElement(outputPath);
+            //jestlize mame column widget ulozime jeho nazev a tabulku pro vytvoreni
+            if(w instanceof ColumnWidget){
+               ColumnWidget columnWidget = (ColumnWidget) w;
+               tables.add( columnWidget.getParentTable().getName() );
+               columns.add( columnWidget.getLabel() );
+               Element e = detailElement.addElement("");
+            }
+            Element e = detailElement.addElement("");
+            smazat
+            
+            //zjisteni maximalni velikosti prvku
+            bandMaxHeight = bandMaxHeight < (int) w.getPreferredSize().getHeight() ? (int) w.getPreferredSize().getHeight() : bandMaxHeight ;
         }
         
+        detailElementBand.addAttribute("height", Integer.toBinaryString(bandMaxHeight));
         
-        JasperDesign desig = new JasperDesign();
         
+        JasperDesign design = new JasperDesign();   //Tohle nejspis nebude fungovat
+
                 
         
         
