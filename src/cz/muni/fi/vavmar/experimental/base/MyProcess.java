@@ -6,10 +6,17 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.MColor;
+import org.compiere.model.MColumn;
+import org.compiere.model.MRole;
+import org.compiere.model.MTable;
+import org.compiere.model.MUser;
+import org.compiere.print.MPrintColor;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +58,7 @@ public class MyProcess extends SvrProcess {
 					someString = (String) parameters[i].getParameter();
 				}
 				else if (parameterName.equalsIgnoreCase("SomeIteger")){
-					someInt = (int)	parameters[i].getParameter_ToAsInt();
+					someInt = (int)	parameters[i].getParameterAsInt();
 				}
 				else {
 					logger.info("Unknown parameter: " + parameterName);
@@ -62,18 +69,59 @@ public class MyProcess extends SvrProcess {
 		
 		List<TableInfo> allTables = dbManager.getTables();
 		
-		logger.debug("Dostupne tabulky v databazi:");
-		for (TableInfo tabInfo: allTables) {
-			logger.info(">" + tabInfo.toString() + "< ");
-		}
-		logger.debug("_______ Konec vypisu tabulek________");
+//		logger.debug("Dostupne tabulky v databazi:");
+//		for (TableInfo tabInfo: allTables) {
+//			logger.info(">" + tabInfo.toString() + "< ");
+//		}
+//		logger.debug("_______ Konec vypisu tabulek________");
 		
+		//Zkouska internich entit
 		ProcessInfo processInfo = getProcessInfo();
 		Properties context = getCtx();
 		
 		log.info(processInfo.toString());
 		log.info(context.toString());
 		
+		log.info("MROLE: " + MRole.getDefault());
+		log.info("MUSER: " + MUser.get(Env.getCtx()));
+		
+//		MTable.getTable_ID("ad_printcolor");
+		MTable colorTable =  MTable.get(Env.getCtx(), MTable.getTable_ID("AD_PrintColor"));
+		log.info("MTABLETEST: " +  colorTable);
+		
+		MColumn[] columns = colorTable.getColumns(true);
+		log.info("Table: '" + colorTable.getName() + "' has columns: ");
+		for(MColumn col: columns){
+			log.info("Column name: " + col.getName());
+		}
+		
+		int colorValue = -1 * someInt;
+		java.awt.Color color = new java.awt.Color(colorValue);
+		logger.info("Color components for colot int: " + colorValue + " Red: " + color.getRed() + " Blue: " + color.getBlue() + " Green: " + color.getGreen() );
+		
+		
+		String colorToDecode = someString;
+		java.awt.Color decodedColor = null;
+		if(colorToDecode != null ){
+			decodedColor = java.awt.Color.decode(colorToDecode);
+			logger.info("Decoded color '" + colorToDecode + "': " + decodedColor);
+		} else {
+			logger.info("Color field is null.");
+		}
+		
+//		MColor mcolor = new MColor(Env.getCtx(), colorValue, null);
+//		mcolor.setName("Test Color");	//povinny
+////		mcolor.set_Attribute("colortype", "1");	//pitomost! Nepouziva se!
+//		mcolor.set_CustomColumn("colortype", "G");
+//
+////		mcolor.is_new();	//testuje jestli tahle barva byla nahrana z DB nebo byla vytvorena a nema oporu v DB
+//		mcolor.save();	//ulozi data do databaze
+		
+		MPrintColor printColor = new MPrintColor(Env.getCtx(), 0, null);
+		printColor.setColor(decodedColor);
+		printColor.setName(someString);
+//		printColor.saveReplica(true);
+		printColor.save();
 		return "Hello";
 	}
 	

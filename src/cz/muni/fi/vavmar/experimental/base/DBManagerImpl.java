@@ -54,7 +54,7 @@ public class DBManagerImpl implements DBManager {
 				while (resultSet.next()) {
 					TableInfo tbInfo = new TableInfo();
 					tbInfo.setTableName( resultSet.getString(COLUMN_NAME_OF_TABLES_NAMES) );
-					tbInfo.setTableName( resultSet.getString(COLUMN_NAME_OF_TABLES_NAMES) );
+					tbInfo.setDescription( resultSet.getString(COLUMN_NAME_OF_TABLE_DESCRIPTION) );
 					tables.add( tbInfo );
 				}
 			}
