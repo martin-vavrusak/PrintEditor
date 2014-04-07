@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  *
  * @author Martin
  */
-public class DataSourceImpl implements DataSource{
+public class DataSourceImpl implements DataSource {
 
     private String  username;
     private String  password;

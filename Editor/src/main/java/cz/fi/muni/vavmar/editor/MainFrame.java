@@ -6,8 +6,10 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.DAO.DBManager;
 import cz.fi.muni.vavmar.editor.utils.DataFetcher;
 import cz.fi.muni.vavmar.editor.DAO.DataProvider;
+import cz.fi.muni.vavmar.editor.dialogs.TableChooserInitDialog;
 import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import cz.fi.muni.vavmar.editor.utils.Utils;
@@ -29,15 +31,23 @@ import org.netbeans.api.visual.widget.Widget;
 public class MainFrame extends javax.swing.JFrame {
     private static final Logger logger = LogManager.getLogger(MainFrame.class);
     
-    private MainScene mainScene = new MainScene();
+    private MainScene mainScene;
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
     private static final int COLUMN_BORDER_TEXT_LENGHT = 4;
     private List<String> tablesList;
+    private DBManager dataProvider;
+    
+    public MainFrame(){
+        this(new DataProvider());
+    }
     
     /**
      * Creates new form MainFrame
      */
-    public MainFrame() {
+    public MainFrame(DBManager dataProvider) {
+        this.dataProvider = dataProvider;
+        mainScene = new MainScene(dataProvider);
+        
         initComponents();
         
         //centering to screen
@@ -261,7 +271,14 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                DataProvider dataProvider = new DataProvider();
+                
+                TableChooserInitDialog tableChooser = new TableChooserInitDialog(dataProvider);
+                tableChooser.setVisible(true);
+                
+                logger.info( "Selected table: " + tableChooser.getChosenTable() );
+//                MainFrame mainFrame = new MainFrame(dataProvider);
+//                mainFrame.setVisible(true);
             }
         });
     }

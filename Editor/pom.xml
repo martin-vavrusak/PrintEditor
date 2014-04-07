@@ -12,6 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <bnd.plugin.version>2.0.0</bnd.plugin.version>
+    <jar.plugin.version>2.4</jar.plugin.version>
   </properties>
 
  <repositories>
@@ -105,6 +107,7 @@
                <descriptorRef>jar-with-dependencies</descriptorRef>
            </descriptorRefs>
            <archive>
+               <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                <manifest>
                    <mainClass>cz.fi.muni.vavmar.editor.MainFrame</mainClass>
                    <!-- <mainClass>editor.MainFrame</mainClass> -->
@@ -130,6 +133,38 @@
         </dependencies-->
       </plugin>
       
+      <plugin>
+  <artifactId>maven-jar-plugin</artifactId>
+  <version>${jar.plugin.version}</version>
+  <configuration>
+    <archive>  
+      <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+    </archive> 
+  </configuration>
+</plugin>  
+
+      <!-- Creating OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${bnd.plugin.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>cz.fi.muni.vavmar.editor</Export-Package>
+            <Private-Package>org.foo.myproject.*</Private-Package>
+          </instructions>
+        </configuration>
+          <executions>
+            <execution>
+              <id>bundle-manifest</id>
+              <phase>process-classes</phase>
+              <goals>    
+                <goal>manifest</goal>
+              </goals>   
+            </execution>
+          </executions>
+      </plugin>
       <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>

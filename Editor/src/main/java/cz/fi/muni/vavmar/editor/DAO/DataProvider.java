@@ -33,6 +33,7 @@ public class DataProvider implements DBManager {
     
 
     //TODO Udelat vypleni SQL
+    @Override
     public Table getTable(String tableName){
         Table table = new Table();
         List<String> columns = new ArrayList<String>();
@@ -134,10 +135,10 @@ public class DataProvider implements DBManager {
             Exceptions.printStackTrace(ex);
         }
         
-        logger.trace("Tables retrieved: ");
-        for(Table ti : tables){
-            logger.trace(ti);
-        }
+//        logger.trace("Tables retrieved: ");
+//        for(Table ti : tables){
+//            logger.trace(ti);
+//        }
         return tables;
     }
 
@@ -146,6 +147,33 @@ public class DataProvider implements DBManager {
     }
 
     public boolean hasPriviledges(String tableName, String userRole) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<String> getViews() {
+        List<String> tables = new ArrayList<String>();
+        
+        String sql = "SELECT "
+                            + COLUMN_NAME_OF_TABLES_NAMES + ", "
+                            + COLUMN_NAME_OF_TABLE_DESCRIPTION
+                    + " FROM " + AD_TABLE;
+        
+        try {
+            DatabaseMetaData metaData = ds.getConnection().getMetaData();
+            ResultSet rs = metaData.getTables(null, null, null, new String[]{"VIEW"} );
+            
+            while(rs.next()){
+                String tableName = rs.getString("TABLE_NAME");
+                tables.add(tableName);
+            }
+        } catch (SQLException ex){
+            logger.error("Error retrieving Views from DB: " + ex);
+        }
+
+        return tables;
+    }
+
+    public List<String> getViews(String userRole) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

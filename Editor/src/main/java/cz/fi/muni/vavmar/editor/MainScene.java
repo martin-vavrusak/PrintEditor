@@ -6,6 +6,7 @@
 
 package cz.fi.muni.vavmar.editor;
 
+import cz.fi.muni.vavmar.editor.DAO.DBManager;
 import cz.fi.muni.vavmar.editor.actions.ResizeParentByMoveActionProvider;
 import cz.fi.muni.vavmar.editor.actions.ImageResizeStrategy;
 import cz.fi.muni.vavmar.editor.actions.WidgetRectangularSelectDecorator;
@@ -57,7 +58,7 @@ public class MainScene extends Scene {
     private LayerWidget backgroundLayer;
     private ResizeParentByMoveActionProvider moveProvider;
     
-    private DataProvider dataProvider = new DataProvider();
+    private DBManager dataProvider;
     
     private WidgetAction hoverAction;
     private WidgetAction rectangularSelectionAction;
@@ -76,7 +77,11 @@ public class MainScene extends Scene {
     private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, 210 * A4_ASPECT_RATION + 2,
                                                                    279 * A4_ASPECT_RATION + 2);
     public MainScene() {
-        
+        this(new DataProvider());
+    }
+    
+    public MainScene(DBManager dataProvider) {
+        this.dataProvider = dataProvider;
         setOpaque(true);
         selectedWidgets = new HashSet<Widget>();
         
@@ -230,7 +235,7 @@ public class MainScene extends Scene {
         this.CONTROL_PRESSED = pressed;
     }
 
-    public DataProvider getDataProvider() {
+    public DBManager getDataProvider() {
         return dataProvider;
     }
 

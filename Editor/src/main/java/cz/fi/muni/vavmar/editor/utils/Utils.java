@@ -96,6 +96,11 @@ public class Utils {
         };
     }
     
+//    public static List<Object> getListFromModel(final ListModel model) {
+//        List<Object>
+//        return ;
+//    }
+    
     
     /**
      * Make image darker
