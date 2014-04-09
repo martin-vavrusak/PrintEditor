@@ -268,8 +268,14 @@ public class MainFrame extends javax.swing.JFrame {
 //        }
 //        //</editor-fold>
 
+    	runProgram();
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        
+    }
+
+    public static void runProgram(){
+    	java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 DataProvider dataProvider = new DataProvider();
                 
@@ -282,7 +288,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList columnsListArea;
     private javax.swing.JButton jButton1;

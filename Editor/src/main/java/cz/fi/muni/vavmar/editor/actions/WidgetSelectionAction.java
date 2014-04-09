@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +37,7 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
     @Override
     public State mouseClicked(Widget widget, WidgetMouseEvent event) {
         Border selectedBorder = BorderFactory.createDashedBorder(Color.ORANGE, 6, 2, 1, false);
+        BorderFactory.createDashedBorder(Color.black, 1, 1, 1, false);
         logger.trace("Selected widget: " + widget);
         logger.trace("At: " + event.getPoint() + "CTRL pressed selection: " + event.isControlDown());
 

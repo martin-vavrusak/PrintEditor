@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <bnd.plugin.version>2.0.0</bnd.plugin.version>
-    <jar.plugin.version>2.4</jar.plugin.version>
+    <jar.plugin.version>2.3.2</jar.plugin.version>
   </properties>
 
  <repositories>
@@ -93,6 +93,11 @@
             <version>1.11</version>
         </dependency>
         -->
+        <dependency>
+        	<groupId>org.osgi</groupId>
+        	<artifactId>org.osgi.core</artifactId>
+        	<version>5.0.0</version>
+        </dependency>
   </dependencies>
   
   
