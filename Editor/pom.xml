@@ -119,7 +119,7 @@
                </manifest>
            </archive>
        </configuration>
-       <executions>
+       <!--executions>
            <execution>
                <id>make-assembly</id>
                <phase>package</phase>
@@ -127,7 +127,7 @@
                    <goal>single</goal>
                </goals>
            </execution>
-       </executions>
+       </executions-->
        <!--dependencies>
             <dependency>
             <groupId>org.postgresql</groupId>
@@ -167,7 +167,7 @@
           </instructions>
           
         </configuration>
-          <executions>
+          <!--executions>
             <execution>
               <id>bundle-manifest</id>
               <phase>process-classes</phase>
@@ -184,7 +184,7 @@
                         <wrapImportPackage>;</wrapImportPackage>
                 </configuration>
             </execution>
-          </executions>
+          </executions-->
       </plugin>
       
       <!--plugin>
