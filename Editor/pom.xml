@@ -5,7 +5,7 @@
   <groupId>iDempierePrintEditor</groupId>
   <artifactId>Editor</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
 
   <name>Editor</name>
   <url>http://maven.apache.org</url>
@@ -157,8 +157,15 @@
         <configuration>
           <instructions>
             <Export-Package>cz.fi.muni.vavmar.editor</Export-Package>
-            <Private-Package>org.foo.myproject.*</Private-Package>
+            <Private-Package>*-split-package:=merge-first</Private-Package>
+            <Bundle-Activator>cz.fi.muni.vavmar.editor.EditorActivator</Bundle-Activator>
+            <!--Import-Package>org.osgi.framework</Import-Package-->
+            <Embed-Transitive>true</Embed-Transitive>
+            <Embed-Dependency>*;scope=runtime|compile;inline=true</Embed-Dependency>
+            <!--_exportcontents>*</_exportcontents-->
+            <!--unpackBundle>true</unpackBundle-->
           </instructions>
+          
         </configuration>
           <executions>
             <execution>
@@ -168,8 +175,18 @@
                 <goal>manifest</goal>
               </goals>   
             </execution>
+            <execution>
+                <id>wrap-my-dependency</id>
+                <goals>
+                        <goal>wrap</goal>
+                </goals>
+                <configuration>
+                        <wrapImportPackage>;</wrapImportPackage>
+                </configuration>
+            </execution>
           </executions>
       </plugin>
+      
       <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
