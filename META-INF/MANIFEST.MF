@@ -11,4 +11,7 @@ Import-Package: javax.swing,
  org.osgi.framework.wiring;version="1.0.0"
 Bundle-ClassPath: .,
  mylibraries/log4j-api-2.0-rc1.jar,
- mylibraries/log4j-core-2.0-rc1.jar
+ mylibraries/log4j-core-2.0-rc1.jar,
+ mylibraries/org-netbeans-api-visual.jar,
+ mylibraries/org-openide-util.jar,
+ mylibraries/postgresql-9.3-1101-jdbc4.jar
