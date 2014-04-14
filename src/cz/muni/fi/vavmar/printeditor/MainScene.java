@@ -15,7 +15,7 @@ import cz.muni.fi.vavmar.printeditor.actions.WidgetHoverActionProvider;
 import cz.muni.fi.vavmar.printeditor.actions.KeyProcessingAction;
 import cz.muni.fi.vavmar.printeditor.actions.MultiMoveProvider;
 import cz.muni.fi.vavmar.printeditor.actions.WidgetRectangularSelectionProvider;
-import cz.muni.fi.vavmar.printeditor.DAO.DataProvider;
+import cz.muni.fi.vavmar.printeditor.DAO.DataProviderJDBC;
 import cz.muni.fi.vavmar.printeditor.tools.ColumnWidget;
 import cz.muni.fi.vavmar.printeditor.utils.Utils;
 
@@ -37,6 +37,8 @@ import javax.swing.plaf.DimensionUIResource;
 import javax.swing.text.LabelView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.compiere.print.MPrintFormat;
+import org.compiere.util.Env;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
@@ -74,11 +76,11 @@ public class MainScene extends Scene {
     private boolean CONTROL_PRESSED = false;
     private static final int SCENE_WIDTH = 600; //width of scene
     private static final int SCENE_HEIGHT = 900; //width of scene
-    private static final int A4_ASPECT_RATION = 3;
-    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, 210 * A4_ASPECT_RATION + 2,
-                                                                   279 * A4_ASPECT_RATION + 2);
+    private static final int A4_ASPECT_RATIO = 3;
+    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, 210 * A4_ASPECT_RATIO + 2,
+                                                                   279 * A4_ASPECT_RATIO + 2);
     public MainScene() {
-        this(new DataProvider());
+        this(new DataProviderJDBC());
     }
     
     public MainScene(DBManager dataProvider) {
@@ -163,6 +165,7 @@ public class MainScene extends Scene {
         getActions().addAction( keyProcessor );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
         
+        loadSceneDatabase("AD_Printform");
     }
 
     public WidgetAction getMultipleMovementAction() {
@@ -240,7 +243,7 @@ public class MainScene extends Scene {
         return dataProvider;
     }
 
-    public void setDataProvider(DataProvider dataProvider) {
+    public void setDataProvider(DBManager dataProvider) {
         this.dataProvider = dataProvider;
     }
     
@@ -294,4 +297,12 @@ public class MainScene extends Scene {
     }
     
     
+    public void loadSceneDatabase(int tableID){
+    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), tableID, null);
+    }
+    
+    public void loadSceneDatabase(String tableName){
+    	//Zjistit ID Tabulky
+    	dataProvider.getTableID(tableName);
+    }
 }

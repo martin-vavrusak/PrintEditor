@@ -7,7 +7,7 @@
 package cz.muni.fi.vavmar.printeditor;
 
 import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
-import cz.muni.fi.vavmar.printeditor.DAO.DataProvider;
+import cz.muni.fi.vavmar.printeditor.DAO.DataProviderIdempiere;
 import cz.muni.fi.vavmar.printeditor.dialogs.TableChooserInitDialog;
 import cz.muni.fi.vavmar.printeditor.tools.ImageTool;
 import cz.muni.fi.vavmar.printeditor.tools.TextTool;
@@ -39,7 +39,7 @@ public class MainFrame extends javax.swing.JFrame {
     private DBManager dataProvider;
     
     public MainFrame(){
-        this(new DataProvider());
+        this(new DataProviderIdempiere());
     }
     
     /**
@@ -278,7 +278,7 @@ public class MainFrame extends javax.swing.JFrame {
     	java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                DataProvider dataProvider = new DataProvider();
+                DataProviderIdempiere dataProvider = new DataProviderIdempiere();
                 
                 TableChooserInitDialog tableChooser = new TableChooserInitDialog(dataProvider);
                 tableChooser.setVisible(true);

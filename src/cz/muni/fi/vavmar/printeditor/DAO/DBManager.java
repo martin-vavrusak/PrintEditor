@@ -62,4 +62,12 @@ public interface DBManager {
      * @return true if given user has rights to access specified table. False otherwise.  
      */
     public boolean hasPriviledges( String tableName, String userRole);
+    
+    /**
+     * Returns ID of passed table
+     * 
+     * @param tableName name of a table to be processed.
+     * @return id numeric identifier in idempiere of tableName passed as parameter.
+     */
+    public int getTableID(String tableName);
 }

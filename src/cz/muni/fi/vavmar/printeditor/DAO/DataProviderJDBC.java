@@ -23,12 +23,12 @@ import org.openide.util.Exceptions;
  *
  * @author Martin
  */
-public class DataProvider implements DBManager {
+public class DataProviderJDBC implements DBManager {
     public static final String AD_TABLE = "AD_Table";
     public static final String COLUMN_NAME_OF_TABLES_NAMES = "tablename";	//Name of column containing names of all tables of iDempiere
     public static final String COLUMN_NAME_OF_TABLE_DESCRIPTION = "description"; 
         
-    private static final Logger logger = LogManager.getLogger(DataProvider.class);
+    private static final Logger logger = LogManager.getLogger(DataProviderJDBC.class);
     DataSource  ds = new DataSourceImpl("localhost", "5432", "idempiere", "adempiere", "adempiere");
     
 
@@ -176,6 +176,11 @@ public class DataProvider implements DBManager {
     public List<String> getViews(String userRole) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+	@Override
+	public int getTableID(String tableName) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
     
     
     

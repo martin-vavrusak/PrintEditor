@@ -6,7 +6,7 @@
 
 package cz.muni.fi.vavmar.printeditor.experimental;
 
-import cz.muni.fi.vavmar.printeditor.DAO.DataProvider;
+import cz.muni.fi.vavmar.printeditor.DAO.DataProviderJDBC;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -33,7 +33,7 @@ public class DBTest {
         Class.forName("org.postgresql.Driver");
         
         
-        DataProvider provider = new DataProvider();
+        DataProviderJDBC provider = new DataProviderJDBC();
         provider.getTables();
         
         provider.getTable("C_Payment");
