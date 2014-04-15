@@ -11,8 +11,12 @@ import cz.muni.fi.vavmar.printeditor.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.swing.AbstractListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +45,58 @@ public class TableChooserInitDialog extends JDialog {
         return chosenTable;
     }
     
+    private static class PrintFormat {
+        private int id;
+        private String name;
+
+        public PrintFormat(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return id + " " + name;
+        }
+        
+        public static ListModel<PrintFormat> createListModel(final Map<Integer, String> map){
+            final List<PrintFormat> printFormats = new ArrayList<PrintFormat>();
+            
+            for(Entry<Integer, String> pf : map.entrySet()){
+                printFormats.add(new PrintFormat(pf.getKey(), pf.getValue()));
+            }
+            
+            return new AbstractListModel<PrintFormat>() {
+
+                @Override
+                public int getSize() {
+                    return printFormats.size();
+                }
+
+                @Override
+                public PrintFormat getElementAt(int index) {
+                    return printFormats.get(index);
+                }
+            };
+        }
+    }
+    
 private class TableChooserJPanel extends javax.swing.JPanel {
     private List<String> searchList;
     
@@ -63,7 +119,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         titleLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         viewRestrictionCheckbox = new javax.swing.JCheckBox();
-        aviableTablesAndVievsListSrcollPane = new javax.swing.JScrollPane();
+        availableTablesAndVievsListSrcollPane = new javax.swing.JScrollPane();
         aviableTablesAndVievsList = new javax.swing.JList();
         searchField = new javax.swing.JTextField();
         credentialsPanel = new javax.swing.JPanel();
@@ -73,6 +129,8 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         roleLabel = new javax.swing.JLabel();
         buttonOk = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        availablePrintFormats = new javax.swing.JList();
         jSeparator1 = new javax.swing.JSeparator();
 
         titleLabel.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.titleLabel.text")); // NOI18N
@@ -86,7 +144,13 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 
         List<String> tablesList = dataProvider.getTables(null);
         aviableTablesAndVievsList.setModel(Utils.createListModel( tablesList ));
-        aviableTablesAndVievsListSrcollPane.setViewportView(aviableTablesAndVievsList);
+        aviableTablesAndVievsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        aviableTablesAndVievsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                aviableTablesAndVievsListMouseClicked(evt);
+            }
+        });
+        availableTablesAndVievsListSrcollPane.setViewportView(aviableTablesAndVievsList);
 
         searchField.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchField.text")); // NOI18N
         searchField.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -142,7 +206,8 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(roleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(roleTitle)))
+                    .addComponent(roleTitle))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         userLabel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.userLabel.AccessibleContext.accessibleName")); // NOI18N
@@ -161,6 +226,14 @@ private class TableChooserJPanel extends javax.swing.JPanel {
             }
         });
 
+        availablePrintFormats.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        availablePrintFormats.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(availablePrintFormats);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -172,33 +245,35 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                         .addComponent(viewRestrictionCheckbox)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(searchField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(aviableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(buttonOk)
                         .addGap(18, 18, 18)
                         .addComponent(buttonCancel))
-                    .addComponent(credentialsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(credentialsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addGap(16, 16, 16))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(viewRestrictionCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(viewRestrictionCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(credentialsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(credentialsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(buttonOk)
-                            .addComponent(buttonCancel)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(aviableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)))
+                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonOk)
+                    .addComponent(buttonCancel))
                 .addContainerGap())
         );
 
@@ -295,14 +370,30 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         dispose();
     }//GEN-LAST:event_buttonOkMouseReleased
 
+    private void aviableTablesAndVievsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aviableTablesAndVievsListMouseClicked
+        //retrieve model from list wich fired this event
+        JList list = (JList) evt.getComponent();
+
+        String s = (String) list.getSelectedValue();
+        logger.trace("Selected table: " + s);
+
+        int tableID = dataProvider.getTableID(s);
+        Map<Integer, String> printFormats = dataProvider.getPrintFormats(tableID);
+                
+        availablePrintFormats.setModel( PrintFormat.createListModel(printFormats) );
+
+    }//GEN-LAST:event_aviableTablesAndVievsListMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList availablePrintFormats;
+    private javax.swing.JScrollPane availableTablesAndVievsListSrcollPane;
     private javax.swing.JList aviableTablesAndVievsList;
-    private javax.swing.JScrollPane aviableTablesAndVievsListSrcollPane;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JButton buttonOk;
     private javax.swing.JPanel credentialsPanel;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel roleLabel;
     private javax.swing.JLabel roleTitle;

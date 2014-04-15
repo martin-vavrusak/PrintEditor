@@ -2,6 +2,7 @@ package cz.muni.fi.vavmar.printeditor.DAO;
 
 import cz.muni.fi.vavmar.printeditor.Table;
 import java.util.List;
+import java.util.Map;
 
 public interface DBManager {
 
@@ -70,4 +71,7 @@ public interface DBManager {
      * @return id numeric identifier in idempiere of tableName passed as parameter.
      */
     public int getTableID(String tableName);
+    
+    
+    public Map<Integer, String> getPrintFormats( int tableID );
 }

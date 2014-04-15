@@ -34,7 +34,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     private MainScene mainScene;
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
-    private static final int COLUMN_BORDER_TEXT_LENGHT = 4;
+    private static final int COLUMN_BORDER_TEXT_LENGHT = 10;
     private List<String> tablesList;
     private DBManager dataProvider;
     
@@ -176,16 +176,19 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tablesListAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablesListAreaMouseClicked
-        System.out.println("Componenta vyvolala klik: " + evt.getComponent());
+        logger.trace("Componenta vyvolala klik: " + evt.getComponent());
+        
+        //retrieve model from list wich fired this event
         JList list = (JList) evt.getComponent();
         ListModel model = list.getModel();
         
-        System.out.println("Model: " + model);
+        logger.trace("Model: " + model);
         
+        //get selected item in list
         int index = list.getSelectedIndex();        
         if(index >= 0){ 
             String s = (String) model.getElementAt( list.getSelectedIndex() );
-            System.out.println("Nazev polozky: " + s);
+            logger.trace("Nazev polozky: " + s);
 
             columnsListArea.setModel( Utils.createListModel( mainScene.getDataProvider().getTable(s).getColumns() ));
             

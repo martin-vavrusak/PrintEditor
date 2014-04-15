@@ -311,7 +311,7 @@ public class MainScene extends Scene {
     public void loadSceneDatabase(int tableID){
 //    	MPrintFormat.get(ctx, AD_ReportView_ID, AD_Table_ID);
     	
-    	getPrintFormats(tableID);
+    	Map<Integer, String> availablePrintFormats = dataProvider.getPrintFormats(tableID);
     	
     	
 //    	
@@ -333,31 +333,5 @@ public class MainScene extends Scene {
     	dataProvider.getTableID(tableName);
     }
     
-    //Return map of all formats aviable for specified table
-    public static Map getPrintFormats( int tableID ){
-    	Map<Integer, String> returnMap = new HashMap<Integer, String>();
-
-    	String sql = "SELECT ad_printformat_id, name FROM AD_PrintFormat WHERE AD_Table_ID=?";
-    	PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, tableID);
-			rs = pstmt.executeQuery ();
-			while(rs.next()){
-				returnMap.put(rs.getInt(1), rs.getString(2));
-			}
-		}
-		catch (Exception e)
-		{
-			logger.log(Level.ERROR, "Unable to get print formats of table: " + tableID, e);
-		}
-		finally {
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		
-    	return returnMap;
-    }
+    
 }

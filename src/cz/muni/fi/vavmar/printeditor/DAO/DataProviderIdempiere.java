@@ -13,13 +13,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.sql.DataSource;
 import javax.swing.text.TabExpander;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compiere.model.MTable;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.openide.util.Exceptions;
 
@@ -194,5 +199,31 @@ public class DataProviderIdempiere implements DBManager {
 	}
     
     
-    
+	//Return map of all formats aviable for specified table
+    public Map<Integer, String> getPrintFormats( int tableID ){
+    	Map<Integer, String> returnMap = new HashMap<Integer, String>();
+
+    	String sql = "SELECT ad_printformat_id, name FROM AD_PrintFormat WHERE AD_Table_ID=?";
+    	PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt (1, tableID);
+			rs = pstmt.executeQuery ();
+			while(rs.next()){
+				returnMap.put(rs.getInt(1), rs.getString(2));
+			}
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.ERROR, "Unable to get print formats of table: " + tableID, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+    	return returnMap;
+    }
 }

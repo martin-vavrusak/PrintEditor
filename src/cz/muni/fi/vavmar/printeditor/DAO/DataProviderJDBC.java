@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -179,6 +181,11 @@ public class DataProviderJDBC implements DBManager {
 
 	@Override
 	public int getTableID(String tableName) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Map<Integer, String> getPrintFormats(int tableID) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
     
