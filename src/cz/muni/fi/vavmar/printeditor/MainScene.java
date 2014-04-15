@@ -173,8 +173,6 @@ public class MainScene extends Scene {
         getActions().addAction( hoverAction );
         getActions().addAction( keyProcessor );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
-        
-        loadSceneDatabase("AD_Printform");
     }
 
     public WidgetAction getMultipleMovementAction() {
@@ -305,25 +303,40 @@ public class MainScene extends Scene {
         return columnheader;
     }
     
+    /**
+     * Create new print form for table.
+     * 
+     * @param tableName name of table to create new print form.
+     */
+    public void createNewPrintForm(String tableName){
+    	logger.debug("Creting new print form for table: " + tableName + "NOT IMPLEMENTED YET!");
+    }
     
-  //1. Ziskat vsechny printformaty tabulky
-  //2. nahrat konkretni format
-    public void loadSceneDatabase(int tableID){
-//    	MPrintFormat.get(ctx, AD_ReportView_ID, AD_Table_ID);
+    /**
+     * Loads print format and populate scene.
+     * @param printFormID id of print format to be loaded.
+     */
+    public void loadPrintForm(int printFormatID){
+    	logger.debug("Loading print form: " + printFormatID);
     	
-    	Map<Integer, String> availablePrintFormats = dataProvider.getPrintFormats(tableID);
+    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), printFormatID, null);
+    	logger.trace("Print format retrieved from DB: " + printFormat);
     	
-    	
+////    	MPrintFormat.get(ctx, AD_ReportView_ID, AD_Table_ID);
 //    	
-//    	//Mel by probehnout vyber formatu k uprave
-//    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), tableID, null);
-//
+//    	Map<Integer, String> availablePrintFormats = dataProvider.getPrintFormats(printFormatID);
 //    	
-//
-//    	if(printFormat == null){
-//    		logger.error("Unable to get table id: " + tableID + " from database.");
-//    		return;
-//    	}
+//    	
+////    	
+////    	//Mel by probehnout vyber formatu k uprave
+////    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), tableID, null);
+////
+////    	
+////
+////    	if(printFormat == null){
+////    		logger.error("Unable to get table id: " + tableID + " from database.");
+////    		return;
+////    	}
     	
     	
     }

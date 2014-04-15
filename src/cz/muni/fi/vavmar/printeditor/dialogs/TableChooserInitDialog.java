@@ -37,7 +37,7 @@ public class TableChooserInitDialog extends JDialog {
         add(new TableChooserJPanel());
         
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(screenSize.width / 2, screenSize.height / 2, 450, 325);
+        setBounds(screenSize.width / 2, screenSize.height / 2, 490, 455);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
@@ -290,7 +290,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(viewRestrictionCheckbox)
                                 .addComponent(createNewPrintFormatButton))
-                            .addGap(0, 0, Short.MAX_VALUE))
+                            .addGap(0, 132, Short.MAX_VALUE))
                         .addComponent(searchField)
                         .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -298,7 +298,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                         .addGap(176, 176, 176)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 81, Short.MAX_VALUE)
+                        .addGap(0, 95, Short.MAX_VALUE)
                         .addComponent(buttonOk)
                         .addGap(18, 18, 18)
                         .addComponent(buttonCancel))
@@ -328,7 +328,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

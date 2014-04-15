@@ -56,13 +56,23 @@ public class MainFrame extends javax.swing.JFrame {
         if(selectedPrintFormatID == -1 && selectedTable != null){
         	//create new print format for a table
         	logger.trace("Now we should create new print format. Not implemented yet.");
+        	mainScene.createNewPrintForm(selectedTable);
+        	tablesList = new ArrayList<String>();
+        	tablesList.add(selectedTable);
+        			
         } else if (selectedPrintFormatID > 0) {
         	//load print format
         	logger.trace("Now we should load print format. Not implemented yet.");
+        	mainScene.loadPrintForm(selectedPrintFormatID);
+        	tablesList = new ArrayList<String>();
+        	tablesList.add(selectedTable);
+        	
         } else {
         	//error otherwise
         	logger.trace("Unsupported option.");
+        	return;
         }
+        
         
         initComponents();
         
@@ -110,7 +120,6 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1.setViewportView(columnsListArea);
 
         tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesListArea.border.title"))); // NOI18N
-        tablesList = mainScene.getDataProvider().getTables(null);
         tablesListArea.setModel(Utils.createListModel( tablesList ));
         tablesListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tablesListArea.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -143,8 +152,8 @@ public class MainFrame extends javax.swing.JFrame {
         });
         toolPanel.add(jButton1);
 
-        toolPanel.add (new TextTool("Text", "cz/muni/fi/vavmar/printeditor/images/textTool.png"));
-        toolPanel.add (new ImageTool("Image", "cz/muni/fi/vavmar/printeditor/images/imageIcon.png"));
+        toolPanel.add (new TextTool("Text", "images/textTool.png"));
+        toolPanel.add (new ImageTool("Image", "images/imageIcon.png"));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
