@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
+import javax.swing.text.TabExpander;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compiere.model.MTable;
@@ -181,12 +183,14 @@ public class DataProviderIdempiere implements DBManager {
 
 	@Override
 	public int getTableID(String tableName) {
+		logger.trace("Resolving id of table: " + tableName);
+//		MTable ad_table = new MTable(Env.getCtx(), 100, null);
+//		logger.trace( "Table ID: 100 name: " + ad_table.getName() );
 		
-		MTable ad_table = new MTable(Env.getCtx(), 0, null);
-		MTable table1 = new MTable(Env.getCtx(), 1, null);
-		logger.trace( "Table ID: 100 name: " + ad_table.getName() );
-		logger.trace( "Table ID: 1 name: " + table1.getName() );
-		return -1;
+		int tableID = MTable.getTable_ID(tableName);
+		
+		logger.trace( "Table '" + tableName + "' has ID: " + tableID );
+		return tableID;
 	}
     
     

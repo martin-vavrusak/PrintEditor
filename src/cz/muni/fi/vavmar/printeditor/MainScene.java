@@ -27,17 +27,26 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.plaf.DimensionUIResource;
 import javax.swing.text.LabelView;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.compiere.model.PO;
 import org.compiere.print.MPrintFormat;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
@@ -297,12 +306,58 @@ public class MainScene extends Scene {
     }
     
     
+  //1. Ziskat vsechny printformaty tabulky
+  //2. nahrat konkretni format
     public void loadSceneDatabase(int tableID){
-    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), tableID, null);
+//    	MPrintFormat.get(ctx, AD_ReportView_ID, AD_Table_ID);
+    	
+    	getPrintFormats(tableID);
+    	
+    	
+//    	
+//    	//Mel by probehnout vyber formatu k uprave
+//    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), tableID, null);
+//
+//    	
+//
+//    	if(printFormat == null){
+//    		logger.error("Unable to get table id: " + tableID + " from database.");
+//    		return;
+//    	}
+    	
+    	
     }
     
     public void loadSceneDatabase(String tableName){
     	//Zjistit ID Tabulky
     	dataProvider.getTableID(tableName);
+    }
+    
+    //Return map of all formats aviable for specified table
+    public static Map getPrintFormats( int tableID ){
+    	Map<Integer, String> returnMap = new HashMap<Integer, String>();
+
+    	String sql = "SELECT ad_printformat_id, name FROM AD_PrintFormat WHERE AD_Table_ID=?";
+    	PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt (1, tableID);
+			rs = pstmt.executeQuery ();
+			while(rs.next()){
+				returnMap.put(rs.getInt(1), rs.getString(2));
+			}
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.ERROR, "Unable to get print formats of table: " + tableID, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+    	return returnMap;
     }
 }
