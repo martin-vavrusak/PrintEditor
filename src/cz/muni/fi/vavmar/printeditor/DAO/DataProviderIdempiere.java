@@ -34,8 +34,8 @@ import org.openide.util.Exceptions;
  */
 public class DataProviderIdempiere implements DBManager {
     public static final String AD_TABLE = "AD_Table";
-    public static final String COLUMN_NAME_OF_TABLES_NAMES = "tablename";	//Name of column containing names of all tables of iDempiere
-    public static final String COLUMN_NAME_OF_TABLE_DESCRIPTION = "description"; 
+    public static final String COLUMN_TABLE_NAME = "tablename";	//Name of column containing names of all tables of iDempiere
+    public static final String COLUMN_TABLE_DESCRIPTION = "description"; 
         
     private static final Logger logger = LogManager.getLogger(DataProviderIdempiere.class);
     DataSource  ds = new DataSourceImpl("localhost", "5432", "idempiere", "adempiere", "adempiere");
@@ -48,11 +48,11 @@ public class DataProviderIdempiere implements DBManager {
         List<String> columns = new ArrayList<String>();
         
         String sql = "SELECT "
-                            + COLUMN_NAME_OF_TABLES_NAMES + ", "
-                            + COLUMN_NAME_OF_TABLE_DESCRIPTION
+                            + COLUMN_TABLE_NAME + ", "
+                            + COLUMN_TABLE_DESCRIPTION
                     + " FROM " + AD_TABLE
                     + " WHERE " 
-                            + COLUMN_NAME_OF_TABLES_NAMES + " = ?";
+                            + COLUMN_TABLE_NAME + " = ?";
         
               
         PreparedStatement ps = null;
@@ -71,8 +71,8 @@ public class DataProviderIdempiere implements DBManager {
                     logger.error("Result set is null!");
                 } else {
                     resultSet.next();
-                    table.setName( resultSet.getString(COLUMN_NAME_OF_TABLES_NAMES) );
-                    table.setDescription( resultSet.getString(COLUMN_NAME_OF_TABLE_DESCRIPTION) ); 
+                    table.setName( resultSet.getString(COLUMN_TABLE_NAME) );
+                    table.setDescription( resultSet.getString(COLUMN_TABLE_DESCRIPTION) ); 
                 }
             }
             ps.close();
@@ -111,13 +111,56 @@ public class DataProviderIdempiere implements DBManager {
         Collections.sort(tables);
         return tables;
     }
-
+    
     public List<Table> getTables() {
         List<Table> tables = new ArrayList<Table>();
         
         String sql = "SELECT "
-                            + COLUMN_NAME_OF_TABLES_NAMES + ", "
-                            + COLUMN_NAME_OF_TABLE_DESCRIPTION
+                            + COLUMN_TABLE_NAME + ", "
+                            + COLUMN_TABLE_DESCRIPTION
+                    + " FROM " + AD_TABLE;
+        
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try {
+            ps = DB.prepareStatement(sql, null);
+            if( !ps.execute() ){
+                logger.error("Unable to get tables from DB. SQL: " + sql);
+                
+            } else {
+                resultSet = ps.getResultSet();
+                
+                if(resultSet == null){
+                    logger.error("Result set is null!");
+                } else {
+                    while (resultSet.next()) {
+                        Table tbInfo = new Table();
+                        tbInfo.setName( resultSet.getString(COLUMN_TABLE_NAME) );
+                        tbInfo.setDescription(resultSet.getString(COLUMN_TABLE_DESCRIPTION) );
+                        tables.add( tbInfo );
+                    }
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Exceptions.printStackTrace(ex);
+            
+        } finally {
+        	DB.close(resultSet, ps);
+        	ps = null;
+        	resultSet = null;
+        }
+        
+        return tables;
+    }
+    
+    /*
+    public List<Table> getTables() {
+        List<Table> tables = new ArrayList<Table>();
+        
+        String sql = "SELECT "
+                            + COLUMN_TABLE_NAME + ", "
+                            + COLUMN_TABLE_DESCRIPTION
                     + " FROM " + AD_TABLE;
         
         PreparedStatement ps;
@@ -133,8 +176,8 @@ public class DataProviderIdempiere implements DBManager {
                 } else {
                     while (resultSet.next()) {
                         Table tbInfo = new Table();
-                        tbInfo.setName( resultSet.getString(COLUMN_NAME_OF_TABLES_NAMES) );
-                        tbInfo.setDescription(resultSet.getString(COLUMN_NAME_OF_TABLE_DESCRIPTION) );
+                        tbInfo.setName( resultSet.getString(COLUMN_TABLE_NAME) );
+                        tbInfo.setDescription(resultSet.getString(COLUMN_TABLE_DESCRIPTION) );
                         tables.add( tbInfo );
                     }
                 }
@@ -150,7 +193,9 @@ public class DataProviderIdempiere implements DBManager {
 //        }
         return tables;
     }
+    */
 
+    
     public List<String> getTableSchema(String tableName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -159,6 +204,35 @@ public class DataProviderIdempiere implements DBManager {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public List<String> getViews() {
+    	List<String> tables = new ArrayList<String>();
+    	
+    	
+    	String sql = "SELECT " + COLUMN_TABLE_NAME + " FROM AD_Table WHERE isview='Y'";
+    	
+    	PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			rs = pstmt.executeQuery ();
+			while(rs.next()){
+				tables.add(rs.getString(1));
+			}
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.ERROR, "Error during retrieving views: ", e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+    	return tables;
+    }
+    
+    /*
     public List<String> getViews() {
         List<String> tables = new ArrayList<String>();
         
@@ -181,6 +255,7 @@ public class DataProviderIdempiere implements DBManager {
 
         return tables;
     }
+    */
 
     public List<String> getViews(String userRole) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
