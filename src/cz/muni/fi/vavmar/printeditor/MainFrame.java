@@ -38,16 +38,31 @@ public class MainFrame extends javax.swing.JFrame {
     private List<String> tablesList;
     private DBManager dataProvider;
     
+    @Deprecated
     public MainFrame(){
-        this(new DataProviderIdempiere());
+        this(new DataProviderIdempiere(), null, -1);
     }
     
     /**
      * Creates new form MainFrame
      */
-    public MainFrame(DBManager dataProvider) {
+    public MainFrame(DBManager dataProvider, String selectedTable, int selectedPrintFormatID) {
+    	logger.debug("Starting PrintEditor.");
+    	logger.debug("Selected table: " + selectedTable + " selected print format: " + selectedPrintFormatID);
         this.dataProvider = dataProvider;
         mainScene = new MainScene(dataProvider);
+        
+        //TODO
+        if(selectedPrintFormatID == -1 && selectedTable != null){
+        	//create new print format for a table
+        	logger.trace("Now we should create new print format. Not implemented yet.");
+        } else if (selectedPrintFormatID > 0) {
+        	//load print format
+        	logger.trace("Now we should load print format. Not implemented yet.");
+        } else {
+        	//error otherwise
+        	logger.trace("Unsupported option.");
+        }
         
         initComponents();
         
@@ -286,9 +301,18 @@ public class MainFrame extends javax.swing.JFrame {
                 TableChooserInitDialog tableChooser = new TableChooserInitDialog(dataProvider);
                 tableChooser.setVisible(true);
                 
-                logger.info( "Selected table: " + tableChooser.getChosenTable() );
-                MainFrame mainFrame = new MainFrame(dataProvider);
-                mainFrame.setVisible(true);
+                String selectedTable = tableChooser.getSelectedTable();
+                int selectedPrintFormatID = tableChooser.getSelectedPrintFormatID();
+                logger.info( "Selected table: " +  selectedTable);
+                logger.info( "Selected print format: " +  selectedPrintFormatID);
+                
+                //only if something has been selected run program
+                if(selectedTable != null || selectedPrintFormatID > 0){
+                	//TODO check and create new print format for a table
+                	
+	                MainFrame mainFrame = new MainFrame(dataProvider, selectedTable, selectedPrintFormatID);
+	                mainFrame.setVisible(true);
+                }
             }
         });
     }

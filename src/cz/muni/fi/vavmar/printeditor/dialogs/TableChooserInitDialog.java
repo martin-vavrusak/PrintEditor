@@ -24,10 +24,11 @@ import org.apache.logging.log4j.Logger;
 
 
 public class TableChooserInitDialog extends JDialog {
-    protected static final Logger logger = LogManager.getLogger( TableChooserInitDialog.class );
+	protected static final Logger logger = LogManager.getLogger( TableChooserInitDialog.class );
     
     protected DBManager dataProvider;
-    private String chosenTable = null;
+    private String selectedTable = null;
+    private int selectedPrintFormatID;
     
     public TableChooserInitDialog(DBManager dbManager) {
         dataProvider = dbManager;
@@ -41,10 +42,31 @@ public class TableChooserInitDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
-    public String getChosenTable(){
-        return chosenTable;
+    /**
+     * Return name of selected table.
+     * 
+     * @return name of selected table
+     */
+    public String getSelectedTable(){
+        return selectedTable;
     }
     
+    /**
+     * Return id of selected print format or -1 otherwise.
+     * 
+     * @return id of selected print format or -1 otherwise
+     */
+    public int getSelectedPrintFormatID() {
+		return selectedPrintFormatID;
+	}
+    
+    /**
+     * Temporary class used for passing data to list for table format selection.
+     * Allows to easily get ID and name of selected print format.
+     * 
+     * @author Martin
+     *
+     */
     private static class PrintFormat {
         private int id;
         private String name;
@@ -75,6 +97,13 @@ public class TableChooserInitDialog extends JDialog {
             return id + " " + name;
         }
         
+        /**
+         * Creates populated ListModel which could be used for JList.
+         * 
+         * @param map map containing ID and name of obtainable print format.
+         * 
+         * @return populated ListModel which could be used for JList
+         */
         public static ListModel<PrintFormat> createListModel(final Map<Integer, String> map){
             final List<PrintFormat> printFormats = new ArrayList<PrintFormat>();
             
@@ -99,6 +128,7 @@ public class TableChooserInitDialog extends JDialog {
     
 private class TableChooserJPanel extends javax.swing.JPanel {
     private List<String> searchList;
+	
     
     /**
      * Creates new form JPanelExtended
@@ -131,6 +161,9 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         buttonCancel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         availablePrintFormats = new javax.swing.JList();
+        createNewPrintFormatButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
 
         titleLabel.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.titleLabel.text")); // NOI18N
@@ -164,6 +197,8 @@ private class TableChooserJPanel extends javax.swing.JPanel {
             }
         });
 
+        credentialsPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
         roleTitle.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.roleTitle.text")); // NOI18N
 
         userTitle.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.userTitle.text")); // NOI18N
@@ -189,17 +224,20 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         credentialsPanelLayout.setHorizontalGroup(
             credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(credentialsPanelLayout.createSequentialGroup()
-                .addGroup(credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(5, 5, 5)
+                .addGroup(credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(userTitle)
                     .addComponent(roleTitle))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-                    .addComponent(roleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(roleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(5, 5, 5))
         );
         credentialsPanelLayout.setVerticalGroup(
             credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(credentialsPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, credentialsPanelLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
                 .addGroup(credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userTitle))
@@ -207,7 +245,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                 .addGroup(credentialsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(roleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(roleTitle))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(5, 5, 5))
         );
 
         userLabel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.userLabel.AccessibleContext.accessibleName")); // NOI18N
@@ -226,54 +264,77 @@ private class TableChooserJPanel extends javax.swing.JPanel {
             }
         });
 
-        availablePrintFormats.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         availablePrintFormats.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(availablePrintFormats);
+
+        createNewPrintFormatButton.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.createNewPrintFormatButton.text")); // NOI18N
+        createNewPrintFormatButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                createNewPrintFormatButtonMouseReleased(evt);
+            }
+        });
+
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.jLabel1.text")); // NOI18N
+
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.jLabel2.text")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(viewRestrictionCheckbox)
+                                .addComponent(createNewPrintFormatButton))
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(searchField)
+                        .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(viewRestrictionCheckbox)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(searchField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addGap(176, 176, 176)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 81, Short.MAX_VALUE)
                         .addComponent(buttonOk)
                         .addGap(18, 18, 18)
                         .addComponent(buttonCancel))
-                    .addComponent(credentialsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(credentialsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addGap(16, 16, 16))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(viewRestrictionCheckbox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(credentialsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                    .addComponent(credentialsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonOk)
-                    .addComponent(buttonCancel))
+                    .addComponent(buttonCancel)
+                    .addComponent(createNewPrintFormatButton))
                 .addContainerGap())
         );
 
@@ -281,18 +342,15 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator1)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(titleLabel)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jSeparator1)
-                        .addGap(71, 71, 71))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,13 +418,24 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_searchFieldKeyReleased
 
     private void buttonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCancelMouseClicked
-        chosenTable = null;
+        selectedTable = null;
+        selectedPrintFormatID = -1;
+        
         dispose();
     }//GEN-LAST:event_buttonCancelMouseClicked
 
     private void buttonOkMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonOkMouseReleased
         //TODO Vratit instanci reprezentujici
-        chosenTable = (String) aviableTablesAndVievsList.getSelectedValue();
+        selectedTable = (String) aviableTablesAndVievsList.getSelectedValue();
+        
+        PrintFormat selectedFormat = (PrintFormat) availablePrintFormats.getSelectedValue();
+        if( selectedFormat == null ){
+        	selectedPrintFormatID = -1;
+        
+        } else {
+        	selectedPrintFormatID = selectedFormat.getId();
+        }
+        
         dispose();
     }//GEN-LAST:event_buttonOkMouseReleased
 
@@ -384,6 +453,12 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_aviableTablesAndVievsListMouseClicked
 
+    private void createNewPrintFormatButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewPrintFormatButtonMouseReleased
+         selectedTable = (String) aviableTablesAndVievsList.getSelectedValue();
+         selectedPrintFormatID = -1;
+         dispose();
+    }//GEN-LAST:event_createNewPrintFormatButtonMouseReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList availablePrintFormats;
@@ -391,7 +466,10 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     private javax.swing.JList aviableTablesAndVievsList;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JButton buttonOk;
+    private javax.swing.JButton createNewPrintFormatButton;
     private javax.swing.JPanel credentialsPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;

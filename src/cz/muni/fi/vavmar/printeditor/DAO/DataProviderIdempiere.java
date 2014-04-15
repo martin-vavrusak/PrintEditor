@@ -38,9 +38,69 @@ public class DataProviderIdempiere implements DBManager {
     public static final String COLUMN_TABLE_DESCRIPTION = "description"; 
         
     private static final Logger logger = LogManager.getLogger(DataProviderIdempiere.class);
-    DataSource  ds = new DataSourceImpl("localhost", "5432", "idempiere", "adempiere", "adempiere");
+//    DataSource  ds = new DataSourceImpl("localhost", "5432", "idempiere", "adempiere", "adempiere");
     
 
+    public Table getTable(String tableName){
+        Table table = new Table();
+        List<String> columns = new ArrayList<String>();
+        
+        String sql = "SELECT "
+                            + COLUMN_TABLE_NAME + ", "
+                            + COLUMN_TABLE_DESCRIPTION
+                    + " FROM " + AD_TABLE
+                    + " WHERE " 
+                            + COLUMN_TABLE_NAME + " = ?";
+        
+              
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        try {
+            ps = DB.prepareStatement(sql, null);
+            ps.setString(1, tableName);
+            
+            logger.trace("Prepared Statement: " + ps);
+            
+            if( !ps.execute() ){
+                logger.error("Unable to get tables from DB. SQL: " + sql);
+            } else {
+                resultSet = ps.getResultSet();
+                
+                if(resultSet == null){
+                    logger.error("Result set is null!");
+                } else {
+                    resultSet.next();
+                    table.setName( resultSet.getString(COLUMN_TABLE_NAME) );
+                    table.setDescription( resultSet.getString(COLUMN_TABLE_DESCRIPTION) ); 
+                }
+            }
+//            ps.close();
+            
+            //Retrieving the columns of the table
+            DatabaseMetaData metadata = ps.getConnection().getMetaData();
+            ResultSet metaDataResultSet = metadata.getColumns(null, null, tableName.toLowerCase(), null); //Get All columns of table if last is filled should return info about particular column
+            
+            while ( metaDataResultSet.next()){
+                String columnName = metaDataResultSet.getString("COLUMN_NAME");
+                columns.add(columnName);
+                logger.trace( "colum name: " +  columnName);
+            }
+            table.setColumns(columns);
+//            ps.close();
+            
+        } catch (SQLException ex) {
+            Exceptions.printStackTrace(ex);
+            
+        } finally {
+             DB.close(resultSet, ps);
+             resultSet = null;
+             ps = null;
+        }
+        
+        return table;
+    }
+    
+    /*
     //TODO Udelat vypleni SQL
     @Override
     public Table getTable(String tableName){
@@ -102,6 +162,7 @@ public class DataProviderIdempiere implements DBManager {
         
         return table;
     }
+    */
     
     public List<String> getTables(String userRole) {
         List<String> tables = new ArrayList<String>();
