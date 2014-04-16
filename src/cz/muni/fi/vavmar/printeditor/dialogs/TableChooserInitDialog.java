@@ -397,7 +397,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
              List<String> listInnerMatch = new ArrayList<String>();
         
             for(String t: searchList){
-                if(t.length() < s.length()) break;
+                if(t.length() < s.length()) continue;
 
                 //compare first s.lenght() characters
                 if( t.substring(0, s.length()).equalsIgnoreCase(s) ){
