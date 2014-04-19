@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +32,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +48,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compiere.model.PO;
+import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormat;
+import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.netbeans.api.visual.action.AcceptProvider;
@@ -322,29 +327,109 @@ public class MainScene extends Scene {
     	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), printFormatID, null);
     	logger.trace("Print format retrieved from DB: " + printFormat);
     	
-////    	MPrintFormat.get(ctx, AD_ReportView_ID, AD_Table_ID);
-//    	
-//    	Map<Integer, String> availablePrintFormats = dataProvider.getPrintFormats(printFormatID);
-//    	
-//    	
-////    	
-////    	//Mel by probehnout vyber formatu k uprave
-////    	MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), tableID, null);
-////
-////    	
-////
-////    	if(printFormat == null){
-////    		logger.error("Unable to get table id: " + tableID + " from database.");
-////    		return;
-////    	}
     	
+    	//nahrat jednotlive polozky
+    	List<MPrintFormatItem> formatItems = dataProvider.getFormatItems(printFormatID); 
+    	logger.trace("Format number '" + printFormatID + "' items:" );
     	
+    	for(MPrintFormatItem item: formatItems){
+    		logger.trace(item);
+    		if(item.isActive()){	//ignore non active items
+    			
+    			//resolve Field, Image, Line, Print Format, Text
+    			String itemType = item.getPrintFormatType();
+    			switch (itemType){
+    			case "T":		//item is Text
+    				processText(item, formatItems);
+    				break;
+    				
+    			case "F":		//item is Field
+    				break;
+    				
+    			case "L":		//item is Line
+    				break;
+    				
+    			case "I":		//item is Image
+    				//org/compiere/images/C10030HR.png
+    				break;
+    				
+    			case "R":		//item is Rectangle
+    				break;
+    				
+    			case "P":		//item is Print format (subreport)
+    				break;
+    				
+				default:
+					logger.warn("Unsupported item type: '" + itemType + "' of:" + item );
+    			}
+    		}
+    	}
     }
     
-    public void loadSceneDatabase(String tableName){
-    	//Zjistit ID Tabulky
-    	dataProvider.getTableID(tableName);
+    /**
+     * Create text widget and set position in the scene.
+     * 
+     * @param item
+     * @param allItems
+     */
+    private void processText(MPrintFormatItem item, List<MPrintFormatItem> allItems){
+    	
+    	//resolve and set font
+    	MPrintFont mPrintFont = new MPrintFont(Env.getCtx(), 0, null);
+    	String section = item.getPrintAreaType();		//Header, Content (Body), Footer
+    	
+    	
+    	if(item.isRelativePosition()){					//compute position from predecessor
+			//projdi všechny relativní pøedchùdce, kteøí nemají "NexLine" a pøièti jejich pozici
+    		String caption = (String) item.getPrintName();	//Get print text
+    		
+    		int positionX = item.getXSpace();
+    		int positionY = item.getYSpace();
+    		
+    		int seqNo = item.getSeqNo();				//sequential number
+    		
+    		//rekurzivne prochazet predchudce pokud nenarazim na absolutne pozicovany prvek nebo na zacatek seznamu
+    		
+    		//ziskej pozici v seznamu
+    		int itemListPosition = allItems.indexOf(item);
+    		ListIterator<MPrintFormatItem> iterator = allItems.listIterator();
+    		
+    		//vyhodnot polohu vsech predchudcu
+    		while(iterator.hasPrevious()){
+    			MPrintFormatItem predecessor = iterator.previous();
+    			if(!predecessor.isRelativePosition()){			//until absolute positioned element is found
+    				//TODO pridej pozici a skonci prochazeni
+    			}
+    			
+    			if(predecessor.isNextLine()){					//if NextLine is set we must ignore X position and position is relative to bottom of predecessor
+    				positionY += predecessor.getYPosition(); 	// TODO + computed height of element
+    				//+ height of text get Font and its height or get height
+    			} else {										//if this is not new line position is relative to top left corner of predecesor
+    				positionY += predecessor.getYPosition();
+    			}
+    		}
+    		
+		} else {
+			String caption = (String) item.getPrintName();	//Get print text
+			int positionX = item.getXPosition();
+			int positionY = item.getYPosition();
+			int seqNo = item.getSeqNo();			//sequential number
+			
+			LabelWidget widget = new LabelWidget(this, caption);
+			widget.setPreferredLocation(new Point(positionX, positionY));
+			widget.setOpaque(true);
+			
+			addWidget(widget);
+		}
+    	//if nextLine - vynuluj X pozici pøièti pouze Y pozici všech pøedchùdcù - POZOR!!! Je potøeba brát v úvahu i velikost písma všech pøedchùdcù -> Neplatí pokud byl nastaven NewLine
     }
     
+    
+    
+//    public void loadSceneDatabase(String tableName){
+//    	//Zjistit ID Tabulky
+//    	dataProvider.getTableID(tableName);
+//    }
+//    
     
 }

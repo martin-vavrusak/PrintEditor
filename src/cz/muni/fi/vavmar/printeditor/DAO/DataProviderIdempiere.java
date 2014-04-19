@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 import javax.swing.text.TabExpander;
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compiere.model.MTable;
+import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.openide.util.Exceptions;
@@ -362,4 +364,49 @@ public class DataProviderIdempiere implements DBManager {
 		
     	return returnMap;
     }
+
+    
+    
+	@Override
+	public List<MPrintFormatItem> getFormatItems(int printFormatID) {
+    	List<Integer> itemIDs = new ArrayList<Integer>();
+    	List<MPrintFormatItem> items = new ArrayList<MPrintFormatItem>();
+    	
+    	/*
+    	 * Load ids of all print format items
+    	 */
+    	String sql = "SELECT ad_printformatitem_id, seqno FROM AD_PrintFormatItem WHERE ad_printformat_id=? ORDER BY	seqno";
+    	PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			pstmt.setInt (1, printFormatID);
+			rs = pstmt.executeQuery ();
+			while(rs.next()){
+				itemIDs.add( rs.getInt(1) );
+			}
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.ERROR, "Unable to get items for print format: " + printFormatID, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		
+		/*
+		 * load items
+		 */
+		Properties context = Env.getCtx();
+		
+		for(Integer i: itemIDs){
+			MPrintFormatItem item = new MPrintFormatItem(context, i, null);
+			items.add(item);
+		}
+		
+    	return items;
+	}
 }

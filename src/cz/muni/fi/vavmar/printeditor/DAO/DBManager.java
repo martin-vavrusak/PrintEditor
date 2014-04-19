@@ -4,6 +4,8 @@ import cz.muni.fi.vavmar.printeditor.Table;
 import java.util.List;
 import java.util.Map;
 
+import org.compiere.print.MPrintFormatItem;
+
 public interface DBManager {
 
     /**
@@ -72,6 +74,19 @@ public interface DBManager {
      */
     public int getTableID(String tableName);
     
-    
+    /**
+     * Returns all available print formats of table.
+     * 
+     * @param tableID
+     * @return map of available print formats of table.
+     */
     public Map<Integer, String> getPrintFormats( int tableID );
+    
+    /**
+     * Return all items of print format sorted by seqential number.
+     * 
+     * @param printFormatID
+     * @return list of print format items.
+     */
+    public List<MPrintFormatItem> getFormatItems ( int printFormatID);
 }

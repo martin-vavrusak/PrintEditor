@@ -11,9 +11,10 @@ public class EditorActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		logger.trace("Starting main frame.");
-		MainFrame mainFrame = new MainFrame();
-		mainFrame.runProgram();
+//		MainFrame mainFrame = new MainFrame();
+//		mainFrame.runProgram();
 		
+		MainFrame.runProgram();
 	}
 
 	@Override

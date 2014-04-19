@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.compiere.print.MPrintFormatItem;
 import org.openide.util.Exceptions;
 
 /**
@@ -187,6 +188,11 @@ public class DataProviderJDBC implements DBManager {
 	@Override
 	public Map<Integer, String> getPrintFormats(int tableID) {
 		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public List<MPrintFormatItem> getFormatItems(int printFormatID) {
+		throw new UnsupportedOperationException("Not supported yet."); 
 	}
     
     

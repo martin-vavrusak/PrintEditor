@@ -425,7 +425,6 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonCancelMouseClicked
 
     private void buttonOkMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonOkMouseReleased
-        //TODO Vratit instanci reprezentujici
         selectedTable = (String) aviableTablesAndVievsList.getSelectedValue();
         
         PrintFormat selectedFormat = (PrintFormat) availablePrintFormats.getSelectedValue();

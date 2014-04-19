@@ -67,7 +67,7 @@ public class AcceptProviderImpl implements AcceptProvider {
             Exceptions.printStackTrace(ex);
         }
         
-        logger.warn("It soulhdn't be here!!! Something rond happened.");
+        logger.warn("It soulhdn't be here!!! Something wrong happened.");
         return ConnectorState.REJECT;
     }
 
@@ -133,8 +133,9 @@ public class AcceptProviderImpl implements AcceptProvider {
         lw.setOpaque(true);
         scene.addWidget(lw);
         
-        //Create table object
-        Table tableObject = scene.getDataProvider().getTable( table.getName() );
+        //Create table object dead code
+//        Table tableObject = scene.getDataProvider().getTable( table.getName() );
+        
         //TODO udelat vkladani do sceny
         return lw;
     }
