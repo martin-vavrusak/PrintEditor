@@ -7,6 +7,9 @@
 package cz.muni.fi.vavmar.printeditor.DAO;
 
 import cz.muni.fi.vavmar.printeditor.Table;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +22,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormatItem;
 import org.openide.util.Exceptions;
 
@@ -193,6 +197,26 @@ public class DataProviderJDBC implements DBManager {
 	@Override
 	public List<MPrintFormatItem> getFormatItems(int printFormatID) {
 		throw new UnsupportedOperationException("Not supported yet."); 
+	}
+
+	@Override
+	public List<MPrintFont> getFonts() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public int createFont(Font f) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public MPrintFont loadFont(int fontID) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public int createColor(Color c) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
     
     

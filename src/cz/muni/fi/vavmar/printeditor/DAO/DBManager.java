@@ -1,9 +1,13 @@
 package cz.muni.fi.vavmar.printeditor.DAO;
 
 import cz.muni.fi.vavmar.printeditor.Table;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.util.List;
 import java.util.Map;
 
+import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormatItem;
 
 public interface DBManager {
@@ -83,10 +87,42 @@ public interface DBManager {
     public Map<Integer, String> getPrintFormats( int tableID );
     
     /**
-     * Return all items of print format sorted by seqential number.
+     * Return all items of print format sorted by area type (header, content, footer) and seqential number.
      * 
      * @param printFormatID
      * @return list of print format items.
      */
-    public List<MPrintFormatItem> getFormatItems ( int printFormatID);
+    public List<MPrintFormatItem> getFormatItems ( int printFormatID );
+    
+    /**
+     * Retrieve all available fonts from iDempiere.
+     * 
+     * @return list of available fonts in system.
+     */
+    public List<MPrintFont> getFonts();
+    
+    /**
+     * Create new font in database.
+     * 
+     * @param f new font to be created.
+     * @return ID of new font created.
+     */
+    public int createFont(Font f);
+    
+    /**
+     * Loads font from database.
+     * 
+     * @param ID id of font to be loaded.
+     * @return new {@link MPrintFont} or null if not found.
+     */
+    public MPrintFont loadFont(int fontID);
+    
+    /**
+     * Create new color and save it to the database.
+     * 
+     * @param c new color to be created.
+     * @return ID of new color.
+     */
+    public int createColor(Color c);
+    
 }

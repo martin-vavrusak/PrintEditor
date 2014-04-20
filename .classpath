@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry exported="true" kind="lib" path="mylibraries/postgresql-9.3-1101-jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="mylibraries/org-openide-util.jar"/>
-	<classpathentry exported="true" kind="lib" path="mylibraries/org-netbeans-api-visual.jar"/>
+	<classpathentry exported="true" kind="lib" path="mylibraries/org-netbeans-api-visual.jar" sourcepath="D:/Projekty/NetBeans_VisualLibrary_pack/api.visual/src"/>
 	<classpathentry exported="true" kind="lib" path="mylibraries/log4j-core-2.0-rc1.jar"/>
 	<classpathentry exported="true" kind="lib" path="mylibraries/log4j-api-2.0-rc1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>

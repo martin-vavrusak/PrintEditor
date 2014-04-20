@@ -7,6 +7,9 @@
 package cz.muni.fi.vavmar.printeditor.DAO;
 
 import cz.muni.fi.vavmar.printeditor.Table;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +28,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compiere.model.MTable;
+import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -408,5 +412,58 @@ public class DataProviderIdempiere implements DBManager {
 		}
 		
     	return items;
+	}
+
+	@Override
+	public List<MPrintFont> getFonts() {
+		int[] ids = MPrintFont.getAllIDs(MPrintFont.Table_Name, null, null);
+		List<MPrintFont> fontsList = new ArrayList<MPrintFont>();
+		
+		for(int i : ids){
+			fontsList.add( MPrintFont.get(i) );
+		}
+		
+		return fontsList;
+	}
+
+	//TODO maybe should chceck font presence first
+	@Override
+	public int createFont(Font f) {
+		MPrintFont font = new MPrintFont(Env.getCtx(), 0, null);
+		font.setFont(f);
+		
+		StringBuilder fontName = new StringBuilder();
+		fontName.append(f.getFamily());
+		
+		if (f.isBold()){
+			fontName.append(" bold");
+		}
+		
+		if (f.isItalic()){
+			fontName.append(" italic");
+		}
+		fontName.append(" ").append(f.getSize());
+		
+		
+		font.setName(fontName.toString());				//this must be unique!!!
+		
+		if( !font.save() ){
+			logger.error("Error when saving new font: " + font);
+		}
+		return font.get_ID();
+	}
+
+	@Override
+	public MPrintFont loadFont(int fontID) {
+		MPrintFont font = MPrintFont.get(fontID);
+		if(font == null){
+			logger.error("Error while loading font with id: " + fontID);
+		}
+		return font;
+	}
+
+	@Override
+	public int createColor(Color c) {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
