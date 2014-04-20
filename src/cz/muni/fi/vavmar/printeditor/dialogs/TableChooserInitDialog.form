@@ -66,10 +66,14 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="viewRestrictionCheckbox" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="viewRestrictionCheckbox" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="formatsRestrictionCheckBox" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <Component id="createNewPrintFormatButton" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="132" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="44" max="32767" attributes="0"/>
                           </Group>
                           <Component id="searchField" alignment="0" max="32767" attributes="0"/>
                           <Component id="availableTablesAndVievsListSrcollPane" alignment="0" pref="0" max="32767" attributes="0"/>
@@ -81,7 +85,7 @@
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace min="0" pref="95" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="92" max="32767" attributes="0"/>
                           <Component id="buttonOk" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="buttonCancel" min="-2" max="-2" attributes="0"/>
@@ -108,7 +112,10 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="viewRestrictionCheckbox" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="viewRestrictionCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="formatsRestrictionCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Component id="searchField" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -153,7 +160,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JList" name="aviableTablesAndVievsList">
+            <Component class="javax.swing.JList" name="availableTablesAndVievsList">
               <Properties>
                 <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="Utils.createListModel( tablesList )" type="code"/>
@@ -161,7 +168,7 @@
                 <Property name="selectionMode" type="int" value="0"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="aviableTablesAndVievsListMouseClicked"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="availableTablesAndVievsListMouseClicked"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="List&lt;String&gt; tablesList = dataProvider.getTables(null);"/>
@@ -363,6 +370,16 @@
               <ResourceString bundle="cz/muni/fi/vavmar/printeditor/dialogs/Bundle.properties" key="TableChooserInitDialog.jLabel2.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="formatsRestrictionCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="cz/muni/fi/vavmar/printeditor/dialogs/Bundle.properties" key="TableChooserInitDialog.formatsRestrictionCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="formatsRestrictionCheckBoxItemStateChanged"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

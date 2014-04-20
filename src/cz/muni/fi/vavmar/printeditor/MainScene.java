@@ -47,10 +47,12 @@ import javax.swing.text.LabelView;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.groovy.runtime.metaclass.NewMetaMethod;
 import org.compiere.model.PO;
 import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
+import org.compiere.print.MPrintTableFormat;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.netbeans.api.visual.action.AcceptProvider;
@@ -88,11 +90,16 @@ public class MainScene extends Scene {
     private Set<Widget> selectedWidgets;
     
     private boolean CONTROL_PRESSED = false;
-    private static final int SCENE_WIDTH = 600; //width of scene
-    private static final int SCENE_HEIGHT = 900; //width of scene
+    private static final int SCENE_WIDTH = 800; //width of scene
+    private static final int SCENE_HEIGHT = 1000; //width of scene
     private static final int A4_ASPECT_RATIO = 3;
-    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, 210 * A4_ASPECT_RATIO + 2,
-                                                                   279 * A4_ASPECT_RATIO + 2);
+    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, (210 * A4_ASPECT_RATIO) + 2,
+                                                                   (279 * A4_ASPECT_RATIO) + 2);
+    
+    public static int DEFAULT_IDEMPIERE_PRINT_COLOR_ID = 100;
+    public static int DEFAULT_IDEMPIERE_PRINT_PAPER_ID = 103;
+    public static int DEFAULT_IDEMPIERE_PRINT_FONT_ID = 100;
+    
     public MainScene() {
         this(new DataProviderJDBC());
     }
@@ -142,7 +149,7 @@ public class MainScene extends Scene {
         
         scrollPane.getVerticalScrollBar ().setUnitIncrement (32);
         scrollPane.getVerticalScrollBar ().setBlockIncrement (256);
-        scrollPane.setPreferredSize(new Dimension(400, 600));
+        scrollPane.setPreferredSize(new Dimension(SCENE_WIDTH, SCENE_HEIGHT));
                 
         scrollPane.setColumnHeader(null);
         scrollPane.setRowHeaderView(createRowRuler());
@@ -308,14 +315,53 @@ public class MainScene extends Scene {
         return columnheader;
     }
     
-    /**
-     * Create new print form for table.
-     * 
-     * @param tableName name of table to create new print form.
-     */
-    public void createNewPrintForm(String tableName){
-    	logger.debug("Creting new print form for table: " + tableName + "NOT IMPLEMENTED YET!");
+//    /**
+//     * Create new print form for table.
+//     * 
+//     * @param tableName name of table to create new print form.
+//     */
+//    public void createNewPrintForm(String tableName, String formName){
+//    	logger.debug("Creting new print form for table: " + tableName + "NOT IMPLEMENTED YET!");
+//    	
+//    }
+    
+    public void saveAsNew(String tableName, String printFormatName){
+    	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
+    	
+    	//Save Print Format
+    	MPrintFormat newPrintFormat = new MPrintFormat(Env.getCtx(), 0, null);
+    	newPrintFormat.setName(printFormatName);								//this don't have to be uniqe across iDempiere system
+    	newPrintFormat.setAD_Table_ID(dataProvider.getTableID(tableName));		
+    	newPrintFormat.setAD_PrintColor_ID(DEFAULT_IDEMPIERE_PRINT_COLOR_ID);	//this should be 100 TODO - better to implement new method searching for default color dataProvider.getSystemDefaultColor
+    	newPrintFormat.setAD_PrintPaper_ID(DEFAULT_IDEMPIERE_PRINT_PAPER_ID);	//This should be 100
+    	newPrintFormat.setAD_PrintFont_ID(DEFAULT_IDEMPIERE_PRINT_FONT_ID);		//This should be 100
+    	newPrintFormat.setIsStandardHeaderFooter(false);
+    	newPrintFormat.setIsForm(true);		//we need header and footer
+    	
+    	logger.trace( "is new set: " + newPrintFormat.is_new() );
+    	newPrintFormat.setReplication(true);
+    	newPrintFormat.save();
+    	
+    	int newPrintFormatID = newPrintFormat.get_ID();
+    	logger.trace( "New print format saved with ID: " +  newPrintFormatID);
+    	
+    	for(Widget widget: mainLayer.getChildren()){
+    		saveItemDB(widget, newPrintFormatID);
+    	}
+    	
+//    	newPrintFormat.setAD_Org_ID(AD_Org_ID);	//should be filled by a system
+//    	newPrintFormat.setAD_PrintFont_ID(AD_PrintFont_ID);
+    	
+    	
+    			
     }
+    
+    private void saveItemDB(Widget widget, int formatID){
+		/**
+		 * 1. Get front from Widget
+		 * 2. Get color - search if already exist
+		 */
+	}
     
     /**
      * Loads print format and populate scene.

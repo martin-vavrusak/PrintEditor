@@ -17,7 +17,9 @@ import cz.muni.fi.vavmar.printeditor.utils.Utils;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.border.TitledBorder;
@@ -52,14 +54,12 @@ public class MainFrame extends javax.swing.JFrame {
         this.dataProvider = dataProvider;
         mainScene = new MainScene(dataProvider);
         
-        //TODO
         if(selectedPrintFormatID == -1 && selectedTable != null){
-        	//create new print format for a table
+        	//Create new print form - Simply set windows and create new MainScene
         	logger.trace("Now we should create new print format. Not implemented yet.");
-        	mainScene.createNewPrintForm(selectedTable);
-        	tablesList = new ArrayList<String>();
+        	tablesList = new ArrayList<String>();	//set only to selected table
         	tablesList.add(selectedTable);
-        			
+        	
         } else if (selectedPrintFormatID > 0) {
         	//load print format
         	logger.trace("Now we should load print format. Not implemented yet.");
@@ -69,7 +69,7 @@ public class MainFrame extends javax.swing.JFrame {
         	
         } else {
         	//error otherwise
-        	logger.trace("Unsupported option.");
+        	logger.error("Unsupported option. Nether print format nor table was selected!");
         	return;
         }
         
@@ -103,7 +103,7 @@ public class MainFrame extends javax.swing.JFrame {
         toolPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.title")); // NOI18N
 
         mainScenePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -174,9 +174,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tablesSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
         );
 
         mainScenePanel.add(mainScene.getSceneEnvelope());
@@ -186,7 +186,7 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
+                .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -250,12 +250,14 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tablesSearchFieldKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//        List<Widget> widgets = mainScene.getChildren();
-        for( Widget w : mainScene.getChildren() ){
-            logger.trace(w.getBounds());
-            printChildrens(w.getChildren());
-        }
-        
+
+//        for( Widget w : mainScene.getChildren() ){
+//            logger.trace(w.getBounds());
+//            printChildrens(w.getChildren());
+//        }
+        String printFormatName = JOptionPane.showInputDialog(this, "Please type name:", "Save print format", JOptionPane.PLAIN_MESSAGE);
+        logger.trace("New print format name: '" + printFormatName + "'");
+        mainScene.saveAsNew(tablesList.get(0), printFormatName);    //there should be only one table list is heritage from attempt to make universal reports from more than one table
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void printChildrens (List<Widget> widgets){

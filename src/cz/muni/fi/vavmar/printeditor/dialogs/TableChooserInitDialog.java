@@ -29,6 +29,7 @@ public class TableChooserInitDialog extends JDialog {
     protected DBManager dataProvider;
     private String selectedTable = null;
     private int selectedPrintFormatID;
+    private boolean isNewFormat = false;
     
     public TableChooserInitDialog(DBManager dbManager) {
         dataProvider = dbManager;
@@ -60,6 +61,9 @@ public class TableChooserInitDialog extends JDialog {
 		return selectedPrintFormatID;
 	}
     
+    public boolean isNewFormat(){
+        return this.isNewFormat;
+    }
     /**
      * Temporary class used for passing data to list for table format selection.
      * Allows to easily get ID and name of selected print format.
@@ -150,7 +154,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         viewRestrictionCheckbox = new javax.swing.JCheckBox();
         availableTablesAndVievsListSrcollPane = new javax.swing.JScrollPane();
-        aviableTablesAndVievsList = new javax.swing.JList();
+        availableTablesAndVievsList = new javax.swing.JList();
         searchField = new javax.swing.JTextField();
         credentialsPanel = new javax.swing.JPanel();
         roleTitle = new javax.swing.JLabel();
@@ -164,6 +168,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         createNewPrintFormatButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        formatsRestrictionCheckBox = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
 
         titleLabel.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.titleLabel.text")); // NOI18N
@@ -176,14 +181,14 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         });
 
         List<String> tablesList = dataProvider.getTables(null);
-        aviableTablesAndVievsList.setModel(Utils.createListModel( tablesList ));
-        aviableTablesAndVievsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        aviableTablesAndVievsList.addMouseListener(new java.awt.event.MouseAdapter() {
+        availableTablesAndVievsList.setModel(Utils.createListModel( tablesList ));
+        availableTablesAndVievsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        availableTablesAndVievsList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                aviableTablesAndVievsListMouseClicked(evt);
+                availableTablesAndVievsListMouseClicked(evt);
             }
         });
-        availableTablesAndVievsListSrcollPane.setViewportView(aviableTablesAndVievsList);
+        availableTablesAndVievsListSrcollPane.setViewportView(availableTablesAndVievsList);
 
         searchField.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchField.text")); // NOI18N
         searchField.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -278,6 +283,13 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 
         jLabel2.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.jLabel2.text")); // NOI18N
 
+        formatsRestrictionCheckBox.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.formatsRestrictionCheckBox.text")); // NOI18N
+        formatsRestrictionCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                formatsRestrictionCheckBoxItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -288,9 +300,12 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(viewRestrictionCheckbox)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(viewRestrictionCheckbox)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(formatsRestrictionCheckBox))
                                 .addComponent(createNewPrintFormatButton))
-                            .addGap(0, 132, Short.MAX_VALUE))
+                            .addGap(0, 44, Short.MAX_VALUE))
                         .addComponent(searchField)
                         .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -298,7 +313,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                         .addGap(176, 176, 176)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 95, Short.MAX_VALUE)
+                        .addGap(0, 92, Short.MAX_VALUE)
                         .addComponent(buttonOk)
                         .addGap(18, 18, 18)
                         .addComponent(buttonCancel))
@@ -318,7 +333,9 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(viewRestrictionCheckbox)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(viewRestrictionCheckbox)
+                            .addComponent(formatsRestrictionCheckBox))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(credentialsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -371,9 +388,9 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 //        logger.trace("Is selected: " + checkBox.isSelected());
         logger.trace("Is selected: " + viewRestrictionCheckbox.isSelected());
         if(viewRestrictionCheckbox.isSelected()){
-            aviableTablesAndVievsList.setModel(Utils.createListModel( dataProvider.getViews() ));
+            availableTablesAndVievsList.setModel(Utils.createListModel( dataProvider.getViews() ));
         } else {
-            aviableTablesAndVievsList.setModel(Utils.createListModel( dataProvider.getTables(null) ));
+            availableTablesAndVievsList.setModel(Utils.createListModel( dataProvider.getTables(null) ));
         }
     }//GEN-LAST:event_viewRestrictionCheckboxItemStateChanged
 
@@ -413,19 +430,19 @@ private class TableChooserJPanel extends javax.swing.JPanel {
             }
             
             list.addAll(listInnerMatch);
-            aviableTablesAndVievsList.setModel(Utils.createListModel(list));
+            availableTablesAndVievsList.setModel(Utils.createListModel(list));
         }
     }//GEN-LAST:event_searchFieldKeyReleased
 
     private void buttonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCancelMouseClicked
         selectedTable = null;
         selectedPrintFormatID = -1;
-        
+        isNewFormat = false;
         dispose();
     }//GEN-LAST:event_buttonCancelMouseClicked
 
     private void buttonOkMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonOkMouseReleased
-        selectedTable = (String) aviableTablesAndVievsList.getSelectedValue();
+        selectedTable = (String) availableTablesAndVievsList.getSelectedValue();
         
         PrintFormat selectedFormat = (PrintFormat) availablePrintFormats.getSelectedValue();
         if( selectedFormat == null ){
@@ -434,11 +451,11 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         } else {
         	selectedPrintFormatID = selectedFormat.getId();
         }
-        
+        isNewFormat = false;
         dispose();
     }//GEN-LAST:event_buttonOkMouseReleased
 
-    private void aviableTablesAndVievsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aviableTablesAndVievsListMouseClicked
+    private void availableTablesAndVievsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableTablesAndVievsListMouseClicked
         //retrieve model from list wich fired this event
         JList list = (JList) evt.getComponent();
 
@@ -450,23 +467,35 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                 
         availablePrintFormats.setModel( PrintFormat.createListModel(printFormats) );
 
-    }//GEN-LAST:event_aviableTablesAndVievsListMouseClicked
+    }//GEN-LAST:event_availableTablesAndVievsListMouseClicked
 
     private void createNewPrintFormatButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewPrintFormatButtonMouseReleased
-         selectedTable = (String) aviableTablesAndVievsList.getSelectedValue();
+         selectedTable = (String) availableTablesAndVievsList.getSelectedValue();
          selectedPrintFormatID = -1;
+         isNewFormat = true;
          dispose();
     }//GEN-LAST:event_createNewPrintFormatButtonMouseReleased
+
+    private void formatsRestrictionCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_formatsRestrictionCheckBoxItemStateChanged
+        if(formatsRestrictionCheckBox.isSelected()){
+            viewRestrictionCheckbox.setEnabled(false);
+            availableTablesAndVievsList.setEnabled(false);
+        } else {
+            viewRestrictionCheckbox.setEnabled(true);
+            availableTablesAndVievsList.setEnabled(true);
+        }
+    }//GEN-LAST:event_formatsRestrictionCheckBoxItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList availablePrintFormats;
+    private javax.swing.JList availableTablesAndVievsList;
     private javax.swing.JScrollPane availableTablesAndVievsListSrcollPane;
-    private javax.swing.JList aviableTablesAndVievsList;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JButton buttonOk;
     private javax.swing.JButton createNewPrintFormatButton;
     private javax.swing.JPanel credentialsPanel;
+    private javax.swing.JCheckBox formatsRestrictionCheckBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
