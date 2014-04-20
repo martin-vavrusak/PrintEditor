@@ -18,7 +18,7 @@ import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
- *
+ * 
  * @author Martin
  */
 public class ImageResizeStrategy implements ResizeStrategy {
@@ -34,6 +34,9 @@ public class ImageResizeStrategy implements ResizeStrategy {
     }
     
     
+    /**
+     * Called repeately until the insets are dragged. 
+     */
     public Rectangle boundsSuggested(Widget widget, Rectangle originalBounds, Rectangle suggestedBounds, ResizeProvider.ControlPoint controlPoint) {
         
         logger.trace("original bounds: " + originalBounds);
@@ -66,26 +69,34 @@ public class ImageResizeStrategy implements ResizeStrategy {
         
         int borderThickness = widget.getBorder().getInsets().right;
         logger.trace("Border thickness: " + borderThickness + "ControlPoint: " + controlPoint);
-        Image newImage = originalImage.getScaledInstance(suggestedBounds.width - (2*borderThickness), suggestedBounds.height - (2*borderThickness), Image.SCALE_SMOOTH);
+        Image newImage = originalImage.getScaledInstance(suggestedBounds.width - (2*borderThickness),	//(2*borderThickness) need to stay inside of a border
+        												suggestedBounds.height - (2*borderThickness),
+        												Image.SCALE_SMOOTH);
         iw.setImage(newImage);
         
-        int dx = originalBounds.x - suggestedBounds.x;
+        //adjustment when some of left and top corners is dragged
+        int dx = originalBounds.x - suggestedBounds.x;		//Original bounds are bound before dragging started
         int dy = originalBounds.y - suggestedBounds.y;
         Point p = iw.getPreferredLocation();
         
         logger.trace("dx: " + dx + " dy: " + dy + " suggestedBounds.width: " + suggestedBounds.width + " suggestedBounds.height: " + suggestedBounds.height);
         logger.trace("PrefferedLocation: " + p);
 
-        iw.setPreferredBounds(new Rectangle(-borderThickness, -borderThickness, suggestedBounds.width, suggestedBounds.height));
-        iw.setPreferredLocation(new Point( initialWidgetPosition.x - dx, initialWidgetPosition.y - dy));
+        iw.setPreferredBounds(new Rectangle(-borderThickness, -borderThickness, suggestedBounds.width, suggestedBounds.height));	//set new proportions 
+        iw.setPreferredLocation(new Point( initialWidgetPosition.x - dx, initialWidgetPosition.y - dy));							//adjust location (if some of left and top corners is dragger), otherwise imge would inappropriately move
         
         return iw.getPreferredBounds();
     }
 
-    public ResizeProvider getProvider(){
+    public ResizeProvider getResizeProvider(){
         return provider;
     }
     
+    /**
+     * Need for saving initial image and initial position
+     * 
+     * @author Martin
+     */
     private class MyResizeProvider implements ResizeProvider {
         public void resizingStarted(Widget widget) {
             startedRectangle = widget.getBounds();
@@ -96,6 +107,19 @@ public class ImageResizeStrategy implements ResizeStrategy {
 
         public void resizingFinished(Widget widget) {
             logger.trace("startedRectangle: " + startedRectangle);
+            
+//            //after resizin needs to clear space created for border.
+//            Rectangle bounds = widget.getPreferredBounds();
+//            int boundsThicknessX = bounds.x;
+//            int boundsThicknessY = bounds.y;
+//            
+//            bounds.x += boundsThicknessX;
+//            bounds.width -= (-1*boundsThicknessX);		//-1 in case thickness is negative (it should be)
+//            		
+//            bounds.y += boundsThicknessY;
+//            bounds.height -= (-1*boundsThicknessY);
+//            
+//            widget.setPreferredBounds(bounds);
             
 //            ImageWidget iw = ((ImageWidget) widget);
 //            BufferedImage bi = (BufferedImage) iw.getImage();

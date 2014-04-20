@@ -21,6 +21,7 @@ import cz.muni.fi.vavmar.printeditor.utils.Utils;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -85,15 +86,15 @@ public class MainScene extends Scene {
     private WidgetAction keyProcessor = new KeyProcessingAction(this);
     private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
     private ImageResizeStrategy resizeStrategyProvider = new ImageResizeStrategy();
-    private WidgetAction imageResizeAction = ActionFactory.createResizeAction(resizeStrategyProvider, resizeStrategyProvider.getProvider());
+    private WidgetAction imageResizeAction = ActionFactory.createResizeAction(resizeStrategyProvider, resizeStrategyProvider.getResizeProvider());
     
     private Set<Widget> selectedWidgets;
     
     private boolean CONTROL_PRESSED = false;
-    private static final int SCENE_WIDTH = 800; //width of scene
-    private static final int SCENE_HEIGHT = 1000; //width of scene
+    private static final int SCENE_WIDTH = 800;
+    private static final int SCENE_HEIGHT = 1000;
     private static final int A4_ASPECT_RATIO = 3;
-    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, (210 * A4_ASPECT_RATIO) + 2,
+    private static final Rectangle A4_BOUNDS = new Rectangle(-1, -1, (210 * A4_ASPECT_RATIO) + 2,
                                                                    (279 * A4_ASPECT_RATIO) + 2);
     
     public static int DEFAULT_IDEMPIERE_PRINT_COLOR_ID = 100;
@@ -114,19 +115,20 @@ public class MainScene extends Scene {
         multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
 
         backgroundLayer = new LayerWidget(this);
-        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.width + 20));
+        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.width + 20));	//make space around main scene otherwise window of main scene would be sticked directly on scene edges
         
-        LabelWidget paperRectangle = new LabelWidget(this);
-        paperRectangle.setPreferredBounds(A4_BOUNDS);   //velikost A4
+        //This should be dynamic, based on the user settings
+        LabelWidget paperRectangle = new LabelWidget(this);													//Rectagle rrepresenting bounds of paper
+        paperRectangle.setPreferredBounds(A4_BOUNDS);
         paperRectangle.setBorder(javax.swing.BorderFactory.createLineBorder(Color.RED, 1));
-        
         backgroundLayer.addChild(paperRectangle);
         
+        //TODO Here should be header, content and footer windget
         
         mainLayer = new LayerWidget(this);
-//        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(this, mainLayer);
-        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(
-                                    new WidgetRectangularSelectDecorator(this), backgroundLayer,    //layer where rectangle of selection will be painted
+        
+        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(					//create rectangular selection to be assigned to widgets
+                                    new WidgetRectangularSelectDecorator(this), backgroundLayer,    //layer where rectangle representing selected area will be painted
                                     new WidgetRectangularSelectionProvider(this, mainLayer));       //layer whose widgets will be tested for selection
         
         
@@ -136,9 +138,8 @@ public class MainScene extends Scene {
         mainLayer.setPreferredBounds(new Rectangle(SCENE_WIDTH, SCENE_HEIGHT));
         mainLayer.setVisible(true);
         
-        addChild(0, backgroundLayer);
+        addChild(0, backgroundLayer);																//set backround as the most bottomed layer
         addChild(mainLayer);
-//        setBackground(Color.BLUE);
         
         //Vyclenit do samostatne tridy pro lepsi prehlednost
         scrollPane = new JScrollPane ( createView(), 
@@ -159,30 +160,45 @@ public class MainScene extends Scene {
         
         
         
-        //TODO Smazat
-        LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
+        //TODO Delete - debugging widgets
+        LabelWidget lw2 = new LabelWidget(this, "0,0");
         lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw2.getActions().addAction( singleSelectActino );
-        lw2.getActions().addAction( rectangularSelectionAction );
-        lw2.setPreferredLocation(new Point(50, 50));
+        lw2.getActions().addAction( hoverAction );
+        lw2.setPreferredLocation(new Point(0, 0));
         mainLayer.addChild(lw2);
 
+        lw2 = new LabelWidget(this, (A4_BOUNDS.x + A4_BOUNDS.width) + ",0");
+        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+        lw2.getActions().addAction( singleSelectActino );
+        lw2.getActions().addAction( hoverAction );
+        lw2.setPreferredLocation(new Point((A4_BOUNDS.x + A4_BOUNDS.width), 0));
+        mainLayer.addChild(lw2);
         
-        LabelWidget lw = new LabelWidget(this, "Widget 2");
+        lw2 = new LabelWidget( this, "0," + (A4_BOUNDS.y + A4_BOUNDS.height) );
+        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+        lw2.getActions().addAction( singleSelectActino );
+        lw2.getActions().addAction( hoverAction );
+        lw2.setPreferredLocation( new Point(0, (A4_BOUNDS.y + A4_BOUNDS.height)) );
+        mainLayer.addChild(lw2);
+        
+        LabelWidget lw = new LabelWidget(this, A4_BOUNDS.x + "," + A4_BOUNDS.y);
         
         lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw.getActions().addAction(0, singleSelectActino );
-        lw.setPreferredLocation(new Point(50, 100));
+        lw2.getActions().addAction( hoverAction );
+        lw.setPreferredLocation(new Point( (A4_BOUNDS.x + A4_BOUNDS.width), (A4_BOUNDS.y + A4_BOUNDS.height)) );
         mainLayer.addChild(lw);
 //        mainLayer.setOpaque(true);
+        // End of debugging widgets
         
         AcceptProvider ap = new AcceptProviderImpl(this);
         
         getActions().addAction(ActionFactory.createZoomAction());
         getActions().addAction(ActionFactory.createPanAction());
         getActions().addAction(ActionFactory.createAcceptAction( ap ) );
-        getActions().addAction( rectangularSelectionAction );
-        getActions().addAction( hoverAction );
+        getActions().addAction( rectangularSelectionAction );					//Must be assigned to the scene too to be able to cancel selection
+        getActions().addAction( hoverAction );									//Must be assigned to the scene too to be able to cancel hovering
         getActions().addAction( keyProcessor );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
     }
@@ -325,6 +341,7 @@ public class MainScene extends Scene {
 //    	
 //    }
     
+    /*
     public void saveAsNew(String tableName, String printFormatName){
     	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
     	
@@ -350,18 +367,23 @@ public class MainScene extends Scene {
     	}
     	
 //    	newPrintFormat.setAD_Org_ID(AD_Org_ID);	//should be filled by a system
-//    	newPrintFormat.setAD_PrintFont_ID(AD_PrintFont_ID);
-    	
-    	
-    			
+//    	newPrintFormat.setAD_PrintFont_ID(AD_PrintFont_ID);  			
     }
+    */
     
-    private void saveItemDB(Widget widget, int formatID){
-		/**
-		 * 1. Get front from Widget
-		 * 2. Get color - search if already exist
-		 */
-	}
+    /*
+    public void saveAsNew(String tableName, String printFormatName){
+    	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
+    	
+    	//Save Print Format
+    	SavePerformer saver = new SavePerformer(dataProvider, this, tableName, -1);
+    	saver.saveAsNew(printFormatName);
+    }
+    */
+    
+    public void loadPrintFormSimple(int printFormatID){
+    	
+    }
     
     /**
      * Loads print format and populate scene.

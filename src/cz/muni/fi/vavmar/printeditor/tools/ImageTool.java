@@ -28,7 +28,9 @@ import org.openide.util.Exceptions;
  */
 public class ImageTool extends AbstractTool {
 
-    public ImageTool(Icon icon) {
+	private static final long serialVersionUID = -1455669078896303373L;
+
+	public ImageTool(Icon icon) {
         super(icon);
         logger = LogManager.getLogger(ImageTool.class.getName());    //inherited logger
     }

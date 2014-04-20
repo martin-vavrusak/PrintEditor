@@ -18,7 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * Handler for draging items from column JList.
+ * 
  * @author Martin
  */
 public class DnDColumnListHandler extends TransferHandler {

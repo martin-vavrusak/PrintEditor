@@ -38,6 +38,8 @@ public class MainFrame extends javax.swing.JFrame {
     private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
     private static final int COLUMN_BORDER_TEXT_LENGHT = 10;
     private List<String> tablesList;
+    private String selectedTable;
+    private int selectedPrintFormatID;
     private DBManager dataProvider;
     
     @Deprecated
@@ -51,7 +53,11 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame(DBManager dataProvider, String selectedTable, int selectedPrintFormatID) {
     	logger.debug("Starting PrintEditor.");
     	logger.debug("Selected table: " + selectedTable + " selected print format: " + selectedPrintFormatID);
+    	
+    	this.selectedTable = selectedTable;
+    	this.selectedPrintFormatID = selectedPrintFormatID;
         this.dataProvider = dataProvider;
+        
         mainScene = new MainScene(dataProvider);
         
         if(selectedPrintFormatID == -1 && selectedTable != null){
@@ -257,7 +263,12 @@ public class MainFrame extends javax.swing.JFrame {
 //        }
         String printFormatName = JOptionPane.showInputDialog(this, "Please type name:", "Save print format", JOptionPane.PLAIN_MESSAGE);
         logger.trace("New print format name: '" + printFormatName + "'");
-        mainScene.saveAsNew(tablesList.get(0), printFormatName);    //there should be only one table list is heritage from attempt to make universal reports from more than one table
+        
+        SavePerformer saver = new SavePerformer(dataProvider, mainScene, selectedTable, selectedPrintFormatID);
+        saver.saveAsNew(printFormatName);
+        
+//        mainScene.saveAsNew(tablesList.get(0), printFormatName);    //there should be only one table list is heritage from attempt to make universal reports from more than one table
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void printChildrens (List<Widget> widgets){

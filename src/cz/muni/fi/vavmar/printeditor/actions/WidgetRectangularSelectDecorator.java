@@ -16,7 +16,8 @@ import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
- *
+ * Create and paint rectangle which represents selection.
+ * 
  * @author Martin
  */
 public class WidgetRectangularSelectDecorator implements RectangularSelectDecorator {
