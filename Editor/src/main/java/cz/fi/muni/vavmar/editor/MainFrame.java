@@ -14,6 +14,10 @@ import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import cz.fi.muni.vavmar.editor.utils.Utils;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JList;
@@ -78,7 +82,7 @@ public class MainFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.title")); // NOI18N
+        setTitle("Report editor");
 
         mainScenePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         mainScenePanel.setLayout(new java.awt.GridLayout(1, 0));
@@ -93,7 +97,7 @@ public class MainFrame extends javax.swing.JFrame {
         columnsListArea.setDragEnabled(true);
         jScrollPane1.setViewportView(columnsListArea);
 
-        tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesListArea.border.title"))); // NOI18N
+        tablesListArea.setBorder(javax.swing.BorderFactory.createTitledBorder("Dostupne tabulky"));
         tablesList = mainScene.getDataProvider().getTables(null);
         tablesListArea.setModel(Utils.createListModel( tablesList ));
         tablesListArea.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -104,7 +108,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tablesListArea);
 
-        tablesSearchField.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.tablesSearchField.text")); // NOI18N
+        tablesSearchField.setText("Hledej...");
         tablesSearchField.setDragEnabled(true);
         tablesSearchField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -117,9 +121,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        toolPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.toolPanel.border.title"))); // NOI18N
+        toolPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Nastroje"));
 
-        jButton1.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jButton1.text")); // NOI18N
+        jButton1.setText("List scene");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -154,6 +158,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        toolPanel.getAccessibleContext().setAccessibleName("");
+
         mainScenePanel.add(mainScene.getSceneEnvelope());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -161,9 +167,10 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
+                .addComponent(mainScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,7 +181,7 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tablesListAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablesListAreaMouseClicked
+    private void tablesListAreaMouseClicked(MouseEvent evt) {//GEN-FIRST:event_tablesListAreaMouseClicked
         System.out.println("Componenta vyvolala klik: " + evt.getComponent());
         JList list = (JList) evt.getComponent();
         ListModel model = list.getModel();
@@ -195,7 +202,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tablesListAreaMouseClicked
 
-    private void tablesSearchFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tablesSearchFieldFocusGained
+    private void tablesSearchFieldFocusGained(FocusEvent evt) {//GEN-FIRST:event_tablesSearchFieldFocusGained
         JTextField jt = (JTextField) evt.getComponent();
         jt.selectAll();
 //        if(jt.getText().equals("Hledej...")){
@@ -203,7 +210,7 @@ public class MainFrame extends javax.swing.JFrame {
 //        }
     }//GEN-LAST:event_tablesSearchFieldFocusGained
 
-    private void tablesSearchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tablesSearchFieldKeyReleased
+    private void tablesSearchFieldKeyReleased(KeyEvent evt) {//GEN-FIRST:event_tablesSearchFieldKeyReleased
         String s = ((JTextField) evt.getComponent()).getText();
         System.out.println("Searching for: " + s);
         
@@ -221,7 +228,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tablesSearchFieldKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 //        List<Widget> widgets = mainScene.getChildren();
         for( Widget w : mainScene.getChildren() ){
             logger.trace(w.getBounds());
@@ -283,8 +290,8 @@ public class MainFrame extends javax.swing.JFrame {
                 tableChooser.setVisible(true);
                 
                 logger.info( "Selected table: " + tableChooser.getChosenTable() );
-//                MainFrame mainFrame = new MainFrame(dataProvider);
-//                mainFrame.setVisible(true);
+                MainFrame mainFrame = new MainFrame(dataProvider);
+                mainFrame.setVisible(true);
             }
         });
     }

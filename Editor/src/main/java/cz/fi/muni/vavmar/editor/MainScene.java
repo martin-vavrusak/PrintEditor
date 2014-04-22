@@ -19,6 +19,7 @@ import cz.fi.muni.vavmar.editor.DAO.DataProvider;
 import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
 import cz.fi.muni.vavmar.editor.utils.Utils;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -38,12 +39,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
+import org.netbeans.api.visual.action.MoveProvider;
+import org.netbeans.api.visual.action.MoveStrategy;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
+import org.netbeans.api.visual.widget.SeparatorWidget;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.Exceptions;
 
@@ -57,6 +61,16 @@ public class MainScene extends Scene {
     private LayerWidget mainLayer;
     private LayerWidget backgroundLayer;
     private ResizeParentByMoveActionProvider moveProvider;
+    private PaperSettings paperSettings = PaperSettings.A4();      //create default settings A4 portrait
+    
+    private AreaWidget topMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.TOP_MARGIN_TYPE);
+    private AreaWidget bottomMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.BOTTOM_MARGIN_TYPE);
+    private AreaWidget leftMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.LEFT_MARGIN_TYPE);
+    private AreaWidget rightMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.RIGHT_MARGIN_TYPE);
+    
+    private AreaWidget headerWidget = new AreaWidget(this, paperSettings, AreaWidget.HEADER_TYPE);
+    private AreaWidget footerWidget = new AreaWidget(this, paperSettings, AreaWidget.FOOTER_TYPE);
+    
     
     private DBManager dataProvider;
     
@@ -73,9 +87,12 @@ public class MainScene extends Scene {
     private boolean CONTROL_PRESSED = false;
     private static final int SCENE_WIDTH = 600; //width of scene
     private static final int SCENE_HEIGHT = 900; //width of scene
-    private static final int A4_ASPECT_RATION = 3;
-    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, 210 * A4_ASPECT_RATION + 2,
-                                                                   279 * A4_ASPECT_RATION + 2);
+    private static final double IDEMPIERE_MULTIPLIER = 2.81;            //1pt = 1/72" = 0,353mm   =>   1mm = 2,83pt
+    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, ((int) (210 * IDEMPIERE_MULTIPLIER)) + 2,
+                                                                   ((int)  (297 * IDEMPIERE_MULTIPLIER)) + 2);
+    
+//    private AreaWidget headerWidget = new AreaWidget(this);
+    
     public MainScene() {
         this(new DataProvider());
     }
@@ -90,15 +107,27 @@ public class MainScene extends Scene {
         multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
 
         backgroundLayer = new LayerWidget(this);
-        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.width + 20));
+        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, paperSettings.getSceneWidth() + 300, paperSettings.getSceneHeight() + 40));
         
         LabelWidget paperRectangle = new LabelWidget(this);
         paperRectangle.setPreferredBounds(A4_BOUNDS);   //velikost A4
-        paperRectangle.setBorder(javax.swing.BorderFactory.createLineBorder(Color.RED, 1));
+        paperRectangle.setBorder(javax.swing.BorderFactory.createLineBorder(Color.RED, 1));         //represents page list
         
         backgroundLayer.addChild(paperRectangle);
         
+        backgroundLayer.addChild(headerWidget);
+        backgroundLayer.addChild(leftMarginWidget);
+        backgroundLayer.addChild(rightMarginWidget);
+        backgroundLayer.addChild(topMarginWidget);
+        backgroundLayer.addChild(bottomMarginWidget);
         
+        //Smazat!!!! Debug -------
+        backgroundLayer.setBackground(Color.LIGHT_GRAY);
+        backgroundLayer.setBorder(BorderFactory.createLineBorder(4));
+        backgroundLayer.setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+        backgroundLayer.setOpaque(true);
+        //-------------------------
+
         mainLayer = new LayerWidget(this);
 //        rectangularSelectionAction = ActionFactory.createRectangularSelectAction(this, mainLayer);
         rectangularSelectionAction = ActionFactory.createRectangularSelectAction(
@@ -111,6 +140,10 @@ public class MainScene extends Scene {
 //        mainLayer.getActions().addAction( rectangularSelectionAction );
         mainLayer.setPreferredBounds(new Rectangle(SCENE_WIDTH, SCENE_HEIGHT));
         mainLayer.setVisible(true);
+        
+        //Smazat!!!! debug
+        mainLayer.setBorder(BorderFactory.createLineBorder(4));
+        //-------------------------
         
         addChild(0, backgroundLayer);
         addChild(mainLayer);
@@ -135,7 +168,7 @@ public class MainScene extends Scene {
         
         
         
-        //TODO Smazat
+        //TODO Smazat -------------------------------------------
         LabelWidget lw2 = new LabelWidget(this, "Toto je hlavni scena!");
         lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw2.getActions().addAction( singleSelectActino );
@@ -149,8 +182,53 @@ public class MainScene extends Scene {
         lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw.getActions().addAction(0, singleSelectActino );
         lw.setPreferredLocation(new Point(50, 100));
+        lw.setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
         mainLayer.addChild(lw);
-//        mainLayer.setOpaque(true);
+        
+//        Widget layer = new Widget(this);
+////        layer.setVisible(true);
+//        layer.setPreferredBounds(new Rectangle(550, 2));
+//        layer.setBackground(Color.PINK);
+//        layer.setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+////        layer.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 3, 1, Color.BLACK));
+//        layer.setBorder(BorderFactory.createLineBorder(10, Color.GREEN));
+//        layer.getActions().addAction(ActionFactory.createMoveAction(new MoveStrategy() {
+//            
+//            private Logger logger = LogManager.getLogger("header MoveStrategy");
+//            public Point locationSuggested(Widget widget, Point originalLocation, Point suggestedLocation) {
+//                logger.trace("");
+//                return new Point(originalLocation.x, suggestedLocation.y);
+//            }
+//        }, new MoveProvider() {
+//               private Logger logger = LogManager.getLogger("header MoveProvider");
+//            public void movementStarted(Widget widget) {
+//                logger.trace("");
+//            }
+//
+//            public void movementFinished(Widget widget) {
+//                logger.trace("");
+//            }
+//
+//            public Point getOriginalLocation(Widget widget) {
+//                logger.trace("");
+//                return widget.getPreferredLocation();
+//            }
+//
+//            public void setNewLocation(Widget widget, Point location) {
+//                widget.setPreferredLocation(location);
+//            }
+//        }));
+//        backgroundLayer.addChild(layer);
+//        layer.addChild(lw);
+//        layer.addChild(lw2);
+        
+//        AreaWidget aw = new AreaWidget(this, getPaperSettings(), AreaWidget.HEADER_TYPE,
+//                                            AreaWidget.DEFAULT_COLOR, 3);
+//        backgroundLayer.addChild(aw);
+//        
+//        paperSettings.setTopMargin(50);
+//        aw.revalidateChange();
+        // ----------------------------------------------------
         
         AcceptProvider ap = new AcceptProviderImpl(this);
         
@@ -164,6 +242,19 @@ public class MainScene extends Scene {
         
     }
 
+    public PaperSettings getPaperSettings() {
+        return paperSettings;
+    }
+
+    public void setPaperSettings(PaperSettings paperSettings) {
+        this.paperSettings = paperSettings;
+        //TODO zde bude napozicovani a nastaveni widgetu urcujicich top a bottom margin
+//        FfooterWidget.setPosition = paperSettings.getHeight() - paperSettings.getBottomMargin() - paperSettings.getFooterMargin();
+//        leftline.setPosition
+//        rightLine.setPosition
+    }
+    
+    
     public WidgetAction getMultipleMovementAction() {
         return multipleMovementAction;
     }
