@@ -116,6 +116,8 @@ public class MainScene extends Scene {
         backgroundLayer.addChild(paperRectangle);
         
         backgroundLayer.addChild(headerWidget);
+        backgroundLayer.addChild(footerWidget);
+        
         backgroundLayer.addChild(leftMarginWidget);
         backgroundLayer.addChild(rightMarginWidget);
         backgroundLayer.addChild(topMarginWidget);

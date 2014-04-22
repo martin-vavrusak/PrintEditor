@@ -6,6 +6,7 @@
 
 package cz.fi.muni.vavmar.editor.actions;
 
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -88,8 +89,8 @@ public class ImageResizeStrategy implements ResizeStrategy {
     
     private class MyResizeProvider implements ResizeProvider {
         public void resizingStarted(Widget widget) {
-            startedRectangle = widget.getBounds();
-            logger.trace("startedRectangle: " + startedRectangle);
+            startedRectangle = widget.getPreferredBounds();
+            logger.trace("startedRectangle preffered bounds: " + startedRectangle);
             originalImage = ((ImageWidget) widget).getImage();
             initialWidgetPosition = widget.getPreferredLocation();
         }
@@ -97,6 +98,20 @@ public class ImageResizeStrategy implements ResizeStrategy {
         public void resizingFinished(Widget widget) {
             logger.trace("startedRectangle: " + startedRectangle);
             
+//            //after resizin needs to clear space created for border.
+//            Rectangle bounds = widget.getPreferredBounds();
+//            int boundsThicknessX = bounds.x;
+//            int boundsThicknessY = bounds.y;
+//            
+//            bounds.x -= boundsThicknessX;
+////            bounds.width -= (-1*boundsThicknessX);		//-1 in case thickness is negative (it should be)
+//            		
+//            bounds.y -= boundsThicknessY;
+////            bounds.height -= (-1*boundsThicknessY);
+//            
+//            widget.setPreferredBounds(bounds);
+//
+//            
 //            ImageWidget iw = ((ImageWidget) widget);
 //            BufferedImage bi = (BufferedImage) iw.getImage();
 //            Rectangle newBounds = iw.getBounds();

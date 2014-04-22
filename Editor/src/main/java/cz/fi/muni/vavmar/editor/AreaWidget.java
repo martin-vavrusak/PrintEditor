@@ -11,6 +11,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import javax.swing.BorderFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.ActionFactory;
@@ -25,7 +26,7 @@ import org.netbeans.api.visual.widget.Widget;
 public class AreaWidget extends Widget{
     private static final Logger logger = LogManager.getLogger(AreaWidget.class);
     
-    public static final int DEFAULT_THICKNESS = 2;
+    public static final int DEFAULT_THICKNESS = 1;
     public static final Color DEFAULT_COLOR = Color.BLACK;
     
     public static final int HEADER_TYPE = 1;
@@ -59,7 +60,7 @@ public class AreaWidget extends Widget{
      * @param type 
      */
     public AreaWidget(MainScene scene, PaperSettings paper, int type) {
-        this(scene, paper, type, Color.BLACK, DEFAULT_THICKNESS);        
+        this(scene, paper, type, Color.BLUE, DEFAULT_THICKNESS);        
     }
     
     public AreaWidget(MainScene scene, PaperSettings paper, int type, Color color, int thickness) {
@@ -75,19 +76,25 @@ public class AreaWidget extends Widget{
         this.setForeground(color);
         this.setBackground(color);
         
-        if(type == HEADER_TYPE || type == FOOTER_TYPE || type == TOP_MARGIN_TYPE || type == BOTTOM_MARGIN_TYPE){
-
-//            this.setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
-            
-            if( type == HEADER_TYPE || type == FOOTER_TYPE ){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
-                this.getActions().addAction(ActionFactory.createMoveAction(new MoveStrategyArea(), new MoveProviderArea()));
-            }
-            
-        } else if (type == LEFT_MARGIN_TYPE || type == RIGHT_MARGIN_TYPE){
-//            this.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
-        }
+//        this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));          //doesn't work!!!
+         
+//        if(type == HEADER_TYPE || type == FOOTER_TYPE || type == TOP_MARGIN_TYPE || type == BOTTOM_MARGIN_TYPE){
+//
+////            this.setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+//            
+//            if( type == HEADER_TYPE || type == FOOTER_TYPE ){
+//                this.setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+//                this.getActions().addAction(ActionFactory.createMoveAction(new MoveStrategyArea(), new MoveProviderArea()));
+//            }
+//            
+//        } else if (type == LEFT_MARGIN_TYPE || type == RIGHT_MARGIN_TYPE){
+////            this.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+//        }
         
+        if( type == HEADER_TYPE || type == FOOTER_TYPE ){
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+            this.getActions().addAction(ActionFactory.createMoveAction(new MoveStrategyArea(), new MoveProviderArea()));
+        }
         
         revalidateChange();
     }
@@ -108,27 +115,27 @@ public class AreaWidget extends Widget{
     public final void revalidateChange(){
         if(type == HEADER_TYPE){
             setPreferredSize( new Dimension(paper.getSceneWidth() - paper.getLeftMargin() - paper.getRightMargin(), thickness) );
-            setPreferredLocation( new Point(paper.getLeftMargin() , paper.getTopMargin() + paper.getHeaderMargin()) );
+            setPreferredLocation( new Point(paper.getLeftMarginPosition(), paper.getTopMargin() + paper.getHeaderMargin()) );
             
         } else if( type == FOOTER_TYPE){
             setPreferredSize( new Dimension(paper.getSceneWidth() - paper.getLeftMargin() - paper.getRightMargin(), thickness) );
             setPreferredLocation( new Point(paper.getLeftMargin() , paper.getSceneHeight() - paper.getBottomMargin() - paper.getFooterMargin()) );
             
         } else if ( type == TOP_MARGIN_TYPE ){
-            setPreferredSize( new Dimension(paper.getWidth(), thickness));
+            setPreferredSize( new Dimension(paper.getSceneWidth(), thickness));
             setPreferredLocation( new Point(0 , paper.getTopMargin()));
             
         } else if ( type == BOTTOM_MARGIN_TYPE ){
-            setPreferredSize( new Dimension(paper.getWidth(), thickness));
-            setPreferredLocation( new Point(0 , paper.getHeight() - paper.getBottomMargin()) );
+            setPreferredSize( new Dimension(paper.getSceneWidth(), thickness));
+            setPreferredLocation( new Point(0 , paper.getSceneHeight() - paper.getBottomMargin()) );
             
         } else if ( type == LEFT_MARGIN_TYPE ){
-            setPreferredSize( new Dimension( thickness, paper.getHeight()));
+            setPreferredSize( new Dimension( thickness, paper.getSceneHeight()));
             setPreferredLocation( new Point(paper.getLeftMargin() , 0) );
             
         } else if ( type == RIGHT_MARGIN_TYPE ){
-            setPreferredSize( new Dimension( thickness, paper.getHeight()));
-            setPreferredLocation( new Point(paper.getWidth() - paper.getRightMargin(), 0) );
+            setPreferredSize( new Dimension( thickness, paper.getSceneHeight()));
+            setPreferredLocation( new Point(paper.getSceneWidth() - paper.getRightMargin(), 0) );
         }
     }
     
@@ -159,7 +166,7 @@ public class AreaWidget extends Widget{
                     area.getPaper().setHeaderMargin(height);
                     
                 } else if( areaType == FOOTER_TYPE ) {
-                    int height = ps.getWidth() - widget.getPreferredLocation().y - ps.getBottomMargin();
+                    int height = ps.getSceneHeight() - widget.getPreferredLocation().y - ps.getBottomMargin();
                     area.getPaper().setFooterMargin(height);
                 }
                 logger.trace("New paper:" + ps);
@@ -190,7 +197,9 @@ public class AreaWidget extends Widget{
                 int areaType = area.getType();
                 PaperSettings ps = area.getPaper();
                 
-                int footerAbsolutePosition = ps.getHeight() - ps.getBottomMargin() - ps.getFooterMargin();
+                int footerAbsolutePosition = ps.getSceneHeight() - ps.getBottomMargin() - ps.getFooterMargin();
+                int headerAbsolutePosition = ps.getTopMargin() + ps.getHeaderMargin();
+                logger.trace("suggested location Y: " + suggestedLocation.y);
                 
                 if( areaType == HEADER_TYPE || areaType == FOOTER_TYPE ){
                     int positionX = originalLocation.x;                                     //lock X axis
@@ -200,6 +209,19 @@ public class AreaWidget extends Widget{
                             
                         } else if ( footerAbsolutePosition < suggestedLocation.y) {           
                             return new Point(positionX, footerAbsolutePosition);              //need to compute location
+                            
+                        } else {
+                            return new Point(positionX, suggestedLocation.y);
+                        }
+                        
+                    } else if (type == FOOTER_TYPE){
+                        logger.trace("Bottom margin position: " + ps.getBottomMarginRosition());
+                        logger.trace("Header absolute position: " + headerAbsolutePosition);
+                        if( suggestedLocation.y > ps.getBottomMarginRosition() ){                      //if we are below bottom margin -> block
+                            return new Point(positionX , ps.getBottomMarginRosition());                //this is ok 
+                            
+                        } else if ( headerAbsolutePosition > suggestedLocation.y) {           
+                            return new Point(positionX, headerAbsolutePosition);              //need to compute location
                             
                         } else {
                             return new Point(positionX, suggestedLocation.y);

@@ -203,19 +203,31 @@ public class PaperSettings {
      * @return absolute position in Y axis of top margin in scene.
      */
     public int getTopMarginPosition(){
-        return (int) (getTopMargin() * ADJUSTMENT);
+        return (int) (getTopMargin());
     }
     
+    /**
+     * Return absolute position in X axis of left margin in scene (in scene pt units, 1 pt = 1/72").
+     * @return absolute position in X axis of left margin in scene.
+     */
     public int getLeftMarginPosition(){
-        return (int) (getLeftMargin() * ADJUSTMENT);
+        return (int) (getLeftMargin());
     }
     
+    /**
+     * Return absolute position in X axis of right margin in scene (in scene pt units, 1 pt = 1/72").
+     * @return absolute position in X axis of right margin in scene.
+     */
     public int getRightMarginPosition(){
-        return (int) ( (getWidth() - getRightMargin()) * ADJUSTMENT);
+        return (int) ( (getSceneWidth() - getRightMargin()) );
     }
     
+    /**
+     * Return absolute position in Y axis of bottom margin in scene (in scene pt units 1 pt = 1/72").
+     * @return absolute position in Y axis of bottom margin in scene.
+     */
     public int getBottomMarginRosition(){
-        return (int) ( (getHeight() - getBottomMargin()) * ADJUSTMENT);
+        return (int) ( (getSceneHeight() - getBottomMargin()) );
     }
     
     public static PaperSettings A4(){
