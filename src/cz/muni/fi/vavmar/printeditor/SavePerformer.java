@@ -108,8 +108,9 @@ public class SavePerformer {
     		item.setIsRelativePosition(false);
     		item.setSortNo(0);									//we don't need sorting
     		item.setLineAlignmentType("X");						//we don't need aligment
-    		item.setPrintFormatType("T");
+    		item.setPrintFormatType("T");						//T - text, I - image, R - rectange, L - line, F - DB field
     		
+//    		item.setPrintAreaType("H");							//Header, Content (default), Footer
     		if ( !item.save() ){
     			logger.error("Error whne sawing: " + item);
     		}

@@ -109,7 +109,7 @@ public class MainFrame extends javax.swing.JFrame {
         toolPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.title")); // NOI18N
 
         mainScenePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());

@@ -78,6 +78,15 @@ public class MainScene extends Scene {
     private LayerWidget backgroundLayer;
     private ResizeParentByMoveActionProvider moveProvider;
     
+    private PaperSettings paperSettings = PaperSettings.A4();      //create default settings A4 portrait
+    
+    private AreaWidget topMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.TOP_MARGIN_TYPE);
+    private AreaWidget bottomMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.BOTTOM_MARGIN_TYPE);
+    private AreaWidget leftMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.LEFT_MARGIN_TYPE);
+    private AreaWidget rightMarginWidget = new AreaWidget(this, paperSettings, AreaWidget.RIGHT_MARGIN_TYPE);
+    private AreaWidget headerWidget = new AreaWidget(this, paperSettings, AreaWidget.HEADER_TYPE, AreaWidget.DEFAULT_COLOR, 2);
+    private AreaWidget footerWidget = new AreaWidget(this, paperSettings, AreaWidget.FOOTER_TYPE, AreaWidget.DEFAULT_COLOR, 2);
+    
     private DBManager dataProvider;
     
     private WidgetAction hoverAction;
@@ -93,9 +102,9 @@ public class MainScene extends Scene {
     private boolean CONTROL_PRESSED = false;
     private static final int SCENE_WIDTH = 800;
     private static final int SCENE_HEIGHT = 1000;
-    private static final int A4_ASPECT_RATIO = 3;
-    private static final Rectangle A4_BOUNDS = new Rectangle(-1, -1, (210 * A4_ASPECT_RATIO) + 2,
-                                                                   (279 * A4_ASPECT_RATIO) + 2);
+    private static final double IDEMPIERE_MULTIPLIER = 2.81;
+    private static final Rectangle A4_BOUNDS = new Rectangle(0, 0, ((int) (210 * IDEMPIERE_MULTIPLIER)) + 2,
+            ((int)  (297 * IDEMPIERE_MULTIPLIER)) + 2);
     
     public static int DEFAULT_IDEMPIERE_PRINT_COLOR_ID = 100;
     public static int DEFAULT_IDEMPIERE_PRINT_PAPER_ID = 103;
@@ -115,7 +124,7 @@ public class MainScene extends Scene {
         multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
 
         backgroundLayer = new LayerWidget(this);
-        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.width + 20));	//make space around main scene otherwise window of main scene would be sticked directly on scene edges
+        backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.height + 20));	//make space around main scene otherwise window of main scene would be sticked directly on scene edges
         
         //This should be dynamic, based on the user settings
         LabelWidget paperRectangle = new LabelWidget(this);													//Rectagle rrepresenting bounds of paper
@@ -138,6 +147,10 @@ public class MainScene extends Scene {
         mainLayer.setPreferredBounds(new Rectangle(SCENE_WIDTH, SCENE_HEIGHT));
         mainLayer.setVisible(true);
         
+      //Smazat!!!! debug
+        mainLayer.setBorder(BorderFactory.createLineBorder(4));
+        //-------------------------
+        
         addChild(0, backgroundLayer);																//set backround as the most bottomed layer
         addChild(mainLayer);
         
@@ -159,8 +172,18 @@ public class MainScene extends Scene {
         
         
         
+        backgroundLayer.addChild(footerWidget);
+        backgroundLayer.addChild(headerWidget);
         
-        //TODO Delete - debugging widgets
+        backgroundLayer.addChild(leftMarginWidget);
+        backgroundLayer.addChild(rightMarginWidget);
+        backgroundLayer.addChild(topMarginWidget);
+        backgroundLayer.addChild(bottomMarginWidget);
+        
+        //TODO Smazat debug ---------
+        backgroundLayer.setBorder(BorderFactory.createLineBorder(4));
+        //------------------------------
+        //TODO Delete - debugging widgets --------------------------
         LabelWidget lw2 = new LabelWidget(this, "0,0");
         lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
         lw2.getActions().addAction( singleSelectActino );
@@ -190,7 +213,7 @@ public class MainScene extends Scene {
         lw.setPreferredLocation(new Point( (A4_BOUNDS.x + A4_BOUNDS.width), (A4_BOUNDS.y + A4_BOUNDS.height)) );
         mainLayer.addChild(lw);
 //        mainLayer.setOpaque(true);
-        // End of debugging widgets
+        // End of debugging widgets -----------------------------------------------
         
         AcceptProvider ap = new AcceptProviderImpl(this);
         
@@ -203,6 +226,22 @@ public class MainScene extends Scene {
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
     }
 
+    /**
+     * Returns paper settings object of scene.
+     * @return
+     */
+    public PaperSettings getPaperSettings() {
+        return paperSettings;
+    }
+
+    public void setPaperSettings(PaperSettings paperSettings) {
+        this.paperSettings = paperSettings;
+        //TODO zde bude napozicovani a nastaveni widgetu urcujicich top a bottom margin
+//        FfooterWidget.setPosition = paperSettings.getHeight() - paperSettings.getBottomMargin() - paperSettings.getFooterMargin();
+//        leftline.setPosition
+//        rightLine.setPosition
+    }
+    
     public WidgetAction getMultipleMovementAction() {
         return multipleMovementAction;
     }
