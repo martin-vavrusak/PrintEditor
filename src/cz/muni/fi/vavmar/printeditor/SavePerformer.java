@@ -62,6 +62,9 @@ public class SavePerformer {
     	newPrintFormat.setIsStandardHeaderFooter(false);
     	newPrintFormat.setIsForm(true);		//we need header and footer
     	
+    	newPrintFormat.setHeaderMargin(scene.getPaperSettings().getHeaderMargin());
+    	newPrintFormat.setFooterMargin(scene.getPaperSettings().getFooterMargin());
+    	
     	logger.trace( "is new set: " + newPrintFormat.is_new() );
 //    	newPrintFormat.setReplication(true);
     	if( !newPrintFormat.save() ){

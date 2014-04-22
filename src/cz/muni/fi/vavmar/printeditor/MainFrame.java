@@ -158,8 +158,8 @@ public class MainFrame extends javax.swing.JFrame {
         });
         toolPanel.add(jButton1);
 
-        toolPanel.add (new TextTool("Text", "images/textTool.png"));
-        toolPanel.add (new ImageTool("Image", "images/imageIcon.png"));
+        toolPanel.add (new TextTool("Text", "cz/muni/fi/vavmar/printeditor/images/textTool.png"));
+        toolPanel.add (new ImageTool("Image", "cz/muni/fi/vavmar/printeditor/images/imageIcon.png"));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
