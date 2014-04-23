@@ -114,11 +114,11 @@ public class AreaWidget extends Widget{
     public final void revalidateChange(){
         if(type == HEADER_TYPE){
             setPreferredSize( new Dimension(paper.getSceneWidth() - paper.getLeftMargin() - paper.getRightMargin(), thickness) );
-            setPreferredLocation( new Point(paper.getLeftMarginPosition(), paper.getTopMargin() + paper.getHeaderMargin()) );
+            setPreferredLocation( new Point(paper.getLeftMarginPosition(), paper.getTopMargin() + paper.getHeaderHeight()) );
             
         } else if( type == FOOTER_TYPE){
             setPreferredSize( new Dimension(paper.getSceneWidth() - paper.getLeftMargin() - paper.getRightMargin(), thickness) );
-            setPreferredLocation( new Point(paper.getLeftMargin() , paper.getSceneHeight() - paper.getBottomMargin() - paper.getFooterMargin()) );
+            setPreferredLocation( new Point(paper.getLeftMargin() , paper.getSceneHeight() - paper.getBottomMargin() - paper.getFooterHeight()) );
             
         } else if ( type == TOP_MARGIN_TYPE ){
             setPreferredSize( new Dimension(paper.getSceneWidth(), thickness));
@@ -162,11 +162,11 @@ public class AreaWidget extends Widget{
                 
                 if( areaType == HEADER_TYPE ){
                     int height = widget.getPreferredLocation().y - ps.getTopMargin();
-                    area.getPaper().setHeaderMargin(height);
+                    area.getPaper().setHeaderHeight(height);
                     
                 } else if( areaType == FOOTER_TYPE ) {
                     int height = ps.getSceneHeight() - widget.getPreferredLocation().y - ps.getBottomMargin();
-                    area.getPaper().setFooterMargin(height);
+                    area.getPaper().setFooterHeight(height);
                 }
                 logger.trace("New paper:" + ps);
             } else {
@@ -196,8 +196,8 @@ public class AreaWidget extends Widget{
                 int areaType = area.getType();
                 PaperSettings ps = area.getPaper();
                 
-                int footerAbsolutePosition = ps.getSceneHeight() - ps.getBottomMargin() - ps.getFooterMargin();
-                int headerAbsolutePosition = ps.getTopMargin() + ps.getHeaderMargin();
+                int footerAbsolutePosition = ps.getSceneHeight() - ps.getBottomMargin() - ps.getFooterHeight();
+                int headerAbsolutePosition = ps.getTopMargin() + ps.getHeaderHeight();
                 logger.trace("suggested location Y: " + suggestedLocation.y);
                 
                 if( areaType == HEADER_TYPE || areaType == FOOTER_TYPE ){

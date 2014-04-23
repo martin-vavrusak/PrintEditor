@@ -54,7 +54,7 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
             if (widget != null) {
             	logger.trace("Wiget bounds: " + widget.getPreferredBounds());
             	logger.trace("Wiget loc: " + widget.getPreferredLocation());
-            	
+            	logger.trace("widget height: " + widget.getPreferredBounds().height);
                 if(widget instanceof ImageWidget){
                     ImageWidget iw = (ImageWidget) widget;
                     Image image = iw.getImage();

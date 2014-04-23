@@ -103,11 +103,11 @@ public class PaperSettings {
      * 
      * @return height of header beggining from topMargin of a page.
      */
-    public int getHeaderMargin() {
+    public int getHeaderHeight() {
         return headerMargin;
     }
 
-    public void setHeaderMargin(int headerMargin) {
+    public void setHeaderHeight(int headerMargin) {
         this.headerMargin = headerMargin;
     }
 
@@ -119,12 +119,12 @@ public class PaperSettings {
      * 
      * @return height of footer beggining from {@link bottomMargin} of a page.
      */
-    public int getFooterMargin() {
+    public int getFooterHeight() {
         return footerMargin;
     }
 
     
-    public void setFooterMargin(int footerMargin) {
+    public void setFooterHeight(int footerMargin) {
         this.footerMargin = footerMargin;
     }
 
@@ -232,8 +232,8 @@ public class PaperSettings {
     
     public static PaperSettings A4(){
         PaperSettings ps = new PaperSettings();
-        ps.setHeaderMargin(50);
-        ps.setFooterMargin(50);
+        ps.setHeaderHeight(50);
+        ps.setFooterHeight(50);
         
         ps.setTopMargin(36);
         ps.setBottomMargin(36);

@@ -2,6 +2,8 @@ package cz.muni.fi.vavmar.printeditor;
 
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,6 +54,26 @@ public class SavePerformer {
 	public void saveAsNew(String printFormatName){
     	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
     	
+    	//Compute Header, Fotter and Content area:
+    	PaperSettings paper = scene.getPaperSettings();
+    	
+    	paper.getTopMarginPosition();	//Y of left top corner of header margin
+    	
+    	int leftX = paper.getLeftMarginPosition();			//left X point of all areas.
+    	int rightX = paper.getRightMarginPosition();		//right X point of all areas
+    	int areaWidth = rightX - leftX;						//width of usable area between left and right margin this can be used for content
+    	int contentHeight = paper.getSceneHeight() - paper.getTopMargin() - paper.getHeaderHeight() - paper.getBottomMargin() - paper.getFooterHeight();
+    	
+    	
+    	Rectangle headerArea = new Rectangle(leftX, paper.getTopMarginPosition(),			//Left upper corner of header
+    											areaWidth, paper.getHeaderHeight());		//header margin is width relative to topMargin
+    	
+    	Rectangle contentArea = new Rectangle(leftX, paper.getHeaderHeight() + paper.getTopMarginPosition(),	//it's in absolute scene units
+    												areaWidth, contentHeight);
+    	
+    	Rectangle footerArea = new Rectangle(leftX, paper.getBottomMarginRosition() - paper.getFooterHeight(),
+    												areaWidth, paper.getFooterHeight());
+    	
     	//Save Print Format
     	MPrintFormat newPrintFormat = new MPrintFormat(Env.getCtx(), 0, null);
     	newPrintFormat.setName(printFormatName);											//this doesn't have to be uniqe across iDempiere system
@@ -62,8 +84,9 @@ public class SavePerformer {
     	newPrintFormat.setIsStandardHeaderFooter(false);
     	newPrintFormat.setIsForm(true);		//we need header and footer
     	
-    	newPrintFormat.setHeaderMargin(scene.getPaperSettings().getHeaderMargin());
-    	newPrintFormat.setFooterMargin(scene.getPaperSettings().getFooterMargin());
+    	newPrintFormat.setHeaderMargin(scene.getPaperSettings().getHeaderHeight());
+    	newPrintFormat.setFooterMargin(scene.getPaperSettings().getFooterHeight());
+    	
     	
     	logger.trace( "is new set: " + newPrintFormat.is_new() );
 //    	newPrintFormat.setReplication(true);
@@ -77,14 +100,73 @@ public class SavePerformer {
 
     	seqNo = 0;
     	for(Widget widget: scene.getMainLayer().getChildren()){
-    		saveItemDB(widget, newPrintFormatID, seqNo);
+    		saveItemDB(widget, newPrintFormatID, seqNo, headerArea, contentArea, footerArea);
     		seqNo += 10;
     	}
 
 	}
 	
     
-    private void saveItemDB(Widget widget, int formatID, int seqNo){
+    private void saveItemDB(Widget widget, int formatID, int seqNo, Rectangle headerArea, Rectangle contentArea, Rectangle footerArea){
+    	//determine location
+    	MPrintFormatItem item = new MPrintFormatItem(Env.getCtx(), 0, null);
+    	Point widgetAbsolutePosition;
+    	if(widget instanceof LabelWidget){							//In case of label widget there need to be done adjustment. 
+    		Point loc = widget.getPreferredLocation();  			//location of left top corner is moved
+    		int y = Math.abs( loc.y - Math.abs(widget.getPreferredBounds().y) ) ;
+    		int x = loc.x;
+    		widgetAbsolutePosition = new Point( x,y ); 
+    	} else {
+    		widgetAbsolutePosition = widget.getPreferredLocation();
+    	}
+    	
+    	logger.trace("Widget: " + widget);
+    	logger.trace(" has position: " + widgetAbsolutePosition);
+    	logger.trace("Header: " + headerArea);
+    	logger.trace("Content: " + contentArea);
+    	logger.trace("Footer: " + footerArea);
+    	
+//    	int x = widgetAbsolutePosition.x;
+    	
+    	
+    	if( headerArea.contains(widgetAbsolutePosition) ){
+    		logger.trace("Item is in header.");
+    		item.setPrintAreaType("H");
+    		
+    		//Determine location in area
+    		int x = widgetAbsolutePosition.x - headerArea.x;
+    		int y = widgetAbsolutePosition.y - headerArea.y;
+    		item.setXPosition(x);
+    		item.setYPosition(y);
+    		logger.trace("Final position: x=" + x + ", y=" + y);
+    		
+    	} else if ( contentArea.contains(widgetAbsolutePosition) ){
+    		logger.trace("Item is in content.");
+    		item.setPrintAreaType("C");
+    		
+    		//Determine location in area
+    		int x = widgetAbsolutePosition.x - contentArea.x;
+    		int y = widgetAbsolutePosition.y - contentArea.y;
+    		item.setXPosition(x);
+    		item.setYPosition(y);
+    		logger.trace("Final position: x=" + x + ", y=" + y);
+    		
+    	} else if ( footerArea.contains(widgetAbsolutePosition) ) {
+    		logger.trace("Item is in footer.");
+    		item.setPrintAreaType("F");
+    		
+    		//Determine location in area
+    		int x = widgetAbsolutePosition.x - footerArea.x;
+    		int y = widgetAbsolutePosition.y - footerArea.y;
+    		item.setXPosition(x);
+    		item.setYPosition(y);
+    		logger.trace("Final position: x=" + x + ", y=" + y);
+    		
+		} else {
+			logger.warn("Unable to determine location of item: " + widget + " with location: " + widget.getPreferredLocation());
+			logger.warn("Header: " + headerArea + " Content: " + contentArea + " Footer: " + footerArea);
+		}
+    	
 		/**
 		 * 1. Get front from Widget - check if its present and save it
 		 * 2. Get color - search if already exist and save it
@@ -93,19 +175,16 @@ public class SavePerformer {
     	if(widget instanceof LabelWidget){
     		Font widgetFont = widget.getFont();
     		String labelText = ((LabelWidget) widget).getLabel();
-    		Point widgetLocation = widget.getPreferredLocation();
     		
     		int fontID = saveFont(widgetFont);
     		logger.trace("Font: " + widgetFont + " found in db as ID: " + fontID);
     		
-    		MPrintFormatItem item = new MPrintFormatItem(Env.getCtx(), 0, null);
+    		
     		item.setAD_PrintFont_ID(fontID);					//Mandatory
 //    		item.setAD_PrintColor_ID(AD_PrintColor_ID);
     		item.setAD_PrintFormat_ID(formatID);					//Mandatory - id of format to belong to
     		item.setName(labelText);							//Mandatory name of printitem
     		item.setSeqNo(seqNo);
-    		item.setXPosition(widgetLocation.x);
-    		item.setYPosition(widgetLocation.y);
     		
     		item.setPrintName(labelText);						//text of label
     		item.setIsRelativePosition(false);

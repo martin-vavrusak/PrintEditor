@@ -257,10 +257,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-//        for( Widget w : mainScene.getChildren() ){
-//            logger.trace(w.getBounds());
-//            printChildrens(w.getChildren());
-//        }
+
         String printFormatName = JOptionPane.showInputDialog(this, "Please type name:", "Save print format", JOptionPane.PLAIN_MESSAGE);
         logger.trace("New print format name: '" + printFormatName + "'");
         
