@@ -221,9 +221,9 @@ public class SavePerformer {
     		item.setPrintFormatType("I");
     		//Set printformatitem for image
     		ImageWidget imageWidget = ((ImageWidget) widget);
-//    		Rectangle imageBounds = imageWidget.getPreferredBounds();
-//    		item.setMaxWidth(imageBounds.width);
-//    		item.setMaxHeight(imageBounds.height);
+    		Rectangle imageBounds = imageWidget.getPreferredBounds();
+    		item.setMaxWidth(imageBounds.width);
+    		item.setMaxHeight(imageBounds.height);
     		item.setImageIsAttached(true);
     		
     		if ( !item.save() ){
