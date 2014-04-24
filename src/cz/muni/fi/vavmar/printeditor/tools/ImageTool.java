@@ -8,6 +8,7 @@ package cz.muni.fi.vavmar.printeditor.tools;
 
 import static cz.muni.fi.vavmar.printeditor.tools.AbstractTool.logger;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class ImageTool extends AbstractTool {
     @Override
     public Widget createWidget(Scene scene) {
         ImageWidget iw = null;
-        
+
         final JFileChooser fc = new JFileChooser();
         int retValue = fc.showDialog(this, "Open");
         logger.trace("Value from filechooser: " + retValue);
@@ -70,6 +71,7 @@ public class ImageTool extends AbstractTool {
             
             int lastOcurrence = filePath.lastIndexOf(".");
             
+            //Get extension of file
             String extesion;
             if(lastOcurrence + 1 < filePath.length()){
                 extesion = filePath.substring(lastOcurrence + 1);
@@ -79,7 +81,7 @@ public class ImageTool extends AbstractTool {
                 return null;
             }
             
-                        
+            //Allow only supported formats
             if(lastOcurrence > 0 && (extesion.equalsIgnoreCase("JPEG") 
                                        || extesion.equalsIgnoreCase("JPG") 
                                        || extesion.equalsIgnoreCase("PNG") 
@@ -95,6 +97,9 @@ public class ImageTool extends AbstractTool {
                 }
                 iw.setImage(bi);
                 iw.setOpaque(true);
+                iw.setToolTipText(filePath);
+                
+                
                 
 //                iw.setBorder(BorderFactory.createResizeBorder(7));
 //                iw.getActions().addAction(ActionFactory.createResizeAction());

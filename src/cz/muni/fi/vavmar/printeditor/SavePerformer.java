@@ -4,10 +4,15 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.compiere.model.MAttachment;
 import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -54,6 +59,7 @@ public class SavePerformer {
 	public void saveAsNew(String printFormatName){
     	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
     	
+    	int tableID = dataProvider.getTableID(tableName);
     	//Compute Header, Fotter and Content area:
     	PaperSettings paper = scene.getPaperSettings();
     	
@@ -77,7 +83,7 @@ public class SavePerformer {
     	//Save Print Format
     	MPrintFormat newPrintFormat = new MPrintFormat(Env.getCtx(), 0, null);
     	newPrintFormat.setName(printFormatName);											//this doesn't have to be uniqe across iDempiere system
-    	newPrintFormat.setAD_Table_ID(dataProvider.getTableID(tableName));		
+    	newPrintFormat.setAD_Table_ID( tableID );		
     	newPrintFormat.setAD_PrintColor_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_COLOR_ID );	//this should be 100 TODO - better to implement new method searching for default color dataProvider.getSystemDefaultColor
     	newPrintFormat.setAD_PrintPaper_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_PAPER_ID );	//This should be 100
     	newPrintFormat.setAD_PrintFont_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_FONT_ID );		//This should be 100
@@ -100,14 +106,14 @@ public class SavePerformer {
 
     	seqNo = 0;
     	for(Widget widget: scene.getMainLayer().getChildren()){
-    		saveItemDB(widget, newPrintFormatID, seqNo, headerArea, contentArea, footerArea);
+    		saveItemDB(widget, tableID, newPrintFormatID, seqNo, headerArea, contentArea, footerArea);
     		seqNo += 10;
     	}
 
 	}
 	
     
-    private void saveItemDB(Widget widget, int formatID, int seqNo, Rectangle headerArea, Rectangle contentArea, Rectangle footerArea){
+    private void saveItemDB(Widget widget, int tableID, int formatID, int seqNo, Rectangle headerArea, Rectangle contentArea, Rectangle footerArea){
     	//determine location
     	MPrintFormatItem item = new MPrintFormatItem(Env.getCtx(), 0, null);
     	Point widgetAbsolutePosition;
@@ -128,7 +134,7 @@ public class SavePerformer {
     	
 //    	int x = widgetAbsolutePosition.x;
     	
-    	
+    	//Determine area where item belongs to
     	if( headerArea.contains(widgetAbsolutePosition) ){
     		logger.trace("Item is in header.");
     		item.setPrintAreaType("H");
@@ -167,14 +173,16 @@ public class SavePerformer {
 			logger.warn("Header: " + headerArea + " Content: " + contentArea + " Footer: " + footerArea);
 		}
     	
+    	
 		/**
-		 * 1. Get front from Widget - check if its present and save it
+		 * 1. Get front from Widget - check if it's present in system and save it if not
 		 * 2. Get color - search if already exist and save it
 		 * 3. create new PrintFormatItem
 		 */
     	if(widget instanceof LabelWidget){
     		Font widgetFont = widget.getFont();
     		String labelText = ((LabelWidget) widget).getLabel();
+    		logger.trace("Saving label: " + labelText);
     		
     		int fontID = saveFont(widgetFont);
     		logger.trace("Font: " + widgetFont + " found in db as ID: " + fontID);
@@ -182,7 +190,7 @@ public class SavePerformer {
     		
     		item.setAD_PrintFont_ID(fontID);					//Mandatory
 //    		item.setAD_PrintColor_ID(AD_PrintColor_ID);
-    		item.setAD_PrintFormat_ID(formatID);					//Mandatory - id of format to belong to
+    		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
     		item.setName(labelText);							//Mandatory name of printitem
     		item.setSeqNo(seqNo);
     		
@@ -198,13 +206,55 @@ public class SavePerformer {
     		}
     		logger.trace("Item saved with ID: " + item.get_ID());
     		
-    	} else if(widget instanceof ImageWidget){
+    	} else if(widget instanceof ImageWidget){				//for transferability reasons we'll save image as a attachement
+    		logger.trace("Saving image.");						//for future extensions itcould be extended to allowing just passing location as http protocol location
+    															//but there would have to be implemented support in editor first (downloading image)
     		
+    		item.setAD_PrintFormat_ID(formatID);				//Mandatory
+    		item.setName("Image");								//Mandatory
+    		item.setSeqNo(seqNo);
+    		
+    		item.setIsRelativePosition(false);
+    		item.setPrintFormatType("I");
+    		//Set printformatitem for image
+    		ImageWidget imageWidget = ((ImageWidget) widget);
+//    		Rectangle imageBounds = imageWidget.getPreferredBounds();
+//    		item.setMaxWidth(imageBounds.width);
+//    		item.setMaxHeight(imageBounds.height);
+    		item.setImageIsAttached(true);
+    		
+    		if ( !item.save() ){
+    			logger.error("Error when sawing: " + item);
+    		}
+    		logger.trace("Item for image saved with ID: " + item.get_ID());
+    		logger.trace("Saving attachement.");
+    		
+    		//Save Image as attachement
+    		BufferedImage bufferedImage = (BufferedImage) imageWidget.getImage();
+    		WritableRaster raster = bufferedImage.getRaster();
+    		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
+    		
+    		MAttachment	attachement = new MAttachment(Env.getCtx(), 0, null);
+    		attachement.setAD_Table_ID( MPrintFormatItem.Table_ID );					//All attachements are attached to this table not to the table we are working with!!!
+    		attachement.setRecord_ID( item.get_ID() );
+    		
+
+//    		attachement.setBinaryData(data.getData());
+    		
+    		//Jeste moznost zkusit tohle:
+    		attachement.addEntry(new File("C:/obr.gif") );
+    		
+    		attachement.setTextMsg("Obrazek");
+    		attachement.setTitle("zip");									//Mandatory
+    		
+    		if ( !attachement.save() ){
+    			logger.error("Error when sawing attachement.");
+    		}
+
+    		logger.trace("New Attachement saved with id: " + attachement.get_ID());
     		
     	}
-    	
-
-	}
+   	}
     
     /**
      * If font is not in the DB create font and save it to DB. Otherwise return id of matching font.
