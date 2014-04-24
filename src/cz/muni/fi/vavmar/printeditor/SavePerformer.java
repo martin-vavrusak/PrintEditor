@@ -8,7 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -231,18 +234,33 @@ public class SavePerformer {
     		
     		//Save Image as attachement
     		BufferedImage bufferedImage = (BufferedImage) imageWidget.getImage();
-    		WritableRaster raster = bufferedImage.getRaster();
-    		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
+//    		WritableRaster raster = bufferedImage.getRaster();
+//    		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
     		
     		MAttachment	attachement = new MAttachment(Env.getCtx(), 0, null);
     		attachement.setAD_Table_ID( MPrintFormatItem.Table_ID );					//All attachements are attached to this table not to the table we are working with!!!
     		attachement.setRecord_ID( item.get_ID() );
     		
 
-//    		attachement.setBinaryData(data.getData());
+//    		attachement.setBinaryData(data.getData());								//
+//    		attachement.addEntry("Obrazek.gif", data.getData());					//Temer, akorat se kousne pri nahravani
     		
-    		//Jeste moznost zkusit tohle:
-    		attachement.addEntry(new File("C:/obr.gif") );
+//    		String tempDir = System.getProperty("java.io.tmpdir");
+//    		logger.trace("Tempdir: " + tempDir);
+    		String tempFileName = "iDempiere_img";
+    		File tempFile = null;
+    		try {
+				tempFile = File.createTempFile(tempFileName, ".gif");
+				logger.trace("Temporary file: " + tempFile);
+				ImageIO.write(bufferedImage, "gif", tempFile);
+				logger.trace("Image saved temporary: " + tempFile.getAbsolutePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+//    		//Jeste moznost zkusit tohle:
+    		attachement.addEntry( tempFile );
     		
     		attachement.setTextMsg("Obrazek");
     		attachement.setTitle("zip");									//Mandatory
