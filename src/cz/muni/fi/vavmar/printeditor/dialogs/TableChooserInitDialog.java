@@ -10,6 +10,7 @@ import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
 import cz.muni.fi.vavmar.printeditor.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,11 +32,11 @@ public class TableChooserInitDialog extends JDialog {
     private int selectedPrintFormatID;
     private boolean isNewFormat = false;
     
-    public TableChooserInitDialog(DBManager dbManager) {
+    public TableChooserInitDialog(DBManager dbManager, boolean isSubreportSelection) {
         dataProvider = dbManager;
         setModal(true);
         
-        add(new TableChooserJPanel());
+        add(new TableChooserJPanel( isSubreportSelection ));
         
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(screenSize.width / 2, screenSize.height / 2, 490, 455);
@@ -132,15 +133,75 @@ public class TableChooserInitDialog extends JDialog {
     
 private class TableChooserJPanel extends javax.swing.JPanel {
     private List<String> searchList;
-	
+    private Map<Integer, String> searchReportMap;
     
     /**
      * Creates new form JPanelExtended
      */
-    public TableChooserJPanel() {
+    public TableChooserJPanel( boolean isSubreportSelection ) {
         initComponents();
+        if(isSubreportSelection){
+            createNewPrintFormatButton.setVisible(false);
+//            createNewPrintFormatButton.setEnabled(false);
+//            revalidate();
+//            repaint();
+        }
     }
     
+    private List<String> search(List<String> original, String stringToFind){
+        System.out.println("Searching for: " + stringToFind);
+        
+        if(original != null){
+             List<String> list = new ArrayList<String>();
+             List<String> listInnerMatch = new ArrayList<String>();
+        
+        for(String t: original){
+                if(t.length() < stringToFind.length()) continue;
+
+                //compare first s.lenght() characters
+                if( t.substring(0, stringToFind.length()).equalsIgnoreCase( stringToFind ) ){
+                    list.add(t);
+  
+                } //If there is a match of "s" (searched string) anywhere as substring
+                else if( t.toLowerCase().contains( stringToFind.toLowerCase() ) ){ 
+                    
+                    listInnerMatch.add(t);
+                }
+            }
+            
+            list.addAll(listInnerMatch);
+            return list;
+            }
+        
+        return null;
+    }
+    
+    private Map<Integer, String> searchReport(Map<Integer, String> searchMap, String stringToFind){
+        
+        if(searchMap != null){
+            Map<Integer, String> resultMap = new HashMap<>();
+             Map<Integer, String> innerMatch = new HashMap<>();
+             
+            for(Entry<Integer, String> report: searchMap.entrySet()){
+                String s = report.getValue();
+                if(s.length() < stringToFind.length()) continue;
+
+                //compare first s.lenght() characters
+                if( s.substring(0, stringToFind.length()).equalsIgnoreCase( stringToFind ) ){
+                    resultMap.put(report.getKey(), report.getValue());
+  
+                } //If there is a match of "s" (searched string) anywhere as substring
+                else if( s.toLowerCase().contains( stringToFind.toLowerCase() ) ){ 
+                    
+                    innerMatch.put(report.getKey(), report.getValue());
+                }
+            }
+            resultMap.putAll(innerMatch);
+            return resultMap;
+        }
+        return null;
+    }
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -150,17 +211,17 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        titleLabel = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        viewRestrictionCheckbox = new javax.swing.JCheckBox();
-        availableTablesAndVievsListSrcollPane = new javax.swing.JScrollPane();
-        availableTablesAndVievsList = new javax.swing.JList();
-        searchField = new javax.swing.JTextField();
         credentialsPanel = new javax.swing.JPanel();
         roleTitle = new javax.swing.JLabel();
         userTitle = new javax.swing.JLabel();
         userLabel = new javax.swing.JLabel();
         roleLabel = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        viewRestrictionCheckbox = new javax.swing.JCheckBox();
+        availableTablesAndVievsListSrcollPane = new javax.swing.JScrollPane();
+        availableTablesAndVievsList = new javax.swing.JList();
+        searchTableTextField = new javax.swing.JTextField();
         buttonOk = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -168,39 +229,10 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         createNewPrintFormatButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        formatsRestrictionCheckBox = new javax.swing.JCheckBox();
+        searchOnlyReportsCheckBox = new javax.swing.JCheckBox();
+        simpleFormatsOnlyCheckBox = new javax.swing.JCheckBox();
+        searchReportTextField = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
-
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.titleLabel.text")); // NOI18N
-
-        viewRestrictionCheckbox.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.viewRestrictionCheckbox.text")); // NOI18N
-        viewRestrictionCheckbox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                viewRestrictionCheckboxItemStateChanged(evt);
-            }
-        });
-
-        List<String> tablesList = dataProvider.getTables(null);
-        availableTablesAndVievsList.setModel(Utils.createListModel( tablesList ));
-        availableTablesAndVievsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        availableTablesAndVievsList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                availableTablesAndVievsListMouseClicked(evt);
-            }
-        });
-        availableTablesAndVievsListSrcollPane.setViewportView(availableTablesAndVievsList);
-
-        searchField.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchField.text")); // NOI18N
-        searchField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                searchFieldFocusGained(evt);
-            }
-        });
-        searchField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                searchFieldKeyReleased(evt);
-            }
-        });
 
         credentialsPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
@@ -255,6 +287,38 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 
         userLabel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.userLabel.AccessibleContext.accessibleName")); // NOI18N
 
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.titleLabel.text")); // NOI18N
+
+        viewRestrictionCheckbox.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.viewRestrictionCheckbox.text")); // NOI18N
+        viewRestrictionCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.viewRestrictionCheckbox.toolTipText")); // NOI18N
+        viewRestrictionCheckbox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                viewRestrictionCheckboxItemStateChanged(evt);
+            }
+        });
+
+        List<String> tablesList = dataProvider.getTables(null);
+        availableTablesAndVievsList.setModel(Utils.createListModel( tablesList ));
+        availableTablesAndVievsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        availableTablesAndVievsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                availableTablesAndVievsListMouseClicked(evt);
+            }
+        });
+        availableTablesAndVievsListSrcollPane.setViewportView(availableTablesAndVievsList);
+
+        searchTableTextField.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchTableTextField.text")); // NOI18N
+        searchTableTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                searchTableTextFieldFocusGained(evt);
+            }
+        });
+        searchTableTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchTableTextFieldKeyReleased(evt);
+            }
+        });
+
         buttonOk.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.buttonOk.text")); // NOI18N
         buttonOk.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
@@ -283,10 +347,31 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 
         jLabel2.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.jLabel2.text")); // NOI18N
 
-        formatsRestrictionCheckBox.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.formatsRestrictionCheckBox.text")); // NOI18N
-        formatsRestrictionCheckBox.addItemListener(new java.awt.event.ItemListener() {
+        searchOnlyReportsCheckBox.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchOnlyReportsCheckBox.text")); // NOI18N
+        searchOnlyReportsCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchOnlyReportsCheckBox.toolTipText")); // NOI18N
+        searchOnlyReportsCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                formatsRestrictionCheckBoxItemStateChanged(evt);
+                searchOnlyReportsCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        simpleFormatsOnlyCheckBox.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.simpleFormatsOnlyCheckBox.text")); // NOI18N
+        simpleFormatsOnlyCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.simpleFormatsOnlyCheckBox.toolTipText")); // NOI18N
+        simpleFormatsOnlyCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                simpleFormatsOnlyCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        searchReportTextField.setText(org.openide.util.NbBundle.getMessage(TableChooserInitDialog.class, "TableChooserInitDialog.searchReportTextField.text")); // NOI18N
+        searchReportTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                searchReportTextFieldFocusGained(evt);
+            }
+        });
+        searchReportTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchReportTextFieldKeyReleased(evt);
             }
         });
 
@@ -296,21 +381,20 @@ private class TableChooserJPanel extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(viewRestrictionCheckbox)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(formatsRestrictionCheckBox))
-                                .addComponent(createNewPrintFormatButton))
-                            .addGap(0, 44, Short.MAX_VALUE))
-                        .addComponent(searchField)
-                        .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(176, 176, 176)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(createNewPrintFormatButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(searchTableTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(viewRestrictionCheckbox)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchOnlyReportsCheckBox)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 92, Short.MAX_VALUE)
@@ -320,32 +404,34 @@ private class TableChooserJPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(credentialsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(searchReportTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(simpleFormatsOnlyCheckBox)
+                                    .addComponent(jLabel2))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(16, 16, 16))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(viewRestrictionCheckbox)
-                            .addComponent(formatsRestrictionCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(credentialsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchOnlyReportsCheckBox)
+                    .addComponent(simpleFormatsOnlyCheckBox)
+                    .addComponent(viewRestrictionCheckbox))
+                .addGap(7, 7, 7)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchTableTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchReportTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                    .addComponent(availableTablesAndVievsListSrcollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -394,7 +480,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_viewRestrictionCheckboxItemStateChanged
 
-    private void searchFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchFieldFocusGained
+    private void searchTableTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchTableTextFieldFocusGained
         JTextField jt = (JTextField) evt.getComponent();
         jt.selectAll();
         if(viewRestrictionCheckbox.isSelected()){
@@ -403,36 +489,40 @@ private class TableChooserJPanel extends javax.swing.JPanel {
             searchList = dataProvider.getTables(null);
         }
         
-    }//GEN-LAST:event_searchFieldFocusGained
+    }//GEN-LAST:event_searchTableTextFieldFocusGained
 
-    private void searchFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyReleased
+    private void searchTableTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTableTextFieldKeyReleased
         String s = ((JTextField) evt.getComponent()).getText();
         System.out.println("Searching for: " + s);
         
-        if(searchList != null){
-             List<String> list = new ArrayList<String>();
-             List<String> listInnerMatch = new ArrayList<String>();
+//        if(searchList != null){
+//             List<String> list = new ArrayList<String>();
+//             List<String> listInnerMatch = new ArrayList<String>();
+//        
+//        for(String t: searchList){
+//                if(t.length() < s.length()) continue;
+//
+//                //compare first s.lenght() characters
+//                if( t.substring(0, s.length()).equalsIgnoreCase(s) ){
+//                    list.add(t);
+//                    
+//                    
+//                    
+//                } //If there is a match of "s" (searched string) anywhere as substring
+//                else if( t.toLowerCase().contains( s.toLowerCase() ) ){ 
+//                    
+//                    listInnerMatch.add(t);
+//                }
+//            }
+//            
+//            list.addAll(listInnerMatch);
+//            availableTablesAndVievsList.setModel(Utils.createListModel(list));
         
-            for(String t: searchList){
-                if(t.length() < s.length()) continue;
-
-                //compare first s.lenght() characters
-                if( t.substring(0, s.length()).equalsIgnoreCase(s) ){
-                    list.add(t);
-                    
-                    
-                    
-                } //If there is a match of "s" (searched string) anywhere as substring
-                else if( t.toLowerCase().contains( s.toLowerCase() ) ){ 
-                    
-                    listInnerMatch.add(t);
-                }
-            }
-            
-            list.addAll(listInnerMatch);
-            availableTablesAndVievsList.setModel(Utils.createListModel(list));
+        List<String> result = search(searchList, s);
+        if(result != null){
+            availableTablesAndVievsList.setModel(Utils.createListModel(result));
         }
-    }//GEN-LAST:event_searchFieldKeyReleased
+    }//GEN-LAST:event_searchTableTextFieldKeyReleased
 
     private void buttonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCancelMouseClicked
         selectedTable = null;
@@ -456,6 +546,9 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonOkMouseReleased
 
     private void availableTablesAndVievsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableTablesAndVievsListMouseClicked
+        
+        if(!availableTablesAndVievsList.isEnabled()) return;                          //if not enabled do nothing
+        
         //retrieve model from list wich fired this event
         JList list = (JList) evt.getComponent();
 
@@ -463,10 +556,16 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         logger.trace("Selected table: " + s);
 
         int tableID = dataProvider.getTableID(s);
-        Map<Integer, String> printFormats = dataProvider.getPrintFormats(tableID);
-                
-        availablePrintFormats.setModel( PrintFormat.createListModel(printFormats) );
+        Map<Integer, String> printFormats;
+        
+        if( simpleFormatsOnlyCheckBox.isSelected() ){
+            printFormats = dataProvider.getPrintFormats(tableID, true);
+        } else {
+            printFormats = dataProvider.getPrintFormats(tableID, false);
+        }
 
+        availablePrintFormats.setModel( PrintFormat.createListModel(printFormats) );
+        searchReportMap = printFormats;
     }//GEN-LAST:event_availableTablesAndVievsListMouseClicked
 
     private void createNewPrintFormatButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewPrintFormatButtonMouseReleased
@@ -476,15 +575,91 @@ private class TableChooserJPanel extends javax.swing.JPanel {
          dispose();
     }//GEN-LAST:event_createNewPrintFormatButtonMouseReleased
 
-    private void formatsRestrictionCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_formatsRestrictionCheckBoxItemStateChanged
-        if(formatsRestrictionCheckBox.isSelected()){
+    private void searchOnlyReportsCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_searchOnlyReportsCheckBoxItemStateChanged
+        
+        if(searchOnlyReportsCheckBox.isSelected()){             //New state is selected (changed fron unselected to selected)
             viewRestrictionCheckbox.setEnabled(false);
             availableTablesAndVievsList.setEnabled(false);
+            searchTableTextField.setEnabled(false);
+            
+            if(simpleFormatsOnlyCheckBox.isSelected()){
+                searchReportMap = dataProvider.getPrintFormats(-1, true);
+            } else {
+                searchReportMap = dataProvider.getPrintFormats(-1, false);
+            }
         } else {
             viewRestrictionCheckbox.setEnabled(true);
             availableTablesAndVievsList.setEnabled(true);
+            searchTableTextField.setEnabled(true);
+            
+            searchReportMap = new HashMap<Integer, String>();
         }
-    }//GEN-LAST:event_formatsRestrictionCheckBoxItemStateChanged
+        
+        availablePrintFormats.setModel( PrintFormat.createListModel(searchReportMap) );
+        
+    }//GEN-LAST:event_searchOnlyReportsCheckBoxItemStateChanged
+
+    private void searchReportTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchReportTextFieldFocusGained
+        JTextField jt = (JTextField) evt.getComponent();
+        jt.selectAll();
+        
+        if( searchOnlyReportsCheckBox.isSelected() ){                              //Ignore table selection and search through all print formats
+            if( simpleFormatsOnlyCheckBox.isSelected() ){                           //Search only for "non form" (standard header type) reports
+                searchReportMap = dataProvider.getPrintFormats(-1, true);
+            } else {
+                searchReportMap = dataProvider.getPrintFormats(-1, false);          //Search throught all reports
+            }
+            
+        } else {                                                                    //Search only in formats beloging to selected table
+            String tableName = (String) availableTablesAndVievsList.getSelectedValue();
+            
+            if( simpleFormatsOnlyCheckBox.isSelected() ){                           //Search only for "non form" (standard header type) reports
+                searchReportMap = dataProvider.getPrintFormats(tableName, true);
+            } else {
+                searchReportMap = dataProvider.getPrintFormats(tableName, false);          //Search throught all reports
+            }
+        }
+
+//        if(viewRestrictionCheckbox.isSelected()){
+//            searchList = dataProvider.getViews();
+//        } else {
+//            searchList = dataProvider.getTables(null);
+//        }
+    }//GEN-LAST:event_searchReportTextFieldFocusGained
+
+    private void searchReportTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchReportTextFieldKeyReleased
+        String s = ((JTextField) evt.getComponent()).getText();
+        System.out.println("Searching for: " + s);
+        
+        Map<Integer, String> resultMap = searchReport(searchReportMap,s);
+        if(resultMap != null){
+            availablePrintFormats.setModel( PrintFormat.createListModel(resultMap) );
+        }
+    }//GEN-LAST:event_searchReportTextFieldKeyReleased
+
+    private void simpleFormatsOnlyCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_simpleFormatsOnlyCheckBoxItemStateChanged
+        
+        if( simpleFormatsOnlyCheckBox.isSelected() ){                                   //New state is selected (changed fron unselected to selected)
+            
+            if( searchOnlyReportsCheckBox.isSelected() ){                               //Ignore table selection and search through all print formats
+                searchReportMap = dataProvider.getPrintFormats(-1, true);
+                
+            } else {                                                                    //Search only in formats beloging to selected table
+                String tableName = (String) availableTablesAndVievsList.getSelectedValue();
+                searchReportMap = dataProvider.getPrintFormats(tableName, true);
+            }
+            
+        } else {
+            if( searchOnlyReportsCheckBox.isSelected() ){
+                searchReportMap = dataProvider.getPrintFormats(-1, false);
+                
+            } else {
+                String tableName = (String) availableTablesAndVievsList.getSelectedValue();
+                searchReportMap = dataProvider.getPrintFormats(tableName, false);
+            }
+        }
+        availablePrintFormats.setModel( PrintFormat.createListModel(searchReportMap) );
+    }//GEN-LAST:event_simpleFormatsOnlyCheckBoxItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -495,7 +670,6 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     private javax.swing.JButton buttonOk;
     private javax.swing.JButton createNewPrintFormatButton;
     private javax.swing.JPanel credentialsPanel;
-    private javax.swing.JCheckBox formatsRestrictionCheckBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -503,7 +677,10 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel roleLabel;
     private javax.swing.JLabel roleTitle;
-    private javax.swing.JTextField searchField;
+    private javax.swing.JCheckBox searchOnlyReportsCheckBox;
+    private javax.swing.JTextField searchReportTextField;
+    private javax.swing.JTextField searchTableTextField;
+    private javax.swing.JCheckBox simpleFormatsOnlyCheckBox;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel userLabel;
     private javax.swing.JLabel userTitle;

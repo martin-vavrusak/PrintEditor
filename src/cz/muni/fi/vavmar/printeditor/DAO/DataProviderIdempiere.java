@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.compiere.model.MTable;
 import org.compiere.print.MPrintFont;
+import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -341,17 +342,92 @@ public class DataProviderIdempiere implements DBManager {
 	}
     
     
-	//Return map of all formats aviable for specified table
-    public Map<Integer, String> getPrintFormats( int tableID ){
+//	//Return map of all formats aviable for specified table
+//    public Map<Integer, String> getPrintFormats( int tableID ){
+//    	Map<Integer, String> returnMap = new HashMap<Integer, String>();
+//
+//    	String sql = "SELECT ad_printformat_id, name FROM AD_PrintFormat WHERE AD_Table_ID=?";
+//    	PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		try
+//		{
+//			pstmt = DB.prepareStatement (sql, null);
+//			pstmt.setInt (1, tableID);
+//			rs = pstmt.executeQuery ();
+//			while(rs.next()){
+//				returnMap.put(rs.getInt(1), rs.getString(2));
+//			}
+//		}
+//		catch (Exception e)
+//		{
+//			logger.log(Level.ERROR, "Unable to get print formats of table: " + tableID, e);
+//		}
+//		finally {
+//			DB.close(rs, pstmt);
+//			rs = null; pstmt = null;
+//		}
+//		
+//    	return returnMap;
+//    }
+
+    /**
+     * Return all print formats belonging specified table or all available if table is null.
+     * 
+     * @param tableName id of table to retrieve print formats for. If null all print formats availavble in system is returned.
+     * @param excludeFormType There are two basic types of print formats. Form type and standard header type. If true only print formats in the standard format is returned. (ie doesn't have form option checked = without header and footer).
+     * @return Map<Integer, String> with IDs and names of print formats.
+     */
+	@Override
+	public Map<Integer, String> getPrintFormats ( String tableName, boolean excludeFormType ){
+		if(tableName == null){
+			return getPrintFormats(-1, excludeFormType);
+			
+		} else {
+			int tableID = getTableID(tableName);
+			return getPrintFormats(tableID, excludeFormType);
+		}
+		
+	}
+	
+    /**
+     * Return all print formats belonging specified table or all available if table is > -1.
+     * 
+     * @param tableID id of table to retrieve print formats for. If -1 all print formats availavble in system is returned.
+     * @param excludeFormType There are two basic types of print formats. Form type and standard header type. If true only print formats in the standard format is returned. (ie doesn't have form option checked = without header and footer).
+     * @return Map<Integer, String> with IDs and names of print formats.
+     */
+	@Override
+    public Map<Integer, String> getPrintFormats ( int tableID, boolean excludeFormType ){
     	Map<Integer, String> returnMap = new HashMap<Integer, String>();
 
-    	String sql = "SELECT ad_printformat_id, name FROM AD_PrintFormat WHERE AD_Table_ID=?";
+    	StringBuilder sqlString = new StringBuilder();
+    	sqlString.append("SELECT ad_printformat_id, name FROM AD_PrintFormat ");
+    	
+    	if( tableID > -1 ){
+    		logger.trace("Table id is: " + tableID);
+    		sqlString.append(" WHERE AD_Table_ID=?");
+    	} else {
+    		logger.trace("No table id specified: " + tableID + " retrieving all print formats.");
+    	}
+    	
+    	if( excludeFormType ){
+    		if(tableID > -1){
+    			sqlString.append(" AND isform='N'");		//WHERE clause is allready present append only next condition
+    			
+    		} else {
+    			sqlString.append(" WHERE isform='N'");
+    		}
+    	}
+    	
+    	logger.trace("SQL string to retrieve print formats: '" + sqlString + "'.");
+    	
+//    	String sql = "SELECT ad_printformat_id, name FROM AD_PrintFormat WHERE AD_Table_ID=? AND isform='N'";
     	PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, tableID);
+			pstmt = DB.prepareStatement (sqlString.toString(), null);
+			if( tableID > -1 ) { pstmt.setInt (1, tableID); }
 			rs = pstmt.executeQuery ();
 			while(rs.next()){
 				returnMap.put(rs.getInt(1), rs.getString(2));
@@ -368,7 +444,6 @@ public class DataProviderIdempiere implements DBManager {
 		
     	return returnMap;
     }
-
     
     
 	@Override

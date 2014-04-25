@@ -79,12 +79,22 @@ public interface DBManager {
     public int getTableID(String tableName);
     
     /**
-     * Returns all available print formats of table.
+     * Return all print formats belonging specified table or all available if table is > -1.
      * 
-     * @param tableID
-     * @return map of available print formats of table.
+     * @param tableID id of table to retrieve print formats for. If -1 all print formats availavble in system is returned.
+     * @param excludeFormType There are two basic types of print formats. Form type and standard header type. If true only print formats in the standard format is returned. (ie doesn't have form option checked = without header and footer).
+     * @return Map<Integer, String> with IDs and names of print formats.
      */
-    public Map<Integer, String> getPrintFormats( int tableID );
+    public Map<Integer, String> getPrintFormats ( int tableID, boolean excludeFormType );
+	
+    /**
+     * Return all print formats belonging specified table or all available if table is null.
+     * 
+     * @param tableName id of table to retrieve print formats for. If null all print formats availavble in system is returned.
+     * @param excludeFormType There are two basic types of print formats. Form type and standard header type. If true only print formats in the standard format is returned. (ie doesn't have form option checked = without header and footer).
+     * @return Map<Integer, String> with IDs and names of print formats.
+     */
+    public Map<Integer, String> getPrintFormats ( String tableName, boolean excludeFormType );
     
     /**
      * Return all items of print format sorted by area type (header, content, footer) and seqential number.

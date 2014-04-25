@@ -317,8 +317,11 @@ public class MainFrame extends javax.swing.JFrame {
             public void run() {
                 DataProviderIdempiere dataProvider = new DataProviderIdempiere();
                 
-                TableChooserInitDialog tableChooser = new TableChooserInitDialog(dataProvider);
+                TableChooserInitDialog tableChooser = new TableChooserInitDialog(dataProvider, false);
                 tableChooser.setVisible(true);
+                
+//                TableChooserInitDialog tableChooser2 = new TableChooserInitDialog(dataProvider, true);
+//                tableChooser2.setVisible(true);
                 
                 String selectedTable = tableChooser.getSelectedTable();
                 int selectedPrintFormatID = tableChooser.getSelectedPrintFormatID();

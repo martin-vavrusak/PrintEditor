@@ -190,7 +190,7 @@ public class DataProviderJDBC implements DBManager {
 	}
 
 	@Override
-	public Map<Integer, String> getPrintFormats(int tableID) {
+	public Map<Integer, String> getPrintFormats(int tableID, boolean excludeFormType) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
@@ -216,6 +216,12 @@ public class DataProviderJDBC implements DBManager {
 
 	@Override
 	public int createColor(Color c) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public Map<Integer, String> getPrintFormats(String tableName,
+			boolean excludeFormType) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
     
