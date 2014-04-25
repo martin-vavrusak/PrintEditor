@@ -29,6 +29,7 @@ public class TableChooserInitDialog extends JDialog {
     
     protected DBManager dataProvider;
     private String selectedTable = null;
+    private String selectedPrintFormatName;
     private int selectedPrintFormatID;
     private boolean isNewFormat = false;
     
@@ -59,8 +60,12 @@ public class TableChooserInitDialog extends JDialog {
      * @return id of selected print format or -1 otherwise
      */
     public int getSelectedPrintFormatID() {
-		return selectedPrintFormatID;
+            return selectedPrintFormatID;
 	}
+    
+    public String getSelectedPrintFormatName(){
+        return selectedPrintFormatName;
+    }
     
     public boolean isNewFormat(){
         return this.isNewFormat;
@@ -145,6 +150,21 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 //            createNewPrintFormatButton.setEnabled(false);
 //            revalidate();
 //            repaint();
+            
+            //initialize list for print format (subreport) selection
+            searchReportMap = dataProvider.getPrintFormats(-1, true);       //get all reports with standard header
+            availablePrintFormats.setModel( PrintFormat.createListModel(searchReportMap) );
+            
+            //disable List for chosing table, its search box and view selectinon check box
+            availableTablesAndVievsList.setEnabled(false);
+            searchTableTextField.setEnabled(false);
+            viewRestrictionCheckbox.setEnabled(false);
+            
+            //select Only print formats check box
+            searchOnlyReportsCheckBox.setSelected(true);
+            
+            //select Simple print formats check box
+            simpleFormatsOnlyCheckBox.setSelected(true);
         }
     }
     
@@ -527,6 +547,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     private void buttonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonCancelMouseClicked
         selectedTable = null;
         selectedPrintFormatID = -1;
+        selectedPrintFormatName = null;
         isNewFormat = false;
         dispose();
     }//GEN-LAST:event_buttonCancelMouseClicked
@@ -537,9 +558,11 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         PrintFormat selectedFormat = (PrintFormat) availablePrintFormats.getSelectedValue();
         if( selectedFormat == null ){
         	selectedPrintFormatID = -1;
-        
+                selectedPrintFormatName = null;
+                
         } else {
         	selectedPrintFormatID = selectedFormat.getId();
+                selectedPrintFormatName = selectedFormat.getName();
         }
         isNewFormat = false;
         dispose();
@@ -571,6 +594,7 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     private void createNewPrintFormatButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewPrintFormatButtonMouseReleased
          selectedTable = (String) availableTablesAndVievsList.getSelectedValue();
          selectedPrintFormatID = -1;
+         selectedPrintFormatName = null;
          isNewFormat = true;
          dispose();
     }//GEN-LAST:event_createNewPrintFormatButtonMouseReleased

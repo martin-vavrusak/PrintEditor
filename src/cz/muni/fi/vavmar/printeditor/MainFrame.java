@@ -10,6 +10,7 @@ import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
 import cz.muni.fi.vavmar.printeditor.DAO.DataProviderIdempiere;
 import cz.muni.fi.vavmar.printeditor.dialogs.TableChooserInitDialog;
 import cz.muni.fi.vavmar.printeditor.tools.ImageTool;
+import cz.muni.fi.vavmar.printeditor.tools.SubreportTool;
 import cz.muni.fi.vavmar.printeditor.tools.TextTool;
 import cz.muni.fi.vavmar.printeditor.utils.DataFetcher;
 import cz.muni.fi.vavmar.printeditor.utils.Utils;
@@ -109,7 +110,7 @@ public class MainFrame extends javax.swing.JFrame {
         toolPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.title")); // NOI18N
 
         mainScenePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -160,6 +161,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         toolPanel.add (new TextTool("Text", "cz/muni/fi/vavmar/printeditor/images/textTool.png"));
         toolPanel.add (new ImageTool("Image", "cz/muni/fi/vavmar/printeditor/images/imageIcon.png"));
+        toolPanel.add (new SubreportTool("Subreport", "cz/muni/fi/vavmar/printeditor/images/subreportTool.png"));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

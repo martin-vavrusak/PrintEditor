@@ -6,6 +6,7 @@
 
 package cz.muni.fi.vavmar.printeditor.tools;
 
+import cz.muni.fi.vavmar.printeditor.MainScene;
 import cz.muni.fi.vavmar.printeditor.actions.EditTextProvider;
 import cz.muni.fi.vavmar.printeditor.actions.TextPopupMenuProvider;
 import cz.muni.fi.vavmar.printeditor.dialogs.TextPropertiesDialog;
@@ -42,7 +43,7 @@ public class TextTool extends AbstractTool {
     }
   
 
-    public Widget createWidget(Scene scene) {
+    public Widget createWidget(MainScene scene) {
         logger.trace("TextTool: vytvarim widget");
         LabelWidget lw = new LabelWidget(scene, "TextTool");
 

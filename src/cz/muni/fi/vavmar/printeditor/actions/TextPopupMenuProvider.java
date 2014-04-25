@@ -50,7 +50,7 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
             menuItem.addActionListener(this);
             menu.add(menuItem);
             
-            if( ! (ownerWidget instanceof ColumnWidget) ){
+            if( ! (ownerWidget instanceof ColumnWidget) ){			//This provider should be used only for TextTool and ColumnWidget, both of them are implementing LabelWidget
                 menuItem = new JMenuItem(CHANGE_TEXT_LABEL);
                 menuItem.setActionCommand(CHANGE_TEXT_COMMAND);
                 menuItem.addActionListener(this);

@@ -67,7 +67,7 @@ public class AcceptProviderImpl implements AcceptProvider {
             Exceptions.printStackTrace(ex);
         }
         
-        logger.warn("It soulhdn't be here!!! Something wrong happened.");
+        logger.warn("It shouldn't get here!!! Something wrong happened.");
         return ConnectorState.REJECT;
     }
 

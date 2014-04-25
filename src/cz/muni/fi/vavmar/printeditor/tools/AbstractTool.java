@@ -6,7 +6,7 @@
 
 package cz.muni.fi.vavmar.printeditor.tools;
 
-import cz.muni.fi.vavmar.printeditor.tools.Tool;
+import cz.muni.fi.vavmar.printeditor.MainScene;
 import cz.muni.fi.vavmar.printeditor.utils.Utils;
 
 import java.awt.Dimension;
@@ -33,7 +33,7 @@ import org.netbeans.api.visual.widget.Widget;
  *
  * @author Martin
  */
-public abstract class AbstractTool extends JLabel implements Tool, Transferable, Serializable {
+public abstract class AbstractTool extends JLabel implements Transferable, Serializable {
     private static final long serialVersionUID = 3547198343264864303L;
     protected static Logger logger = LogManager.getLogger(AbstractTool.class.getName());
 
@@ -56,8 +56,7 @@ public abstract class AbstractTool extends JLabel implements Tool, Transferable,
     }
 
     
-    @Override
-    public abstract Widget createWidget(Scene scene);
+    public abstract Widget createWidget(MainScene scene);
     
     
     /**

@@ -23,6 +23,8 @@ import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.Exceptions;
 
+import cz.muni.fi.vavmar.printeditor.MainScene;
+
 /**
  *
  * @author Martin
@@ -47,7 +49,7 @@ public class ImageTool extends AbstractTool {
     }
     
     @Override
-    public Widget createWidget(Scene scene) {
+    public Widget createWidget(MainScene scene) {
         ImageWidget iw = null;
 
         final JFileChooser fc = new JFileChooser();
