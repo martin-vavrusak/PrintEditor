@@ -26,6 +26,7 @@ import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.Widget;
 
 import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
+import cz.muni.fi.vavmar.printeditor.widgets.SubreportWidget;
 
 public class SavePerformer {
 	private static final Logger logger = LogManager.getLogger(SavePerformer.class);
@@ -182,7 +183,24 @@ public class SavePerformer {
 		 * 2. Get color - search if already exist and save it
 		 * 3. create new PrintFormatItem
 		 */
-    	if(widget instanceof LabelWidget){
+    	if(widget instanceof SubreportWidget){
+    		SubreportWidget subreportWidget = (SubreportWidget) widget;
+    		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
+    		item.setName(subreportWidget.getName());							//Mandatory name of printitem
+    		item.setSeqNo(seqNo);
+    		
+    		item.setPrintName(subreportWidget.getName());
+    		item.setPrintFormatType("P");
+    		item.setAD_PrintFormatChild_ID(subreportWidget.getSubreportPrintformatID());
+    		item.setAD_Column_ID(11475);						//Magic constant of AD_Client_ID column - there has to be something filled, but probably doesn't have any effect
+    		
+    		if ( !item.save() ){
+    			logger.error("Error whne sawing: " + item);
+    		}
+    		logger.trace("Item saved with ID: " + item.get_ID());
+    		
+    	} else if(widget instanceof LabelWidget){
+    		
     		Font widgetFont = widget.getFont();
     		String labelText = ((LabelWidget) widget).getLabel();
     		logger.trace("Saving label: " + labelText);

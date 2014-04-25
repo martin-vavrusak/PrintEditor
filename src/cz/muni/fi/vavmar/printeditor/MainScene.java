@@ -183,37 +183,38 @@ public class MainScene extends Scene {
         //TODO Smazat debug ---------
         backgroundLayer.setBorder(BorderFactory.createLineBorder(4));
         //------------------------------
-        //TODO Delete - debugging widgets --------------------------
-        LabelWidget lw2 = new LabelWidget(this, "0,0");
-        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
-        lw2.getActions().addAction( singleSelectActino );
-        lw2.getActions().addAction( hoverAction );
-        lw2.setPreferredLocation(new Point(0, 0));
-        mainLayer.addChild(lw2);
-
-        lw2 = new LabelWidget(this, (A4_BOUNDS.x + A4_BOUNDS.width) + ",0");
-        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
-        lw2.getActions().addAction( singleSelectActino );
-        lw2.getActions().addAction( hoverAction );
-        lw2.setPreferredLocation(new Point((A4_BOUNDS.x + A4_BOUNDS.width), 0));
-        mainLayer.addChild(lw2);
         
-        lw2 = new LabelWidget( this, "0," + (A4_BOUNDS.y + A4_BOUNDS.height) );
-        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
-        lw2.getActions().addAction( singleSelectActino );
-        lw2.getActions().addAction( hoverAction );
-        lw2.setPreferredLocation( new Point(0, (A4_BOUNDS.y + A4_BOUNDS.height)) );
-        mainLayer.addChild(lw2);
-        
-        LabelWidget lw = new LabelWidget(this, A4_BOUNDS.x + "," + A4_BOUNDS.y);
-        
-        lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
-        lw.getActions().addAction(0, singleSelectActino );
-        lw2.getActions().addAction( hoverAction );
-        lw.setPreferredLocation(new Point( (A4_BOUNDS.x + A4_BOUNDS.width), (A4_BOUNDS.y + A4_BOUNDS.height)) );
-        mainLayer.addChild(lw);
-//        mainLayer.setOpaque(true);
-        // End of debugging widgets -----------------------------------------------
+//        //TODO Delete - debugging widgets --------------------------
+//        LabelWidget lw2 = new LabelWidget(this, "0,0");
+//        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+//        lw2.getActions().addAction( singleSelectActino );
+//        lw2.getActions().addAction( hoverAction );
+//        lw2.setPreferredLocation(new Point(0, 0));
+//        mainLayer.addChild(lw2);
+//
+//        lw2 = new LabelWidget(this, (A4_BOUNDS.x + A4_BOUNDS.width) + ",0");
+//        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+//        lw2.getActions().addAction( singleSelectActino );
+//        lw2.getActions().addAction( hoverAction );
+//        lw2.setPreferredLocation(new Point((A4_BOUNDS.x + A4_BOUNDS.width), 0));
+//        mainLayer.addChild(lw2);
+//        
+//        lw2 = new LabelWidget( this, "0," + (A4_BOUNDS.y + A4_BOUNDS.height) );
+//        lw2.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+//        lw2.getActions().addAction( singleSelectActino );
+//        lw2.getActions().addAction( hoverAction );
+//        lw2.setPreferredLocation( new Point(0, (A4_BOUNDS.y + A4_BOUNDS.height)) );
+//        mainLayer.addChild(lw2);
+//        
+//        LabelWidget lw = new LabelWidget(this, A4_BOUNDS.x + "," + A4_BOUNDS.y);
+//        
+//        lw.getActions().addAction(ActionFactory.createMoveAction(null, moveProvider));
+//        lw.getActions().addAction(0, singleSelectActino );
+//        lw2.getActions().addAction( hoverAction );
+//        lw.setPreferredLocation(new Point( (A4_BOUNDS.x + A4_BOUNDS.width), (A4_BOUNDS.y + A4_BOUNDS.height)) );
+//        mainLayer.addChild(lw);
+////        mainLayer.setOpaque(true);
+//        // End of debugging widgets -----------------------------------------------
         
         AcceptProvider ap = new AcceptProviderImpl(this);
         
