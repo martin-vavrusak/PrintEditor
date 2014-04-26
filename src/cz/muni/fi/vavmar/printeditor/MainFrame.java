@@ -67,10 +67,10 @@ public class MainFrame extends javax.swing.JFrame {
         	tablesList = new ArrayList<String>();	//set only to selected table
         	tablesList.add(selectedTable);
         	
-        } else if (selectedPrintFormatID > 0) {
+        } else if (selectedPrintFormatID > 0 && selectedTable != null) {					//if print format has been selected table can't be null
         	//load print format
         	logger.trace("Now we should load print format. Not implemented yet.");
-        	mainScene.loadPrintForm(selectedPrintFormatID);
+//        	mainScene.loadPrintForm(selectedPrintFormatID);
         	tablesList = new ArrayList<String>();
         	tablesList.add(selectedTable);
         	
@@ -109,6 +109,10 @@ public class MainFrame extends javax.swing.JFrame {
         tablesSearchField = new javax.swing.JTextField();
         toolPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jMenuBar = new javax.swing.JMenuBar();
+        jMenu_Menu = new javax.swing.JMenu();
+        jMenuSave = new javax.swing.JMenuItem();
+        jMenuPaperSettings = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.title")); // NOI18N
@@ -182,10 +186,28 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tablesSearchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE))
         );
+
+        jMenu_Menu.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenu_Menu.text")); // NOI18N
+
+        jMenuSave.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenuSave.text")); // NOI18N
+        jMenuSave.setToolTipText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenuSave.toolTipText")); // NOI18N
+        jMenuSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSaveActionPerformed(evt);
+            }
+        });
+        jMenu_Menu.add(jMenuSave);
+
+        jMenuPaperSettings.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenuPaperSettings.text")); // NOI18N
+        jMenu_Menu.add(jMenuPaperSettings);
+
+        jMenuBar.add(jMenu_Menu);
+
+        setJMenuBar(jMenuBar);
 
         mainScenePanel.add(mainScene.getSceneEnvelope());
 
@@ -272,6 +294,19 @@ public class MainFrame extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jMenuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveActionPerformed
+        logger.trace("Saving scene.");
+        
+        String printFormatName = JOptionPane.showInputDialog(this, "Please type name:", "Save print format", JOptionPane.PLAIN_MESSAGE);
+        logger.trace("New print format name: '" + printFormatName + "'");
+        
+        if(printFormatName != null && !printFormatName.trim().isEmpty()){
+            SavePerformer saver = new SavePerformer(dataProvider, mainScene, selectedTable, selectedPrintFormatID);
+            saver.saveAsNew(printFormatName);
+        }
+        
+    }//GEN-LAST:event_jMenuSaveActionPerformed
+
     private void printChildrens (List<Widget> widgets){
         for( Widget w : widgets ){
             logger.trace("| " + w.getBounds());
@@ -329,6 +364,7 @@ public class MainFrame extends javax.swing.JFrame {
                 
                 String selectedTable = tableChooser.getSelectedTable();
                 int selectedPrintFormatID = tableChooser.getSelectedPrintFormatID();
+                
                 logger.info( "Selected table: " +  selectedTable);
                 logger.info( "Selected print format: " +  selectedPrintFormatID);
                 
@@ -346,6 +382,10 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList columnsListArea;
     private javax.swing.JButton jButton1;
+    private javax.swing.JMenuBar jMenuBar;
+    private javax.swing.JMenuItem jMenuPaperSettings;
+    private javax.swing.JMenuItem jMenuSave;
+    private javax.swing.JMenu jMenu_Menu;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

@@ -161,6 +161,8 @@ public class MainScene extends Scene {
         scrollPane.getHorizontalScrollBar ().setUnitIncrement (32);
         scrollPane.getHorizontalScrollBar ().setBlockIncrement (256);
         
+        
+        
         scrollPane.getVerticalScrollBar ().setUnitIncrement (32);
         scrollPane.getVerticalScrollBar ().setBlockIncrement (256);
         scrollPane.setPreferredSize(new Dimension(SCENE_WIDTH, SCENE_HEIGHT));
@@ -170,7 +172,11 @@ public class MainScene extends Scene {
         scrollPane.setColumnHeaderView(createColumnRuler());
         scrollPane.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
         
-        
+//        scrollPane.getViewport().setViewPosition( new Point(50, 0) );
+//        {
+//        int maximum = scrollPane.getHorizontalScrollBar().getMaximum();
+//        scrollPane.getHorizontalScrollBar().setValue( maximum / 2);					//set scrollbar to the middle
+//        }
         
         backgroundLayer.addChild(footerWidget);
         backgroundLayer.addChild(headerWidget);
@@ -237,10 +243,16 @@ public class MainScene extends Scene {
 
     public void setPaperSettings(PaperSettings paperSettings) {
         this.paperSettings = paperSettings;
-        //TODO zde bude napozicovani a nastaveni widgetu urcujicich top a bottom margin
-//        FfooterWidget.setPosition = paperSettings.getHeight() - paperSettings.getBottomMargin() - paperSettings.getFooterMargin();
-//        leftline.setPosition
-//        rightLine.setPosition
+        refreshMargins();
+    }
+    
+    public void refreshMargins(){
+    	this.topMarginWidget.revalidateChange();
+        this.bottomMarginWidget.revalidateChange();
+        this.leftMarginWidget.revalidateChange();
+        this.rightMarginWidget.revalidateChange();
+        this.headerWidget.revalidateChange();
+        this.footerWidget.revalidateChange();
     }
     
     public WidgetAction getMultipleMovementAction() {
@@ -371,64 +383,15 @@ public class MainScene extends Scene {
         return columnheader;
     }
     
-//    /**
-//     * Create new print form for table.
-//     * 
-//     * @param tableName name of table to create new print form.
-//     */
-//    public void createNewPrintForm(String tableName, String formName){
-//    	logger.debug("Creting new print form for table: " + tableName + "NOT IMPLEMENTED YET!");
-//    	
-//    }
+
     
-    /*
-    public void saveAsNew(String tableName, String printFormatName){
-    	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
-    	
-    	//Save Print Format
-    	MPrintFormat newPrintFormat = new MPrintFormat(Env.getCtx(), 0, null);
-    	newPrintFormat.setName(printFormatName);								//this don't have to be uniqe across iDempiere system
-    	newPrintFormat.setAD_Table_ID(dataProvider.getTableID(tableName));		
-    	newPrintFormat.setAD_PrintColor_ID(DEFAULT_IDEMPIERE_PRINT_COLOR_ID);	//this should be 100 TODO - better to implement new method searching for default color dataProvider.getSystemDefaultColor
-    	newPrintFormat.setAD_PrintPaper_ID(DEFAULT_IDEMPIERE_PRINT_PAPER_ID);	//This should be 100
-    	newPrintFormat.setAD_PrintFont_ID(DEFAULT_IDEMPIERE_PRINT_FONT_ID);		//This should be 100
-    	newPrintFormat.setIsStandardHeaderFooter(false);
-    	newPrintFormat.setIsForm(true);		//we need header and footer
-    	
-    	logger.trace( "is new set: " + newPrintFormat.is_new() );
-    	newPrintFormat.setReplication(true);
-    	newPrintFormat.save();
-    	
-    	int newPrintFormatID = newPrintFormat.get_ID();
-    	logger.trace( "New print format saved with ID: " +  newPrintFormatID);
-    	
-    	for(Widget widget: mainLayer.getChildren()){
-    		saveItemDB(widget, newPrintFormatID);
-    	}
-    	
-//    	newPrintFormat.setAD_Org_ID(AD_Org_ID);	//should be filled by a system
-//    	newPrintFormat.setAD_PrintFont_ID(AD_PrintFont_ID);  			
-    }
-    */
-    
-    /*
-    public void saveAsNew(String tableName, String printFormatName){
-    	logger.debug("Saving scene as: '" + printFormatName + "' for table: '" + tableName + "'.");
-    	
-    	//Save Print Format
-    	SavePerformer saver = new SavePerformer(dataProvider, this, tableName, -1);
-    	saver.saveAsNew(printFormatName);
-    }
-    */
-    
-    public void loadPrintFormSimple(int printFormatID){
-    	
-    }
-    
+
+   
     /**
      * Loads print format and populate scene.
      * @param printFormID id of print format to be loaded.
      */
+    /* 
     public void loadPrintForm(int printFormatID){
     	logger.debug("Loading print form: " + printFormatID);
     	
@@ -473,6 +436,8 @@ public class MainScene extends Scene {
     		}
     	}
     }
+    */
+    
     
     /**
      * Create text widget and set position in the scene.
@@ -480,6 +445,7 @@ public class MainScene extends Scene {
      * @param item
      * @param allItems
      */
+    /*
     private void processText(MPrintFormatItem item, List<MPrintFormatItem> allItems){
     	
     	//resolve and set font
@@ -531,13 +497,9 @@ public class MainScene extends Scene {
 		}
     	//if nextLine - vynuluj X pozici pøièti pouze Y pozici všech pøedchùdcù - POZOR!!! Je potøeba brát v úvahu i velikost písma všech pøedchùdcù -> Neplatí pokud byl nastaven NewLine
     }
+    */
     
     
-    
-//    public void loadSceneDatabase(String tableName){
-//    	//Zjistit ID Tabulky
-//    	dataProvider.getTableID(tableName);
-//    }
-//    
+
     
 }
