@@ -26,6 +26,7 @@ import javax.swing.ListModel;
 import javax.swing.border.TitledBorder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
@@ -193,6 +194,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenu_Menu.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenu_Menu.text")); // NOI18N
 
+        jMenuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuSave.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenuSave.text")); // NOI18N
         jMenuSave.setToolTipText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenuSave.toolTipText")); // NOI18N
         jMenuSave.addActionListener(new java.awt.event.ActionListener() {
@@ -203,6 +205,11 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu_Menu.add(jMenuSave);
 
         jMenuPaperSettings.setText(org.openide.util.NbBundle.getMessage(MainFrame.class, "MainFrame.jMenuPaperSettings.text")); // NOI18N
+        jMenuPaperSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuPaperSettingsActionPerformed(evt);
+            }
+        });
         jMenu_Menu.add(jMenuPaperSettings);
 
         jMenuBar.add(jMenu_Menu);
@@ -306,6 +313,28 @@ public class MainFrame extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jMenuSaveActionPerformed
+
+    private void jMenuPaperSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuPaperSettingsActionPerformed
+        //Show paper dialog
+        PaperSettings ps = mainScene.getPaperSettings();
+        
+//        List<PaperSettings> availablePaperSettings = dataProvider.getAvailablePapers();
+//        for(PaperSettings p: availablePaperSettings){
+//            logger.trace("Paper: " + p.getPaperID() + " " + p.getName() );
+//        }
+        
+        PaperSettings.MediaSizeNameWrapper pw = new PaperSettings.MediaSizeNameWrapper(0);
+        logger.trace("Retrieved media for code 'iso-a0': " + pw.getMedia("iso-a0"));
+        logger.trace("Retrieved media for code 'iso-a1': " + pw.getMedia("iso-a1"));
+        logger.trace("Retrieved media for code 'iso-a2': " + pw.getMedia("iso-a2"));
+        logger.trace("Retrieved media for code 'iso-a3': " + pw.getMedia("iso-a3"));
+        logger.trace("Retrieved media for code 'iso-a4': " + pw.getMedia("iso-a4"));
+        
+        ps.setCode("iso-a5");
+        logger.trace("Retrieved width of iso-a5 from PaperSettings: " + ps.getWidth());
+        ps.setLandscape(true);
+        mainScene.setPaperSettings(ps);
+    }//GEN-LAST:event_jMenuPaperSettingsActionPerformed
 
     private void printChildrens (List<Widget> widgets){
         for( Widget w : widgets ){

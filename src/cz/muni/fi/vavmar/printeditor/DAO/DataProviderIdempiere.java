@@ -6,6 +6,7 @@
 
 package cz.muni.fi.vavmar.printeditor.DAO;
 
+import cz.muni.fi.vavmar.printeditor.PaperSettings;
 import cz.muni.fi.vavmar.printeditor.Table;
 
 import java.awt.Color;
@@ -31,6 +32,7 @@ import org.compiere.model.MTable;
 import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
+import org.compiere.print.MPrintPaper;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.openide.util.Exceptions;
@@ -540,5 +542,50 @@ public class DataProviderIdempiere implements DBManager {
 	@Override
 	public int createColor(Color c) {
 		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
+	/**
+	 * Retrieve all available paper settings from database.
+	 * @return list of {@link PaperSettings}
+	 */
+	public List<PaperSettings> getAvailablePapers(){
+		String sql = "SELECT ad_printpaper_id, name, description, islandscape, code, margintop, marginleft, marginright, marginbottom, sizex, sizey, dimensionunits "
+						+ " FROM ad_printpaper";
+		List<PaperSettings> paperSettingsList = new ArrayList<PaperSettings>();
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			rs = pstmt.executeQuery ();
+			while(rs.next()){
+				PaperSettings ps = new PaperSettings();
+				ps.setPaperID ( rs.getInt(1) );
+				ps.setName( rs.getString(2) );
+				ps.setDescription( rs.getString(3) );
+				ps.setLandscape( "Y".equalsIgnoreCase( rs.getString(4) ) );
+				ps.setCode( rs.getString(5) );
+				ps.setTopMargin( rs.getInt(6) );
+				ps.setLeftMargin( rs.getInt(7) );
+				ps.setRightMargin( rs.getInt(8) );
+				ps.setBottomMargin( rs.getInt(9) );
+				ps.setWidth( rs.getFloat(10) );
+				ps.setHeight( rs.getFloat(11) );
+				ps.setUnits( rs.getString(12) );
+				
+				paperSettingsList.add(ps);
+			}
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.ERROR, "Unable to get items ad_printtable. ", e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		return paperSettingsList;
 	}
 }

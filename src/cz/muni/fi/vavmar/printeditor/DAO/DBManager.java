@@ -1,5 +1,6 @@
 package cz.muni.fi.vavmar.printeditor.DAO;
 
+import cz.muni.fi.vavmar.printeditor.PaperSettings;
 import cz.muni.fi.vavmar.printeditor.Table;
 
 import java.awt.Color;
@@ -126,6 +127,12 @@ public interface DBManager {
      * @return new {@link MPrintFont} or null if not found.
      */
     public MPrintFont loadFont(int fontID);
+    
+    /**
+	 * Retrieve all available paper settings from database.
+	 * @return list of {@link PaperSettings}
+	 */
+    public List<PaperSettings> getAvailablePapers();
     
     /**
      * Create new color and save it to the database.

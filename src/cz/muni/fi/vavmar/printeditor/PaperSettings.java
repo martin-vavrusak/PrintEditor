@@ -6,6 +6,13 @@
 
 package cz.muni.fi.vavmar.printeditor;
 
+import java.awt.PageAttributes.MediaType;
+
+import javax.print.attribute.EnumSyntax;
+import javax.print.attribute.standard.MediaName;
+import javax.print.attribute.standard.MediaSize;
+import javax.print.attribute.standard.MediaSizeName;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +22,9 @@ import org.apache.logging.log4j.Logger;
  * @author Martin
  */
 public class PaperSettings {
-    private static final Logger logger = LogManager.getLogger(PaperSettings.class);
+    
+	
+	private static final Logger logger = LogManager.getLogger(PaperSettings.class);
     
     private double ADJUSTMENT = 2.81;   //1pt in scene = 1/72" = 0,353mm   =>   1mm = 2,83pt)
     private boolean isLandscape = false;
@@ -25,12 +34,27 @@ public class PaperSettings {
     private int topMargin;
     private int bottomMargin;
     
-    private int headerMargin;       //margin from the top of paper
-    private int footerMargin;
+    private int headerMargin = 0;       //margin from the top of paper
+    private int footerMargin = 0;
     
-    private int width;              //absolute width of page
-    private int height;
+    private double width;              //absolute width of page in mm
+    private double height;
 
+    private String code;			//IF code is set ignore width and height!!
+    private String units;			// ONLY MM ARE SUPPORTED YET!!!!
+    private String name;
+    private String description;		
+    private int paperID = -1;
+    
+    private PaperSettings.MediaSizeNameWrapper standardFormatSearch = new PaperSettings.MediaSizeNameWrapper(0);
+    
+    public void setMargins(int top, int left, int right, int bottom){
+    	setTopMargin(top);
+    	setLeftMargin(left);
+    	setRightMargin(right);
+    	setBottomMargin(bottom);
+    }
+    
     /**
      * Margin from the left side of page in 1/72".
      * Usable area = width - leftMargin - RightMargin
@@ -130,29 +154,63 @@ public class PaperSettings {
 
     /**
      * Returns scene width in mm. Is influenced by {@link isLadscape()}
+     * If valid code is set, then vales set by setWidth(), setHeight() are ignored and value defined by MediaSize belonging to code is returned.
+     * For codes see source of {@link MediaSizeName} getStringTable().
+     * 
      * @return scene width in mm.
      */
-    public int getWidth() {
-        if(isLandscape){
-            return height;
-        } else {
-            return width;
-        }
+    public double getWidth() {
+    	if(code != null){
+    		MediaSize mediaSize = standardFormatSearch.getMedia(code);
+    		if( mediaSize != null ){
+    			if(isLandscape){
+    				return mediaSize.getY(MediaSize.MM);
+    			} else{
+    				return mediaSize.getX(MediaSize.MM);
+    			}
+    		}
+    	}
+
+//    	if("custom".equals(code)){
+	        if(isLandscape){
+	            return height;
+	        } else {
+	            return width;
+	        }
+//    	} else {
+//    		//find settings from ISO defaults
+//    	}
     }
 
     /**
-     * Set scene width in mm.
+     * Set scene width in mm. For exmple value of A4 would be 210.
+     * <b>NOTE:</b> If valid code is set, then vales set by setWidth(), setHeight() are ignored.
+     * 
      * @param width width of paper in mm.
      */
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
     /**
      * Returns scene height in mm. Is influenced by {@link isLadscape()}
+     * If valid code is set, then vales set by setWidth(), setHeight() are ignored and value defined by MediaSize belonging to code is returned.
+     * For codes see source of {@link MediaSizeName} getStringTable().
+     * 
      * @return scene height in mm.
      */
-    public int getHeight() {
+    public double getHeight() {
+    	if(code != null){
+    		MediaSize mediaSize = standardFormatSearch.getMedia(code);
+    		if( mediaSize != null ){
+    			if(isLandscape){
+    				return mediaSize.getX(MediaSize.MM);
+    			} else{
+    				return mediaSize.getY(MediaSize.MM);
+    			}
+    		}
+    	}
+    	
         if(isLandscape){
             return width;
         } else {
@@ -161,10 +219,11 @@ public class PaperSettings {
     }
 
     /**
-     * Set scene height in mm.
+     * Set scene height in mm. For exmple value of A4 would be 297.
+     * <b>NOTE:</b> If valid code is set, then vales set by setWidth(), setHeight() are ignored.
      * @param height height of paper in mm.
      */
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
@@ -230,6 +289,50 @@ public class PaperSettings {
         return (int) ( (getSceneHeight() - getBottomMargin()) );
     }
     
+    public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getUnits() {
+		return units;
+	}
+
+	public void setUnits(String units) {
+		this.units = units;
+	}
+
+	public int getPaperID() {
+		return paperID;
+	}
+
+	public void setPaperID(int paperID) {
+		this.paperID = paperID;
+	}
+
+	public boolean isLandscape() {
+		return isLandscape;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
     public static PaperSettings A4(){
         PaperSettings ps = new PaperSettings();
         ps.setHeaderHeight(50);
@@ -240,6 +343,10 @@ public class PaperSettings {
         ps.setLeftMargin(36);
         ps.setRightMargin(36);
         
+        ps.setCode("iso-a4");
+        ps.setName("iDempiere A4 standard");
+        ps.setPaperID(103);
+        
         ps.setWidth(210);
         ps.setHeight(297);
         
@@ -249,5 +356,53 @@ public class PaperSettings {
     @Override
     public String toString() {
         return "PaperSettings{" + "leftMargin=" + leftMargin + ", rightMargin=" + rightMargin + ", topMargin=" + topMargin + ", bottomMargin=" + bottomMargin + ", headerMargin=" + headerMargin + ", footerMargin=" + footerMargin + ", width=" + width + ", height=" + height + '}';
+    }
+    
+    /**
+     * Returns MediaSize object representing standardized paper specified by a code.
+     * For codes see source of {@link MediaSizeName} getStringTable()
+     * 
+     * @param paperCode code defined in {@link MediaSizeName} getStringTable().
+     * @return MediaSize object representing paper scale or null.
+     */
+    public MediaSize getMediaSize(String paperCode){
+    	return  standardFormatSearch.getMedia(paperCode);
+    }
+
+    //Workaround to for searching for standardized paper settings
+    public static class MediaSizeNameWrapper extends MediaSizeName {
+
+		protected MediaSizeNameWrapper(int value) {
+			super(value);
+			// TODO Auto-generated constructor stub
+		}
+    	
+		public String[] getStringTable(){
+			return super.getStringTable();
+		}
+		
+		/**
+	     * Returns MediaSize object representing standardized paper specified by a code.
+	     * For codes see source of {@link MediaSizeName} getStringTable()
+	     * 
+	     * @param paperCode code defined in {@link MediaSizeName} getStringTable().
+	     * @return MediaSize object representing paper scale or null.
+	     */
+		public MediaSize getMedia (String mediaCode){
+			if(mediaCode == null) return null;
+			
+			final String[] paperNames = getStringTable();
+			
+			int counter = 0;
+			for(String name: paperNames){
+				if ( name.equalsIgnoreCase(mediaCode) ){
+					MediaSizeName mediaSizeName = new MediaSizeNameWrapper(counter);
+
+					return MediaSize.getMediaSizeForName( (MediaSizeName) getEnumValueTable()[counter] );
+				}
+				counter++;
+			}
+			return null;
+		}
     }
 }

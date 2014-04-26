@@ -6,6 +6,7 @@
 
 package cz.muni.fi.vavmar.printeditor.DAO;
 
+import cz.muni.fi.vavmar.printeditor.PaperSettings;
 import cz.muni.fi.vavmar.printeditor.Table;
 
 import java.awt.Color;
@@ -222,6 +223,11 @@ public class DataProviderJDBC implements DBManager {
 	@Override
 	public Map<Integer, String> getPrintFormats(String tableName,
 			boolean excludeFormType) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public List<PaperSettings> getAvailablePapers() {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
     

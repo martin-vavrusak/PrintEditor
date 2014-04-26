@@ -76,7 +76,10 @@ public class MainScene extends Scene {
     private JScrollPane scrollPane;
     private LayerWidget mainLayer;
     private LayerWidget backgroundLayer;
+    private LabelWidget paperRectangle;						//widget represemting paper - visualization of paper scale
+    
     private ResizeParentByMoveActionProvider moveProvider;
+    
     
     private PaperSettings paperSettings = PaperSettings.A4();      //create default settings A4 portrait
     
@@ -126,13 +129,10 @@ public class MainScene extends Scene {
         backgroundLayer = new LayerWidget(this);
         backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.height + 20));	//make space around main scene otherwise window of main scene would be sticked directly on scene edges
         
-        //This should be dynamic, based on the user settings
-        LabelWidget paperRectangle = new LabelWidget(this);													//Rectagle rrepresenting bounds of paper
-        paperRectangle.setPreferredBounds(A4_BOUNDS);
+        //Create rectangle representing paprer scale
+        paperRectangle = new LabelWidget(this);													//Rectagle representing bounds of paper
         paperRectangle.setBorder(javax.swing.BorderFactory.createLineBorder(Color.RED, 1));
         backgroundLayer.addChild(paperRectangle);
-        
-        //TODO Here should be header, content and footer windget
         
         mainLayer = new LayerWidget(this);
         
@@ -243,6 +243,7 @@ public class MainScene extends Scene {
 
     public void setPaperSettings(PaperSettings paperSettings) {
         this.paperSettings = paperSettings;
+        paperRectangle.setPreferredBounds( new Rectangle(0, 0, (int) paperSettings.getSceneWidth(), (int) paperSettings.getSceneHeight()) );
         refreshMargins();
     }
     
