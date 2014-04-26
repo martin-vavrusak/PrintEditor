@@ -263,8 +263,10 @@ public class MainFrame extends javax.swing.JFrame {
         String printFormatName = JOptionPane.showInputDialog(this, "Please type name:", "Save print format", JOptionPane.PLAIN_MESSAGE);
         logger.trace("New print format name: '" + printFormatName + "'");
         
-        SavePerformer saver = new SavePerformer(dataProvider, mainScene, selectedTable, selectedPrintFormatID);
-        saver.saveAsNew(printFormatName);
+        if(printFormatName != null && !printFormatName.trim().isEmpty()){
+            SavePerformer saver = new SavePerformer(dataProvider, mainScene, selectedTable, selectedPrintFormatID);
+            saver.saveAsNew(printFormatName);
+        }
         
 //        mainScene.saveAsNew(tablesList.get(0), printFormatName);    //there should be only one table list is heritage from attempt to make universal reports from more than one table
         

@@ -138,45 +138,44 @@ public class SavePerformer {
     	
 //    	int x = widgetAbsolutePosition.x;
     	
+    	int itemPositionX = 0;
+    	int itemPositionY = 0;
+    	
     	//Determine area where item belongs to
     	if( headerArea.contains(widgetAbsolutePosition) ){
     		logger.trace("Item is in header.");
     		item.setPrintAreaType("H");
     		
     		//Determine location in area
-    		int x = widgetAbsolutePosition.x - headerArea.x;
-    		int y = widgetAbsolutePosition.y - headerArea.y;
-    		item.setXPosition(x);
-    		item.setYPosition(y);
-    		logger.trace("Final position: x=" + x + ", y=" + y);
-    		
+    		itemPositionX = widgetAbsolutePosition.x - headerArea.x;
+    		itemPositionY = widgetAbsolutePosition.y - headerArea.y;
+
     	} else if ( contentArea.contains(widgetAbsolutePosition) ){
     		logger.trace("Item is in content.");
     		item.setPrintAreaType("C");
     		
     		//Determine location in area
-    		int x = widgetAbsolutePosition.x - contentArea.x;
-    		int y = widgetAbsolutePosition.y - contentArea.y;
-    		item.setXPosition(x);
-    		item.setYPosition(y);
-    		logger.trace("Final position: x=" + x + ", y=" + y);
+    		itemPositionX = widgetAbsolutePosition.x - contentArea.x;
+    		itemPositionY = widgetAbsolutePosition.y - contentArea.y;
     		
     	} else if ( footerArea.contains(widgetAbsolutePosition) ) {
     		logger.trace("Item is in footer.");
     		item.setPrintAreaType("F");
     		
     		//Determine location in area
-    		int x = widgetAbsolutePosition.x - footerArea.x;
-    		int y = widgetAbsolutePosition.y - footerArea.y;
-    		item.setXPosition(x);
-    		item.setYPosition(y);
-    		logger.trace("Final position: x=" + x + ", y=" + y);
+    		itemPositionX = widgetAbsolutePosition.x - footerArea.x;
+    		itemPositionY = widgetAbsolutePosition.y - footerArea.y;
     		
 		} else {
 			logger.warn("Unable to determine location of item: " + widget + " with location: " + widget.getPreferredLocation());
 			logger.warn("Header: " + headerArea + " Content: " + contentArea + " Footer: " + footerArea);
+//			return;
 		}
     	
+    	
+    	item.setXPosition(itemPositionX);
+		item.setYPosition(itemPositionY);
+		logger.trace("Final position: x=" + itemPositionX + ", y=" + itemPositionY);
     	
 		/**
 		 * 1. Get front from Widget - check if it's present in system and save it if not
@@ -186,13 +185,32 @@ public class SavePerformer {
     	if(widget instanceof SubreportWidget){
     		SubreportWidget subreportWidget = (SubreportWidget) widget;
     		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
-    		item.setName(subreportWidget.getName());							//Mandatory name of printitem
+    		item.setName(subreportWidget.getName());			//Mandatory name of printitem
     		item.setSeqNo(seqNo);
     		
     		item.setPrintName(subreportWidget.getName());
     		item.setPrintFormatType("P");
     		item.setAD_PrintFormatChild_ID(subreportWidget.getSubreportPrintformatID());
     		item.setAD_Column_ID(11475);						//Magic constant of AD_Client_ID column - there has to be something filled, but probably doesn't have any effect
+    		
+    		if(subreportWidget.isIgnorePosition()){				//in case reset position is set set 0,0 and relative positioning
+    			item.setXSpace(0);
+    			item.setYSpace(0);
+    			item.setXPosition(0);
+    			item.setYPosition(0);
+    			item.setIsRelativePosition(true);
+    			
+    		} else {
+				
+	    		if( subreportWidget.isRelativePositioned() ){
+	    			item.setIsRelativePosition(true);
+	    			item.setXSpace(itemPositionX);
+	    			item.setYSpace(itemPositionY);
+	    			
+	    		} else {
+	    			item.setIsRelativePosition(false);				//the psition has been previously set
+	    		}
+    		}
     		
     		if ( !item.save() ){
     			logger.error("Error whne sawing: " + item);

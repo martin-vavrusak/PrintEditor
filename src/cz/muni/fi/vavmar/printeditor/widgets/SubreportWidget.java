@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
@@ -20,13 +21,14 @@ import cz.muni.fi.vavmar.printeditor.MainScene;
 import cz.muni.fi.vavmar.printeditor.dialogs.TableChooserInitDialog;
 
 public class SubreportWidget extends LabelWidget {
-
+	
 	private static final Logger logger = LogManager.getLogger(SubreportWidget.class);
 	
 	private int subreportPrintformatID;
 	private String name;
 	private MainScene mainScene;
 	private boolean isRelativePositioned = true;
+	private boolean ignorePosition = true;
 	
 	public SubreportWidget(MainScene scene) {
 		super(scene);
@@ -78,6 +80,13 @@ public class SubreportWidget extends LabelWidget {
 		this.isRelativePositioned = isRelativePositioned;
 	}
 	
+	public boolean isIgnorePosition() {
+		return ignorePosition;
+	}
+
+	public void setIgnorePosition(boolean ignorePosition) {
+		this.ignorePosition = ignorePosition;
+	}
 	
 	
 	/**
@@ -95,6 +104,8 @@ public class SubreportWidget extends LabelWidget {
 		private static final String ABSOLUTE_POSITON_OPTION = "AbsolutePosition";
 		private static final String ABSOLUTE_POSITON_LABEL = "Absolute position";
 		
+		private static final String IGNORE_POSITON_OPTION = "IgnorePosition";
+		private static final String IGNORE_POSITON_LABEL = "Ignore position";
 		
 		private Widget ownerWidget;
 		
@@ -110,7 +121,8 @@ public class SubreportWidget extends LabelWidget {
             menuItem = new JRadioButtonMenuItem(RELATIVE_POSITON_LABEL);
             menuItem.setActionCommand(RELATIVE_POSITON_OPTION);
             menuItem.addActionListener(this);
-            menuItem.setSelected(isRelativePositioned);
+            menuItem.setSelected(isRelativePositioned || ignorePosition);
+            menuItem.setEnabled(!ignorePosition);
             group.add(menuItem);
             menu.add(menuItem);
             
@@ -118,15 +130,21 @@ public class SubreportWidget extends LabelWidget {
             menuItem.setActionCommand(ABSOLUTE_POSITON_OPTION);
             menuItem.addActionListener(this);
             menuItem.setSelected(!isRelativePositioned);
+            menuItem.setEnabled(!ignorePosition);
             group.add(menuItem);
             menu.add(menuItem);
 	            
+            menuItem = new JCheckBoxMenuItem(IGNORE_POSITON_LABEL, ignorePosition);
+            menuItem.setActionCommand(IGNORE_POSITON_OPTION);
+            menuItem.addActionListener(this);
+            menu.add(menuItem);
+            
 			return menu;
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			
 			logger.trace("");
 			String command = e.getActionCommand();
 			if( RELATIVE_POSITON_OPTION.equals(command) ){
@@ -136,7 +154,17 @@ public class SubreportWidget extends LabelWidget {
 			} else if( ABSOLUTE_POSITON_OPTION.equals(command) ) {
 				logger.trace("Absolute positioning selected.");
 				isRelativePositioned = false;
+				
+			} else if( IGNORE_POSITON_OPTION.equals(command) ) {
+				logger.trace("Ignore position option.");
+				if(ignorePosition){				//previously selected
+					ignorePosition = false;		//unselect
+				} else {
+					ignorePosition = true;
+					isRelativePositioned = true;
+				}
 			}
+			
 		}
 	}
 }
