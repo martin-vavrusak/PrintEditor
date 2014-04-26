@@ -8,6 +8,7 @@ package cz.muni.fi.vavmar.printeditor;
 
 import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
 import cz.muni.fi.vavmar.printeditor.DAO.DataProviderIdempiere;
+import cz.muni.fi.vavmar.printeditor.dialogs.PaperSettingsDialog;
 import cz.muni.fi.vavmar.printeditor.dialogs.TableChooserInitDialog;
 import cz.muni.fi.vavmar.printeditor.tools.ImageTool;
 import cz.muni.fi.vavmar.printeditor.tools.SubreportTool;
@@ -323,17 +324,27 @@ public class MainFrame extends javax.swing.JFrame {
 //            logger.trace("Paper: " + p.getPaperID() + " " + p.getName() );
 //        }
         
-        PaperSettings.MediaSizeNameWrapper pw = new PaperSettings.MediaSizeNameWrapper(0);
-        logger.trace("Retrieved media for code 'iso-a0': " + pw.getMedia("iso-a0"));
-        logger.trace("Retrieved media for code 'iso-a1': " + pw.getMedia("iso-a1"));
-        logger.trace("Retrieved media for code 'iso-a2': " + pw.getMedia("iso-a2"));
-        logger.trace("Retrieved media for code 'iso-a3': " + pw.getMedia("iso-a3"));
-        logger.trace("Retrieved media for code 'iso-a4': " + pw.getMedia("iso-a4"));
+//        PaperSettings.MediaSizeNameWrapper pw = new PaperSettings.MediaSizeNameWrapper(0);
+//        logger.trace("Retrieved media for code 'iso-a0': " + pw.getMedia("iso-a0"));
+//        logger.trace("Retrieved media for code 'iso-a1': " + pw.getMedia("iso-a1"));
+//        logger.trace("Retrieved media for code 'iso-a2': " + pw.getMedia("iso-a2"));
+//        logger.trace("Retrieved media for code 'iso-a3': " + pw.getMedia("iso-a3"));
+//        logger.trace("Retrieved media for code 'iso-a4': " + pw.getMedia("iso-a4"));
+//        
+//        ps.setCode("iso-a5");
+//        logger.trace("Retrieved width of iso-a5 from PaperSettings: " + ps.getWidth());
+//        ps.setLandscape(true);
+//        mainScene.setPaperSettings(ps);
         
-        ps.setCode("iso-a5");
-        logger.trace("Retrieved width of iso-a5 from PaperSettings: " + ps.getWidth());
-        ps.setLandscape(true);
-        mainScene.setPaperSettings(ps);
+        PaperSettingsDialog dialog = new PaperSettingsDialog(mainScene);
+        dialog.setVisible(rootPaneCheckingEnabled);
+        PaperSettings pap = dialog.getSelectedPaper();
+        logger.trace("Selected paper: " + pap);
+        
+//        PaperSettings newPaper = new PaperSettings();
+//        newPaper.setCode("iso-a5");
+//        newPaper.setMargins(1, 1, 1, 1);
+        mainScene.setPaperSettings(pap);
     }//GEN-LAST:event_jMenuPaperSettingsActionPerformed
 
     private void printChildrens (List<Widget> widgets){

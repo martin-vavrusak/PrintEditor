@@ -98,12 +98,12 @@ public class AreaWidget extends Widget{
         revalidateChange();
     }
     
-    public void setPaper(PaperSettings newPaper){
+    public void setPaperSettings(PaperSettings newPaper){
         this.paper = newPaper;
         revalidateChange();
     }
 
-    public PaperSettings getPaper() {
+    public PaperSettings getPaperSettings() {
         return paper;
     }
 
@@ -136,6 +136,7 @@ public class AreaWidget extends Widget{
             setPreferredSize( new Dimension( thickness, paper.getSceneHeight()));
             setPreferredLocation( new Point(paper.getSceneWidth() - paper.getRightMargin(), 0) );
         }
+        revalidate();
     }
     
     public int getType() {
@@ -158,15 +159,15 @@ public class AreaWidget extends Widget{
             if(widget instanceof AreaWidget){
                 AreaWidget area = (AreaWidget) widget;
                 int areaType = area.getType();
-                PaperSettings ps = area.getPaper();
+                PaperSettings ps = area.getPaperSettings();
                 
                 if( areaType == HEADER_TYPE ){
                     int height = widget.getPreferredLocation().y - ps.getTopMargin();
-                    area.getPaper().setHeaderHeight(height);
+                    area.getPaperSettings().setHeaderHeight(height);
                     
                 } else if( areaType == FOOTER_TYPE ) {
                     int height = ps.getSceneHeight() - widget.getPreferredLocation().y - ps.getBottomMargin();
-                    area.getPaper().setFooterHeight(height);
+                    area.getPaperSettings().setFooterHeight(height);
                 }
                 logger.trace("New paper:" + ps);
             } else {
@@ -194,7 +195,7 @@ public class AreaWidget extends Widget{
             if(widget instanceof AreaWidget){
                 AreaWidget area = (AreaWidget) widget;
                 int areaType = area.getType();
-                PaperSettings ps = area.getPaper();
+                PaperSettings ps = area.getPaperSettings();
                 
                 int footerAbsolutePosition = ps.getSceneHeight() - ps.getBottomMargin() - ps.getFooterHeight();
                 int headerAbsolutePosition = ps.getTopMargin() + ps.getHeaderHeight();

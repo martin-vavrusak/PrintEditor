@@ -245,15 +245,16 @@ public class MainScene extends Scene {
         this.paperSettings = paperSettings;
         paperRectangle.setPreferredBounds( new Rectangle(0, 0, (int) paperSettings.getSceneWidth(), (int) paperSettings.getSceneHeight()) );
         refreshMargins();
+        revalidate();
     }
     
     public void refreshMargins(){
-    	this.topMarginWidget.revalidateChange();
-        this.bottomMarginWidget.revalidateChange();
-        this.leftMarginWidget.revalidateChange();
-        this.rightMarginWidget.revalidateChange();
-        this.headerWidget.revalidateChange();
-        this.footerWidget.revalidateChange();
+    	this.topMarginWidget.setPaperSettings(paperSettings);
+        this.bottomMarginWidget.setPaperSettings(paperSettings);
+        this.leftMarginWidget.setPaperSettings(paperSettings);
+        this.rightMarginWidget.setPaperSettings(paperSettings);
+        this.headerWidget.setPaperSettings(paperSettings);
+        this.footerWidget.setPaperSettings(paperSettings);
     }
     
     public WidgetAction getMultipleMovementAction() {
