@@ -232,6 +232,8 @@ public class MainScene extends Scene {
         getActions().addAction( hoverAction );									//Must be assigned to the scene too to be able to cancel hovering
         getActions().addAction( keyProcessor );
 //        getActions().addAction(ActionFactory.createRectangularSelectAction(new DefaultRectangularSelectDecorator(this), mainLayer, new WidgetRectangularSelectionProvider() ));
+        
+        setPaperSettings(paperSettings);
     }
 
     /**
