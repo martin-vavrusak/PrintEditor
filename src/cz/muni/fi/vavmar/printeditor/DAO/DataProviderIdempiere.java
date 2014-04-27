@@ -28,7 +28,9 @@ import javax.swing.text.TabExpander;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.compiere.model.MColor;
 import org.compiere.model.MTable;
+import org.compiere.print.MPrintColor;
 import org.compiere.print.MPrintFont;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -539,10 +541,6 @@ public class DataProviderIdempiere implements DBManager {
 		return font;
 	}
 
-	@Override
-	public int createColor(Color c) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
 	
 	/**
 	 * Retrieve all available paper settings from database.
@@ -587,5 +585,84 @@ public class DataProviderIdempiere implements DBManager {
 		}
 		
 		return paperSettingsList;
+	}
+	
+	@Override
+	public int ceckAndCreateColor(Color color) {
+		String sql = "SELECT ad_printcolor_id, code FROM ad_printcolor ";
+		
+		Map<Color, Integer> colors = new HashMap<Color, Integer>();
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			rs = pstmt.executeQuery ();
+			while(rs.next()){
+				
+				String colorInt = rs.getString(2);
+				int dbID = rs.getInt(1);
+				
+				try{
+					int colorIteger = Integer.parseInt(colorInt);
+					
+					colors.put(new Color(colorIteger), dbID);
+					
+				} catch (Exception e){
+					// do nothing - unpareable
+				}
+						
+				
+			}
+		}
+		catch (Exception e)
+		{
+			logger.log(Level.ERROR, "Unable to get items ad_printtable. ", e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		logger.trace("Retrieved colors: " + colors);
+		
+		Integer colorID = -1;
+		colorID = colors.get(color);
+		logger.trace("ID of color found: " + colorID);
+		
+		if(colorID != null){	//If color already present in system return this color
+			return colorID;
+			
+		} else {
+			return saveColor(color, null);	//else save this color to iDempiere
+		}
+		
+		
+	}
+	
+	/**
+	 * Save color to iDempiere. If name is null than hex code is saved as name.
+	 * 
+	 * @param color color to be saved
+	 * @param name name of color, if null than hex code of color is used. e.g. #FF11AB
+	 * @return ID of newly inserted color or -1.
+	 */
+	public int saveColor(Color color, String name){
+		if(color == null)	return -1;
+		
+		MPrintColor iColor = new MPrintColor(Env.getCtx(), 0, null);
+		iColor.setColor(color);
+		if(name != null && !name.trim().isEmpty() ){
+			iColor.setName(name);
+		} else {
+			iColor.setName( String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()) );
+		}
+		
+		if( iColor.save() ){
+			return iColor.get_ID();
+		} else {
+			return -1;
+		}
 	}
 }

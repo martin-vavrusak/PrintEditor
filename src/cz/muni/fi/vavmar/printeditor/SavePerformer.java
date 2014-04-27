@@ -234,8 +234,13 @@ public class SavePerformer {
     		logger.trace("Font: " + widgetFont + " found in db as ID: " + fontID);
     		
     		
+    		//Set color
+    		int colorID = dataProvider.ceckAndCreateColor( widget.getForeground() );
+    		if(colorID > 0){
+    			item.setAD_PrintColor_ID(colorID);
+    		}
+    		
     		item.setAD_PrintFont_ID(fontID);					//Mandatory
-//    		item.setAD_PrintColor_ID(AD_PrintColor_ID);
     		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
     		item.setName(labelText);							//Mandatory name of printitem
     		item.setSeqNo(seqNo);

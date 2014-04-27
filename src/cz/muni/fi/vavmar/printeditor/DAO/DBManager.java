@@ -135,11 +135,13 @@ public interface DBManager {
     public List<PaperSettings> getAvailablePapers();
     
     /**
-     * Create new color and save it to the database.
+     * Check if specified color is already present in system.
+     * If not create new color and save it to the database.
+     * Else return id of first color matching.
      * 
      * @param c new color to be created.
-     * @return ID of new color.
+     * @return ID of new color or color already present.
      */
-    public int createColor(Color c);
+    public int ceckAndCreateColor(Color c);
     
 }

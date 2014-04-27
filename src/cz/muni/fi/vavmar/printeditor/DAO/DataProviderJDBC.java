@@ -216,7 +216,7 @@ public class DataProviderJDBC implements DBManager {
 	}
 
 	@Override
-	public int createColor(Color c) {
+	public int ceckAndCreateColor(Color c) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
