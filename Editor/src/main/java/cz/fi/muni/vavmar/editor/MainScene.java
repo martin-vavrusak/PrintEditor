@@ -17,6 +17,7 @@ import cz.fi.muni.vavmar.editor.actions.MultiMoveProvider;
 import cz.fi.muni.vavmar.editor.actions.WidgetRectangularSelectionProvider;
 import cz.fi.muni.vavmar.editor.DAO.DataProvider;
 import cz.fi.muni.vavmar.editor.tools.ColumnWidget;
+import cz.fi.muni.vavmar.editor.tools.ImageWidgetWraper;
 import cz.fi.muni.vavmar.editor.utils.Utils;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -126,8 +127,8 @@ public class MainScene extends Scene {
         //Smazat!!!! Debug -------
         backgroundLayer.setBackground(Color.LIGHT_GRAY);
         backgroundLayer.setBorder(BorderFactory.createLineBorder(4));
-        backgroundLayer.setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
-        backgroundLayer.setOpaque(true);
+//        backgroundLayer.setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+//        backgroundLayer.setOpaque(true);
         //-------------------------
 
         mainLayer = new LayerWidget(this);
@@ -306,7 +307,8 @@ public class MainScene extends Scene {
         for(Widget w : selectedList){
             w.setBorder(BorderFactory.createEmptyBorder());
             w.getActions().removeAction( multipleMovementAction );
-            w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
+//            w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
+            if(w instanceof ImageWidgetWraper) { ((ImageWidgetWraper) w).activateResizeAction(false); }
             logger.trace("Selection cancelled: " + w);
             
             if(w instanceof ColumnWidget) { ((ColumnWidget) w).resetBorder(); }

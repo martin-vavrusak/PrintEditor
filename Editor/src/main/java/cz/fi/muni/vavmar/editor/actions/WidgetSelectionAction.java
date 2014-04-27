@@ -7,6 +7,7 @@
 package cz.fi.muni.vavmar.editor.actions;
 
 import cz.fi.muni.vavmar.editor.MainScene;
+import cz.fi.muni.vavmar.editor.tools.ImageWidgetWraper;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,10 +58,11 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
             
             scene.setSelectedWidgets(selectedWidgets);
             
-            if(widget instanceof ImageWidget){
+            if(widget instanceof ImageWidgetWraper){
 //                widget.getActions().getActions().clear();
                 widget.setBorder(org.netbeans.api.visual.border.BorderFactory.createResizeBorder(7));
-                widget.getActions().addAction(0, scene.getImageResizeAction());
+                ( (ImageWidgetWraper) widget).activateResizeAction(true);
+//                widget.getActions().addAction(0, scene.getImageResizeAction());
             }
         } else {
             if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement

@@ -13,6 +13,7 @@ import cz.fi.muni.vavmar.editor.dialogs.TableChooserInitDialog;
 import cz.fi.muni.vavmar.editor.tools.ImageTool;
 import cz.fi.muni.vavmar.editor.tools.TextTool;
 import cz.fi.muni.vavmar.editor.utils.Utils;
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
@@ -20,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JColorChooser;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
@@ -230,11 +232,10 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 //        List<Widget> widgets = mainScene.getChildren();
-        for( Widget w : mainScene.getChildren() ){
-            logger.trace(w.getBounds());
-            printChildrens(w.getChildren());
-        }
-        
+        Color color = JColorChooser.showDialog(this, "Choose color", Color.decode("#FF5511"));
+        logger.error("Choosed color: " + color);
+        String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+        logger.error("In hex: " + hex);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void printChildrens (List<Widget> widgets){

@@ -44,14 +44,14 @@ public class ImageTool extends AbstractTool {
     
     @Override
     public Widget createWidget(Scene scene) {
-        ImageWidget iw = null;
+        ImageWidgetWraper iw = null;
         
         final JFileChooser fc = new JFileChooser();
         int retValue = fc.showDialog(this, "Open");
         logger.trace("Value from filechooser: " + retValue);
         
         if(retValue == JFileChooser.APPROVE_OPTION){
-            iw = new ImageWidget(scene);
+            iw = new ImageWidgetWraper(scene);
             File file = fc.getSelectedFile();
             logger.trace("File selected: " + file);
             
@@ -90,7 +90,7 @@ public class ImageTool extends AbstractTool {
                     logger.error(ex);
                     return null;
                 }
-                iw.setImage(bi);
+                iw.setOriginalImage(bi);
                 iw.setOpaque(true);
                 
 //                iw.setBorder(BorderFactory.createResizeBorder(7));
