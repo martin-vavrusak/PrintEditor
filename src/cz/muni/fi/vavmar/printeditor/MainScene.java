@@ -6,68 +6,41 @@
 
 package cz.muni.fi.vavmar.printeditor;
 
-import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
-import cz.muni.fi.vavmar.printeditor.actions.ResizeParentByMoveActionProvider;
-import cz.muni.fi.vavmar.printeditor.actions.ImageResizeStrategy;
-import cz.muni.fi.vavmar.printeditor.actions.WidgetRectangularSelectDecorator;
-import cz.muni.fi.vavmar.printeditor.actions.WidgetSelectionAction;
-import cz.muni.fi.vavmar.printeditor.actions.WidgetHoverActionProvider;
-import cz.muni.fi.vavmar.printeditor.actions.KeyProcessingAction;
-import cz.muni.fi.vavmar.printeditor.actions.MultiMoveProvider;
-import cz.muni.fi.vavmar.printeditor.actions.WidgetRectangularSelectionProvider;
-import cz.muni.fi.vavmar.printeditor.DAO.DataProviderJDBC;
-import cz.muni.fi.vavmar.printeditor.tools.ColumnWidget;
-import cz.muni.fi.vavmar.printeditor.utils.Utils;
-import cz.muni.fi.vavmar.printeditor.widgets.ImageWidgetWraper;
-
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.print.PrinterJob;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 
-import javax.activation.MailcapCommandMap;
-import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.plaf.DimensionUIResource;
-import javax.swing.text.LabelView;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.codehaus.groovy.runtime.metaclass.NewMetaMethod;
-import org.compiere.model.PO;
-import org.compiere.print.MPrintFont;
-import org.compiere.print.MPrintFormat;
-import org.compiere.print.MPrintFormatItem;
-import org.compiere.print.MPrintTableFormat;
-import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.netbeans.api.visual.action.AcceptProvider;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.border.BorderFactory;
-import org.netbeans.api.visual.widget.ImageWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
-import org.openide.util.Exceptions;
+
+import cz.muni.fi.vavmar.printeditor.DAO.DBManager;
+import cz.muni.fi.vavmar.printeditor.DAO.DataProviderJDBC;
+import cz.muni.fi.vavmar.printeditor.actions.KeyProcessingAction;
+import cz.muni.fi.vavmar.printeditor.actions.MultiMoveProvider;
+import cz.muni.fi.vavmar.printeditor.actions.ResizeParentByMoveActionProvider;
+import cz.muni.fi.vavmar.printeditor.actions.WidgetHoverActionProvider;
+import cz.muni.fi.vavmar.printeditor.actions.WidgetRectangularSelectDecorator;
+import cz.muni.fi.vavmar.printeditor.actions.WidgetRectangularSelectionProvider;
+import cz.muni.fi.vavmar.printeditor.actions.WidgetSelectionAction;
+import cz.muni.fi.vavmar.printeditor.utils.Utils;
+import cz.muni.fi.vavmar.printeditor.widgets.AreaWidget;
+import cz.muni.fi.vavmar.printeditor.widgets.ColumnWidget;
+import cz.muni.fi.vavmar.printeditor.widgets.ImageWidgetWraper;
 
 /**
  *
@@ -99,9 +72,7 @@ public class MainScene extends Scene {
     private WidgetAction multipleMovementAction;
     private WidgetAction keyProcessor = new KeyProcessingAction(this);
     private WidgetAction singleSelectActino = new WidgetSelectionAction(this);
-    private ImageResizeStrategy resizeStrategyProvider = new ImageResizeStrategy();
-    private WidgetAction imageResizeAction = ActionFactory.createResizeAction(resizeStrategyProvider, resizeStrategyProvider.getResizeProvider());
-    
+           
     private Set<Widget> selectedWidgets;
     
     private boolean CONTROL_PRESSED = false;
@@ -277,10 +248,6 @@ public class MainScene extends Scene {
     public WidgetAction getMultipleMovementAction() {
         return multipleMovementAction;
     }
-
-    public WidgetAction getImageResizeAction(){
-        return imageResizeAction;
-    }
     
     public void addWidget(Widget widget){
         logger.trace("Pridavam widget do sceny:" + widget);
@@ -323,7 +290,8 @@ public class MainScene extends Scene {
         for(Widget w : selectedList){
             w.setBorder(BorderFactory.createEmptyBorder());
             w.getActions().removeAction( multipleMovementAction );
-//            w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
+            
+            //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
             if(w instanceof ImageWidgetWraper) { ((ImageWidgetWraper) w).activateResizeAction(false); }
             logger.trace("Selection cancelled: " + w);
 

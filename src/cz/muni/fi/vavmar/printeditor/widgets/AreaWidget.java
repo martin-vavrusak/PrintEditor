@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.muni.fi.vavmar.printeditor;
+package cz.muni.fi.vavmar.printeditor.widgets;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -17,6 +17,9 @@ import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.MoveProvider;
 import org.netbeans.api.visual.action.MoveStrategy;
 import org.netbeans.api.visual.widget.Widget;
+
+import cz.muni.fi.vavmar.printeditor.MainScene;
+import cz.muni.fi.vavmar.printeditor.PaperSettings;
 
 /**
  *

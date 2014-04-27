@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.muni.fi.vavmar.printeditor.tools;
+package cz.muni.fi.vavmar.printeditor.widgets;
 
 import cz.muni.fi.vavmar.printeditor.Table;
 import java.awt.Color;

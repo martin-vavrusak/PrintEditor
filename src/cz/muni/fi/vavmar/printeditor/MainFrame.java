@@ -13,7 +13,6 @@ import cz.muni.fi.vavmar.printeditor.dialogs.TableChooserInitDialog;
 import cz.muni.fi.vavmar.printeditor.tools.ImageTool;
 import cz.muni.fi.vavmar.printeditor.tools.SubreportTool;
 import cz.muni.fi.vavmar.printeditor.tools.TextTool;
-import cz.muni.fi.vavmar.printeditor.utils.DataFetcher;
 import cz.muni.fi.vavmar.printeditor.utils.Utils;
 
 import java.awt.Rectangle;
@@ -38,7 +37,6 @@ public class MainFrame extends javax.swing.JFrame {
     private static final Logger logger = LogManager.getLogger(MainFrame.class);
     
     private MainScene mainScene;
-    private DataFetcher dataFetcher = new DataFetcher();    //Simulates connection to database
     private static final int COLUMN_BORDER_TEXT_LENGHT = 10;
     private List<String> tablesList;
     private String selectedTable;

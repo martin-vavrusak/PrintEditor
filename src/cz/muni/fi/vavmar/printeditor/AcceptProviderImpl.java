@@ -9,8 +9,8 @@ package cz.muni.fi.vavmar.printeditor;
 import cz.muni.fi.vavmar.printeditor.actions.EditTextProvider;
 import cz.muni.fi.vavmar.printeditor.actions.TextPopupMenuProvider;
 import cz.muni.fi.vavmar.printeditor.tools.AbstractTool;
-import cz.muni.fi.vavmar.printeditor.tools.ColumnWidget;
 import cz.muni.fi.vavmar.printeditor.tools.TextTool;
+import cz.muni.fi.vavmar.printeditor.widgets.ColumnWidget;
 
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;

@@ -8,7 +8,7 @@ package cz.muni.fi.vavmar.printeditor.actions;
 
 import cz.muni.fi.vavmar.printeditor.MainScene;
 import cz.muni.fi.vavmar.printeditor.dialogs.TextPropertiesDialog;
-import cz.muni.fi.vavmar.printeditor.tools.ColumnWidget;
+import cz.muni.fi.vavmar.printeditor.widgets.ColumnWidget;
 
 import java.awt.Color;
 import java.awt.Dialog;
