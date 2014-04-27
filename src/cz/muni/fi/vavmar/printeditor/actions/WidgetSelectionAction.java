@@ -7,6 +7,8 @@
 package cz.muni.fi.vavmar.printeditor.actions;
 
 import cz.muni.fi.vavmar.printeditor.MainScene;
+import cz.muni.fi.vavmar.printeditor.widgets.ImageWidgetWraper;
+
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +62,8 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
             if(widget instanceof ImageWidget){
 //                widget.getActions().getActions().clear();
                 widget.setBorder(org.netbeans.api.visual.border.BorderFactory.createResizeBorder(7));
-                widget.getActions().addAction(0, scene.getImageResizeAction());
+//                widget.getActions().addAction(0, scene.getImageResizeAction());
+                ( (ImageWidgetWraper) widget).activateResizeAction(true);
             }
         } else {
             if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement

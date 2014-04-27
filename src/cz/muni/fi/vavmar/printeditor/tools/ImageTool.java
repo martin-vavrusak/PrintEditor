@@ -24,6 +24,7 @@ import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.Exceptions;
 
 import cz.muni.fi.vavmar.printeditor.MainScene;
+import cz.muni.fi.vavmar.printeditor.widgets.ImageWidgetWraper;
 
 /**
  *
@@ -50,14 +51,14 @@ public class ImageTool extends AbstractTool {
     
     @Override
     public Widget createWidget(MainScene scene) {
-        ImageWidget iw = null;
+        ImageWidgetWraper iw = null;
 
         final JFileChooser fc = new JFileChooser();
         int retValue = fc.showDialog(this, "Open");
         logger.trace("Value from filechooser: " + retValue);
         
         if(retValue == JFileChooser.APPROVE_OPTION){
-            iw = new ImageWidget(scene);
+            iw = new ImageWidgetWraper(scene);
             File file = fc.getSelectedFile();
             logger.trace("File selected: " + file);
             
@@ -97,7 +98,7 @@ public class ImageTool extends AbstractTool {
                     logger.error(ex);
                     return null;
                 }
-                iw.setImage(bi);
+                iw.setOriginalImage(bi);
                 iw.setOpaque(true);
                 iw.setToolTipText(filePath);
                 

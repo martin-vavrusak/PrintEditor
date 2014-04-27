@@ -18,6 +18,7 @@ import cz.muni.fi.vavmar.printeditor.actions.WidgetRectangularSelectionProvider;
 import cz.muni.fi.vavmar.printeditor.DAO.DataProviderJDBC;
 import cz.muni.fi.vavmar.printeditor.tools.ColumnWidget;
 import cz.muni.fi.vavmar.printeditor.utils.Utils;
+import cz.muni.fi.vavmar.printeditor.widgets.ImageWidgetWraper;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -322,9 +323,10 @@ public class MainScene extends Scene {
         for(Widget w : selectedList){
             w.setBorder(BorderFactory.createEmptyBorder());
             w.getActions().removeAction( multipleMovementAction );
-            w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
+//            w.getActions().removeAction( imageResizeAction );           //teoreticky by nemuselo byt resize se nastavuje jenom pri single selectu
+            if(w instanceof ImageWidgetWraper) { ((ImageWidgetWraper) w).activateResizeAction(false); }
             logger.trace("Selection cancelled: " + w);
-            
+
             if(w instanceof ColumnWidget) { ((ColumnWidget) w).resetBorder(); }
         }
         selectedWidgets = new HashSet<Widget>();
