@@ -84,6 +84,13 @@ public class SavePerformer {
     	Rectangle footerArea = new Rectangle(leftX, paper.getBottomMarginRosition() - paper.getFooterHeight(),
     												areaWidth, paper.getFooterHeight());
     	
+    	
+    	//Save PageSettings
+    	int paperSettingsID = scene.getPaperSettings().getPaperID();
+    	if(paperSettingsID < 0){
+    		paperSettingsID = 103;		//fallback of standard paper
+    	}
+    	
     	//Save Print Format
     	MPrintFormat newPrintFormat = new MPrintFormat(Env.getCtx(), 0, null);
     	newPrintFormat.setName(printFormatName);											//this doesn't have to be uniqe across iDempiere system
@@ -96,7 +103,7 @@ public class SavePerformer {
     	
     	newPrintFormat.setHeaderMargin(scene.getPaperSettings().getHeaderHeight());
     	newPrintFormat.setFooterMargin(scene.getPaperSettings().getFooterHeight());
-    	
+    	newPrintFormat.setAD_PrintPaper_ID(paperSettingsID);
     	
     	logger.trace( "is new set: " + newPrintFormat.is_new() );
 //    	newPrintFormat.setReplication(true);

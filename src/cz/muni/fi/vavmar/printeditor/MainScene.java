@@ -249,7 +249,7 @@ public class MainScene extends Scene {
     }
     
     public void refreshMargins(){
-    	this.topMarginWidget.setPaperSettings(paperSettings);
+    	this.topMarginWidget.setPaperSettings(paperSettings);		//AreaWidget internally refresh position according new paper settings
         this.bottomMarginWidget.setPaperSettings(paperSettings);
         this.leftMarginWidget.setPaperSettings(paperSettings);
         this.rightMarginWidget.setPaperSettings(paperSettings);
