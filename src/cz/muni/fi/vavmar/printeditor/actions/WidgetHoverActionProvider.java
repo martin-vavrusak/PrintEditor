@@ -24,9 +24,11 @@ import org.netbeans.api.visual.widget.Widget;
 public class WidgetHoverActionProvider implements TwoStateHoverProvider {
 
      private final Logger logger = LogManager.getLogger(WidgetHoverActionProvider.class);
+        private Color oldForegroundColor;
         
         //Copied from VisualLibrary Demo "ActionDemo"
         public void unsetHovering(Widget widget) {
+        	logger.trace("Old color: " + oldForegroundColor);
             if (widget != null) {
                 if(widget instanceof ImageWidget){
                     ImageWidget iw = (ImageWidget) widget;
@@ -40,7 +42,7 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
                 } else if(widget instanceof LabelWidget){
                     logger.trace( ((LabelWidget) widget).getLabel() );
                     widget.setBackground (Color.WHITE);
-                    widget.setForeground (Color.BLACK);
+                    widget.setForeground (oldForegroundColor);
                     logger.trace( ((LabelWidget) widget).getLabel() );
                     
                 } else {
@@ -55,6 +57,7 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
             	logger.trace("Wiget bounds: " + widget.getPreferredBounds());
             	logger.trace("Wiget loc: " + widget.getPreferredLocation());
             	logger.trace("widget height: " + widget.getPreferredBounds().height);
+            	logger.trace("Old color: " + oldForegroundColor);
                 if(widget instanceof ImageWidget){
                     ImageWidget iw = (ImageWidget) widget;
                     Image image = iw.getImage();
@@ -67,6 +70,7 @@ public class WidgetHoverActionProvider implements TwoStateHoverProvider {
                 } else if(widget instanceof LabelWidget){
                     logger.trace( ((LabelWidget) widget).getLabel() );
                     widget.setBackground (Color.GRAY);
+                    oldForegroundColor = widget.getForeground();
                     widget.setForeground (Color.WHITE);
                     
                     

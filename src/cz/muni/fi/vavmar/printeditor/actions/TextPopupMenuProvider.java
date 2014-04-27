@@ -10,11 +10,14 @@ import cz.muni.fi.vavmar.printeditor.MainScene;
 import cz.muni.fi.vavmar.printeditor.dialogs.TextPropertiesDialog;
 import cz.muni.fi.vavmar.printeditor.tools.ColumnWidget;
 
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
+
+import javax.swing.JColorChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -36,6 +39,9 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
         private final String TEXT_PROPERTIES_LABEL = "Properties";
         private final String CHANGE_TEXT_COMMAND = "CHANGE_TEXT";   //NOI18N
         private final String CHANGE_TEXT_LABEL = "Change text";
+        private final String CHANGE_COLOR_COMMAND = "CHANGE_COLOR";   //NOI18N
+        private final String CHANGE_COLOR_LABEL = "Change color";
+        
         private Widget ownerWidget;
 
         public JPopupMenu getPopupMenu(Widget widget, Point localLocation) {
@@ -47,6 +53,11 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
             
             menuItem = new JMenuItem(TEXT_PROPERTIES_LABEL);
             menuItem.setActionCommand(TEXT_PROPERTIES_COMMAND);
+            menuItem.addActionListener(this);
+            menu.add(menuItem);
+            
+            menuItem = new JMenuItem(CHANGE_COLOR_LABEL);
+            menuItem.setActionCommand(CHANGE_COLOR_COMMAND);
             menuItem.addActionListener(this);
             menu.add(menuItem);
             
@@ -107,6 +118,21 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
                 } else {
                     logger.warn("Change text called on object which is not LabelWidget!");
                 }
+                
+            } else if ( CHANGE_COLOR_COMMAND.equals(e.getActionCommand()) ){
+            	
+            	if(ownerWidget instanceof LabelWidget){
+            		Color c = ((LabelWidget) ownerWidget).getForeground();
+            		Color newColor = JColorChooser.showDialog(null, "Choose color.", c);
+            		logger.trace("New color choosen: " + newColor);
+            		
+            		if(newColor != null){
+            			ownerWidget.setForeground(newColor);
+            		}
+            	} else {
+                    logger.warn("Change text called on object which is not LabelWidget!");
+                }
+            	
             }
         }
         
