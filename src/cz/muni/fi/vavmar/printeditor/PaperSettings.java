@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 public class PaperSettings {
     
 	
-	private static final Logger logger = LogManager.getLogger(PaperSettings.class);
+    private static final Logger logger = LogManager.getLogger(PaperSettings.class);
     
     private double ADJUSTMENT = 2.81;   //1pt in scene = 1/72" = 0,353mm   =>   1mm = 2,83pt)
     private boolean isLandscape = false;

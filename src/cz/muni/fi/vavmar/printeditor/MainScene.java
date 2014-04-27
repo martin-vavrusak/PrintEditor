@@ -38,6 +38,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.activation.MailcapCommandMap;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -148,7 +149,7 @@ public class MainScene extends Scene {
         mainLayer.setVisible(true);
         
       //Smazat!!!! debug
-        mainLayer.setBorder(BorderFactory.createLineBorder(4));
+        mainLayer.setBorder(BorderFactory.createLineBorder(4, Color.orange));
         //-------------------------
         
         addChild(0, backgroundLayer);																//set backround as the most bottomed layer
@@ -243,6 +244,19 @@ public class MainScene extends Scene {
 
     public void setPaperSettings(PaperSettings paperSettings) {
         this.paperSettings = paperSettings;
+        //adjust size of scene
+        Rectangle oldSize = mainLayer.getPreferredBounds();
+        int paperWidth = paperSettings.getSceneWidth();
+        int paperHeight = paperSettings.getSceneHeight();
+        
+        oldSize.add(new Rectangle(paperWidth + 50, paperHeight + 50));
+        mainLayer.setPreferredBounds( oldSize );
+        
+        //adjust background layer
+        Rectangle oldSizeBackground = backgroundLayer.getPreferredBounds();
+        oldSizeBackground.add(oldSize);
+        backgroundLayer.setPreferredBounds(oldSizeBackground);
+        
         paperRectangle.setPreferredBounds( new Rectangle(0, 0, (int) paperSettings.getSceneWidth(), (int) paperSettings.getSceneHeight()) );
         refreshMargins();
         revalidate();
