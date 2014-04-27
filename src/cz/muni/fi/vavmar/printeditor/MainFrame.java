@@ -336,15 +336,15 @@ public class MainFrame extends javax.swing.JFrame {
 //        ps.setLandscape(true);
 //        mainScene.setPaperSettings(ps);
         
-//        PaperSettingsDialog dialog = new PaperSettingsDialog(mainScene);
-//        dialog.setVisible(rootPaneCheckingEnabled);
-//        PaperSettings pap = dialog.getSelectedPaper();
-//        logger.trace("Selected paper: " + pap);
+        PaperSettingsDialog dialog = new PaperSettingsDialog(mainScene);
+        dialog.setVisible(rootPaneCheckingEnabled);
+        PaperSettings pap = dialog.getSelectedPaper();
+        logger.trace("Selected paper: " + pap);
         
-        PaperSettings newPaper = new PaperSettings();
-        newPaper.setCode("iso-a3");
-        newPaper.setMargins(1, 1, 1, 1);
-        mainScene.setPaperSettings(newPaper);
+//        PaperSettings newPaper = new PaperSettings();
+//        newPaper.setCode("iso-a3");
+//        newPaper.setMargins(1, 1, 1, 1);
+        mainScene.setPaperSettings(pap);
     }//GEN-LAST:event_jMenuPaperSettingsActionPerformed
 
     private void printChildrens (List<Widget> widgets){
