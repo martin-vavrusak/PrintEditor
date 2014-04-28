@@ -342,7 +342,9 @@ public class MainFrame extends javax.swing.JFrame {
 //        PaperSettings newPaper = new PaperSettings();
 //        newPaper.setCode("iso-a3");
 //        newPaper.setMargins(1, 1, 1, 1);
-        mainScene.setPaperSettings(pap);
+        if(pap != null){
+        	mainScene.setPaperSettings(pap);
+        }
     }//GEN-LAST:event_jMenuPaperSettingsActionPerformed
 
     private void printChildrens (List<Widget> widgets){
