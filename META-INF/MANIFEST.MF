@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PrintEditor
-Bundle-SymbolicName: PrintEditor;singleton:=true
+Bundle-SymbolicName: cz.muni.fi.vavmar.reporteditor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: cz.muni.fi.vavmar.printeditor.EditorActivator
+Bundle-Activator: cz.muni.fi.vavmar.reporteditor.EditorActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.swing,
  org.osgi.framework;version="1.6.0",
@@ -16,4 +16,4 @@ Bundle-ClassPath: .,
  mylibraries/postgresql-9.3-1101-jdbc4.jar
 Require-Bundle: org.adempiere.base;bundle-version="1.0.0",
  org.adempiere.plugin.utils;bundle-version="0.0.0"
-Export-Package: cz.muni.fi.vavmar.printeditor
+Export-Package: cz.muni.fi.vavmar.reporteditor

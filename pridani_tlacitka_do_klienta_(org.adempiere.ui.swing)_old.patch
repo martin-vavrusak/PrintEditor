@@ -6,7 +6,7 @@ diff --git a/org.adempiere.ui.swing/META-INF/MANIFEST.MF b/org.adempiere.ui.swin
  Eclipse-RegisterBuddy: org.adempiere.base
  Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 -Import-Package: javax.net.ssl,
-+Import-Package: cz.muni.fi.vavmar.reporteditor,
++Import-Package: cz.muni.fi.vavmar.printeditor,
 + javax.net.ssl,
   org.apache.ecs,
   org.apache.ecs.xhtml,
@@ -27,7 +27,7 @@ diff --git a/org.adempiere.ui.swing/src/org/compiere/apps/APanel.java b/org.adem
  import org.compiere.util.Util;
  
 +//VavMar Edited
-+import cz.muni.fi.vavmar.reporteditor.MainFrame;
++import cz.muni.fi.vavmar.printeditor.MainFrame;
  /**
   *	Main Panel of application window.
   *  <pre>
@@ -46,7 +46,7 @@ diff --git a/org.adempiere.ui.swing/src/org/compiere/apps/APanel.java b/org.adem
  		aPrintPreview = addAction("PrintPreview",	mFile, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.SHIFT_MASK+Event.ALT_MASK), false);
 +		
 +		//Edited VavMAr
-+		printEditorButton = addAction("ReportEditor", mFile, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK + Event.ALT_MASK), false);
++		printEditorButton = addAction("PrintEditor", mFile, KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK + Event.ALT_MASK), false);
 +		
  		if (MRole.getDefault().isCanExport())
  		{
@@ -68,7 +68,7 @@ diff --git a/org.adempiere.ui.swing/src/org/compiere/apps/APanel.java b/org.adem
 +			else if (cmd.equals(printEditorButton.getName())){
 +				//VavMar Edited
 +				log.log(Level.WARNING, "Kliknuto na tlacitko pro spusteni PrintEditoru.");
-+//				JOptionPane.showConfirmDialog(null, "Kliknuto na tlacitko pro spusteni PrintEditoru.");
++				JOptionPane.showConfirmDialog(null, "Kliknuto na tlacitko pro spusteni PrintEditoru.");
 +				MainFrame.runProgram();
 +			}
  			else if (aExport != null && cmd.equals(aExport.getName()))
