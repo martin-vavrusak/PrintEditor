@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.netbeans.api.visual.action.PopupMenuProvider;
 import org.netbeans.api.visual.widget.LabelWidget;
+import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
@@ -128,6 +129,19 @@ public class TextPopupMenuProvider implements PopupMenuProvider, ActionListener 
             		
             		if(newColor != null){
             			ownerWidget.setForeground(newColor);
+            			
+            			//Set color to all selected items
+            			Scene scene = ownerWidget.getScene();
+            			if( scene instanceof MainScene ){
+            				Set<Widget> selectedWidgets = ((MainScene) scene).getSelectedWidgets();
+            				for(Widget w: selectedWidgets){
+            					if(w instanceof LabelWidget){	//Here should be better to create separate Widget for text only!!!! And include this menu provider there too!!!
+            						w.setForeground(newColor);
+            					}
+            				}
+            			} else {
+            				logger.warn("Something realy weird happend this widget doesn't have scene of type MainScene!!!");
+            			}
             		}
             	} else {
                     logger.warn("Change text called on object which is not LabelWidget!");

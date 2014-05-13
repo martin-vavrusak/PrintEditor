@@ -121,7 +121,7 @@ public class MainScene extends Scene {
         mainLayer.setVisible(true);
         
       //Smazat!!!! debug
-        mainLayer.setBorder(BorderFactory.createLineBorder(4, Color.orange));
+//        mainLayer.setBorder(BorderFactory.createLineBorder(4, Color.orange));
         //-------------------------
         
         addChild(0, backgroundLayer);																//set backround as the most bottomed layer
@@ -160,7 +160,7 @@ public class MainScene extends Scene {
         backgroundLayer.addChild(bottomMarginWidget);
         
         //TODO Smazat debug ---------
-        backgroundLayer.setBorder(BorderFactory.createLineBorder(4));
+//        backgroundLayer.setBorder(BorderFactory.createLineBorder(4));
         //------------------------------
         
 //        //TODO Delete - debugging widgets --------------------------
