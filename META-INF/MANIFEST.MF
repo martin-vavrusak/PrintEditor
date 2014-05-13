@@ -4,7 +4,6 @@ Bundle-Name: PrintEditor
 Bundle-SymbolicName: PrintEditor;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: cz.muni.fi.vavmar.printeditor.EditorActivator
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.swing,
  org.osgi.framework;version="1.6.0",
