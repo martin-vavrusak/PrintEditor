@@ -29,7 +29,6 @@ import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 
 import cz.muni.fi.vavmar.reporteditor.DAO.DBManager;
-import cz.muni.fi.vavmar.reporteditor.DAO.DataProviderJDBC;
 import cz.muni.fi.vavmar.reporteditor.actions.KeyProcessingAction;
 import cz.muni.fi.vavmar.reporteditor.actions.MultiMoveProvider;
 import cz.muni.fi.vavmar.reporteditor.actions.ResizeParentByMoveActionProvider;
@@ -86,10 +85,6 @@ public class MainScene extends Scene {
     public static int DEFAULT_IDEMPIERE_PRINT_COLOR_ID = 100;
     public static int DEFAULT_IDEMPIERE_PRINT_PAPER_ID = 103;
     public static int DEFAULT_IDEMPIERE_PRINT_FONT_ID = 100;
-    
-    public MainScene() {
-        this(new DataProviderJDBC());
-    }
     
     public MainScene(DBManager dataProvider) {
         this.dataProvider = dataProvider;
