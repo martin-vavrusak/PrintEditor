@@ -28,7 +28,7 @@ public class MultiMoveProvider implements MoveProvider {
     private MainScene scene;
     private Map<Widget, Point> originalPositions;
     private Point originalRepresentativeWidgetPosition; //posistion of representant of selected group
-                                                        //(Widget in selected grou which is draged)
+                                                        //(Widget in selected group which is draged)
     
     public MultiMoveProvider(MainScene scene) {
         this.scene = scene;
@@ -53,7 +53,8 @@ public class MultiMoveProvider implements MoveProvider {
     }
     
     /**
-     * Called at every movement of mouse
+     * Called at every movement of mouse movement.
+     * Compute vector of movement, add it to original position and set it to the widgets.
      * @param widget - widget whose position has been changed
      * @param location - new location of mouse
      */
@@ -66,7 +67,7 @@ public class MultiMoveProvider implements MoveProvider {
         logger.trace("dx: " + dx + " dy: " + dy);
         
         for( Widget w : scene.getSelectedWidgets() ){
-            //must be created new Point otherwise widget wount be moved
+            //must be created new Point otherwise widget wont be moved
             Point position = new Point(originalPositions.get(w));
             position.translate(dx, dy);
             w.setPreferredLocation( position ); 
@@ -77,7 +78,7 @@ public class MultiMoveProvider implements MoveProvider {
      * Check if any of widgets lays out of scene bounds
      * if so then expands scene bounds to contain this "outern" widget <br/>
      * <b>Note:</b> <br/>
-     * Must be called after all actual positions has been set!<br>
+     * Must be called after all final positions has been set!<br>
      * All widgets must be in the same layer!
      */
     private void revalidateParentLayerBounds(){

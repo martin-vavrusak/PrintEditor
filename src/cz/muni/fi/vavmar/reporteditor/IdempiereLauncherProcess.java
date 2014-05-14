@@ -13,7 +13,7 @@ public class IdempiereLauncherProcess extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		MainFrame.runProgram();
-		return null;
+		return "Editor launched.";
 	}
 
 }

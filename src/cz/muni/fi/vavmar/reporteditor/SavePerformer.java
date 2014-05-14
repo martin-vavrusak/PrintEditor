@@ -56,7 +56,7 @@ public class SavePerformer {
 		this.tableName = tableName;
 		this.printFormatID = printFormatID;
 		
-		loadFonts();
+		loadFonts();	//load fonts to preventing subsequent calls to database
 	}
 	
 	
@@ -86,9 +86,9 @@ public class SavePerformer {
     	
     	
     	//Save PageSettings
-    	int paperSettingsID = scene.getPaperSettings().getPaperID();
+    	int paperSettingsID = paper.getPaperID();
     	if(paperSettingsID < 0){
-    		paperSettingsID = 103;		//fallback of standard paper
+    		paperSettingsID = 103;		//fallback of standard iDempiere paper
     	}
     	
     	//Save Print Format
@@ -96,7 +96,7 @@ public class SavePerformer {
     	newPrintFormat.setName(printFormatName);											//this doesn't have to be uniqe across iDempiere system
     	newPrintFormat.setAD_Table_ID( tableID );		
     	newPrintFormat.setAD_PrintColor_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_COLOR_ID );	//this should be 100 TODO - better to implement new method searching for default color dataProvider.getSystemDefaultColor
-    	newPrintFormat.setAD_PrintPaper_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_PAPER_ID );	//This should be 100
+//    	newPrintFormat.setAD_PrintPaper_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_PAPER_ID );	//This should be 100
     	newPrintFormat.setAD_PrintFont_ID( MainScene.DEFAULT_IDEMPIERE_PRINT_FONT_ID );		//This should be 100
     	newPrintFormat.setIsStandardHeaderFooter(false);
     	newPrintFormat.setIsForm(true);		//we need header and footer
@@ -127,6 +127,8 @@ public class SavePerformer {
     private void saveItemDB(Widget widget, int tableID, int formatID, int seqNo, Rectangle headerArea, Rectangle contentArea, Rectangle footerArea){
     	//determine location
     	MPrintFormatItem item = new MPrintFormatItem(Env.getCtx(), 0, null);
+    	item.setAD_PrintFormat_ID(formatID);				//Mandatory
+    	
     	Point widgetAbsolutePosition;
     	if(widget instanceof LabelWidget){							//In case of label widget there need to be done adjustment. 
     		Point loc = widget.getPreferredLocation();  			//location of left top corner is moved
@@ -191,11 +193,11 @@ public class SavePerformer {
 		 */
     	if(widget instanceof SubreportWidget){
     		SubreportWidget subreportWidget = (SubreportWidget) widget;
-    		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
+//    		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
     		item.setName(subreportWidget.getName());			//Mandatory name of printitem
     		item.setSeqNo(seqNo);
     		
-    		item.setPrintName(subreportWidget.getName());
+    		item.setPrintName(subreportWidget.getName());		//has no effect in subreport type
     		item.setPrintFormatType("P");
     		item.setAD_PrintFormatChild_ID(subreportWidget.getSubreportPrintformatID());
     		item.setAD_Column_ID(11475);						//Magic constant of AD_Client_ID column - there has to be something filled, but probably doesn't have any effect
@@ -241,7 +243,7 @@ public class SavePerformer {
     		}
     		
     		item.setAD_PrintFont_ID(fontID);					//Mandatory
-    		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
+//    		item.setAD_PrintFormat_ID(formatID);				//Mandatory - id of format to belong to
     		item.setName(labelText);							//Mandatory name of printitem
     		item.setSeqNo(seqNo);
     		
@@ -261,7 +263,7 @@ public class SavePerformer {
     		logger.trace("Saving image.");						//for future extensions itcould be extended to allowing just passing location as http protocol location
     															//but there would have to be implemented support in editor first (downloading image)
     		
-    		item.setAD_PrintFormat_ID(formatID);				//Mandatory
+//    		item.setAD_PrintFormat_ID(formatID);				//Mandatory
     		item.setName("Image");								//Mandatory
     		item.setSeqNo(seqNo);
     		

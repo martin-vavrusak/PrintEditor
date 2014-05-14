@@ -12,8 +12,8 @@
       <appender-ref ref="Console"/>
     </root>
     
-    <logger name="cz.muni.fi.vavmar.printeditor.actions.ResizeParentByMoveActionProvider" level="debug" /> <!-- logging settings set for particular class -->
-    <logger name="cz.muni.fi.vavmar.printeditor.actions.KeyProcessingAction" level="trace" /> <!-- logging settings set for particular class -->
+    <logger name="cz.muni.fi.vavmar.reporteditor.actions.ResizeParentByMoveActionProvider" level="debug" /> <!-- logging settings set for particular class -->
+    <logger name="cz.muni.fi.vavmar.reporteditor.actions.KeyProcessingAction" level="debug" /> <!-- logging settings set for particular class -->
 
   </loggers>
 </configuration>

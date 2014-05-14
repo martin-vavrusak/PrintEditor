@@ -51,6 +51,7 @@ public class MainScene extends Scene {
     private JScrollPane scrollPane;
     private LayerWidget mainLayer;
     private LayerWidget backgroundLayer;
+    
     private LabelWidget paperRectangle;						//widget represemting paper - visualization of paper scale
     
     private ResizeParentByMoveActionProvider moveProvider;
@@ -97,7 +98,7 @@ public class MainScene extends Scene {
         
         moveProvider = new ResizeParentByMoveActionProvider();
         hoverAction = ActionFactory.createHoverAction(new WidgetHoverActionProvider());
-        multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be before RectangularSelection
+        multipleMovementAction = ActionFactory.createMoveAction( null , new MultiMoveProvider( this ));     //Must be set before RectangularSelection
 
         backgroundLayer = new LayerWidget(this);
         backgroundLayer.setPreferredBounds(new Rectangle(-150, -20, A4_BOUNDS.width + 150, A4_BOUNDS.height + 20));	//make space around main scene otherwise window of main scene would be sticked directly on scene edges

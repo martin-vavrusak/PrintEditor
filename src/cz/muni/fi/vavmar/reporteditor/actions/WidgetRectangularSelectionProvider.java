@@ -33,7 +33,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
     private static final Logger logger = LogManager.getLogger(WidgetRectangularSelectionProvider.class);
     public static final Border selectedBorder = BorderFactory.createDashedBorder(Color.BLACK, 3, 2, 1, true);
     
-    private static WidgetAction multipleMovementAction;       //TODO mozna presunout do MainScene a get/set -ovat to
+    private static WidgetAction multipleMovementAction;
     private MainScene scene;
     private LayerWidget layerOfWidgets;
     
@@ -57,9 +57,8 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
         
         if(!scene.isControlPressed()){  //if CTRL is not pressed make siple selection
             //delete previously selected widgets
-            scene.clearSelection();  //"mazani" musi byt volano v teto tride jinak by
-                                    //nedoslo k spravnemu nastaveni borderu v pripade
-                                    //kdy je opakovane vybran ten samy widget
+            scene.clearSelection();  //"deleting" must be performed in this class
+                                    //otherwise border wont be properly set if there is repeatedly selected same widget
             
             for(Widget w : selectedWidgets){    //edit all selected widgets to have decorated border and action
                 
@@ -70,12 +69,12 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
 
             scene.setSelectedWidgets( selectedWidgets );
             
-        } else {    //otherwise perform differencial selection (select unselected and unselect selected)
+        } else {    //otherwise perform differencial selection (select unselected and unselect selected :D )
             logger.trace("Performing differencial selection.");
             Set<Widget> oldSelestion = scene.getSelectedWidgets();
             
             for(Widget w: selectedWidgets){
-                if(oldSelestion.contains(w)){
+                if(oldSelestion.contains(w)){	//the widget has been allready selected so remove it from selection
                     //unselect
                     w.setBorder(BorderFactory.createEmptyBorder());
                     w.getActions().removeAction( multipleMovementAction );
@@ -102,16 +101,16 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
          
         Set<Widget> selectedWidgets = new HashSet<Widget>();
 
-        //vyber je mozne provest:
-        //      1. zleva doprava a dolu, nebo
-        //      2. zespod doleva nahoru
+        //Selection could be made:
+        //      1. from left to right and down or
+        //      2. from down and left to up (in this case position and width and height are negative)
         
         if (selectionRectangle.width < 0) {
-            selectionRectangle.x += selectionRectangle.width;   //prevedeni zpusobu 2. na zpusob 1.
+            selectionRectangle.x += selectionRectangle.width;   //transition of metod 2. to metod 1.
             selectionRectangle.width *= -1;
         }
         if (selectionRectangle.height < 0) {
-            selectionRectangle.y += selectionRectangle.height;  //prevedeni zpusobu 2. na zpusob 1.
+            selectionRectangle.y += selectionRectangle.height;  //transition of metod 2. to metod 1.
             selectionRectangle.height *= -1;
         }
         
@@ -133,7 +132,7 @@ public class WidgetRectangularSelectionProvider implements RectangularSelectProv
                         logger.trace("Widget prefferedSize:" + w.getPreferredSize() );
                 
                 Rectangle widgetPosition = w.getBounds();
-                //sometimes bounds of widget are not changed after moving widget
+                //sometimes bounds of widget are not changed after moving widget, so bounds must first be moved to the proper location
                 if( !widgetPosition.getLocation().equals( w.getPreferredLocation() ) ){
                     widgetPosition.setLocation( w.getPreferredLocation());
                 }

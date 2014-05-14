@@ -66,25 +66,26 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
                 ( (ImageWidgetWraper) widget).activateResizeAction(true);
             }
         } else {
-            if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement
-                                                    //set or just one widget with multimovement action set
+            if ( selectedWidgets.size() == 1 ) {    //There could be widget without multimovement set
+                                                    //or just one widget with multimovement action set
                                                     //so simply clear selection and make new selection
                 logger.trace("One widget is selected and invertion is set. Adding second widget.");
-                //ulozit widget
-                Iterator<Widget> iterator = selectedWidgets.iterator();
+                //Save previously selected widget 
+                Iterator<Widget> iterator = selectedWidgets.iterator();	//workaround to get widget from a set
                 Widget previouslySelected = iterator.next();
                 
-                //smazat selekci
+                //clear the selection (remove border and action of selected widget)
                 selectedWidgets = scene.clearSelection();
                 
-                //nastavit ho na multiple movement
+                //set multimovement to the previously selected widget
                 previouslySelected.setBorder( selectedBorder );
                 scene.setMultiMoveAction(previouslySelected, scene.getMultipleMovementAction());
                 
-                //pridat nove oznaceny widget
+                //set multimovement to the newly selected widget
                 widget.setBorder( selectedBorder );
                 scene.setMultiMoveAction(widget, scene.getMultipleMovementAction());
                 
+                //add both widgets to the new selection
                 selectedWidgets.add(previouslySelected);
                 selectedWidgets.add(widget);
                 
@@ -123,10 +124,7 @@ public class WidgetSelectionAction extends WidgetAction.Adapter {
 //        }
         
         logger.trace("Selected widgets: " + selectedWidgets.size() + " " + selectedWidgets);
-        //test na CTRL
-        //setBorder
-        //scene.addSelectedWidget(widget)
-        //Resize action
+
         return State.REJECTED;  //we still need to allow moving of widget
     }
 
