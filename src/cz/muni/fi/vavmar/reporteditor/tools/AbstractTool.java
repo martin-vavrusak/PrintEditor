@@ -74,6 +74,9 @@ public abstract class AbstractTool extends JLabel implements Transferable, Seria
             } else {
             	icon = new ImageIcon(url);
             }
+        } else {
+        	Image iconImage = Utils.createDefaultImage( new Dimension(32, 32) );
+        	icon = new ImageIcon(iconImage);
         }
         setIcon(icon);  //metoda JLabel
         return icon;
@@ -82,13 +85,10 @@ public abstract class AbstractTool extends JLabel implements Transferable, Seria
     private void init(){
         setVerticalTextPosition(JLabel.BOTTOM);
         setHorizontalTextPosition(JLabel.CENTER);
-        //TODO prepsat!!!
-//        setTransferHandler( new TransferHandler("text") );
-        setTransferHandler( new DnDHandler() );
+
+        setTransferHandler( new DnDHandler() );			//allow to drag tool from tool panel
         
-        addMouseMotionListener(new MouseDragAdapter());
-        
-        
+        addMouseMotionListener(new MouseDragAdapter());      
     }
 
     
@@ -162,7 +162,7 @@ public abstract class AbstractTool extends JLabel implements Transferable, Seria
             System.out.println("Mouse Dragg");
             JComponent c = (JComponent) e.getSource();
             
-            c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);    //Proto nefunguje move :D
+            c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);    //pravdepodobne proto nefunguje move :D potreba overit.
         }
 
         @Override

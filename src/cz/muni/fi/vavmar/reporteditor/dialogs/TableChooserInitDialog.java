@@ -580,9 +580,9 @@ private class TableChooserJPanel extends javax.swing.JPanel {
         Map<Integer, String> printFormats;
         
         if( simpleFormatsOnlyCheckBox.isSelected() ){
-            printFormats = dataProvider.getPrintFormats(tableID, true);
+            printFormats = dataProvider.getPrintFormats(tableID, true);				//get only simple (tabular) print formats of the table
         } else {
-            printFormats = dataProvider.getPrintFormats(tableID, false);
+            printFormats = dataProvider.getPrintFormats(tableID, false);			//get all print formats of the table including form based
         }
 
         availablePrintFormats.setModel( PrintFormat.createListModel(printFormats) );
@@ -599,15 +599,15 @@ private class TableChooserJPanel extends javax.swing.JPanel {
 
     private void searchOnlyReportsCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_searchOnlyReportsCheckBoxItemStateChanged
         
-        if(searchOnlyReportsCheckBox.isSelected()){             //New state is selected (changed fron unselected to selected)
+        if(searchOnlyReportsCheckBox.isSelected()){             //New state is selected (changed from unselected to selected)
             viewRestrictionCheckbox.setEnabled(false);
             availableTablesAndVievsList.setEnabled(false);
             searchTableTextField.setEnabled(false);
             
             if(simpleFormatsOnlyCheckBox.isSelected()){
-                searchReportMap = dataProvider.getPrintFormats(-1, true);
+                searchReportMap = dataProvider.getPrintFormats(-1, true);		//get all print formats but only in simple (tabular) from
             } else {
-                searchReportMap = dataProvider.getPrintFormats(-1, false);
+                searchReportMap = dataProvider.getPrintFormats(-1, false);		//get all print formats including form based
             }
         } else {
             viewRestrictionCheckbox.setEnabled(true);
