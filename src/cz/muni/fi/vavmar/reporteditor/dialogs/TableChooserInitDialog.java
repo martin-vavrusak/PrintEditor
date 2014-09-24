@@ -199,8 +199,8 @@ private class TableChooserJPanel extends javax.swing.JPanel {
     private Map<Integer, String> searchReport(Map<Integer, String> searchMap, String stringToFind){
         
         if(searchMap != null){
-            Map<Integer, String> resultMap = new HashMap<>();
-             Map<Integer, String> innerMatch = new HashMap<>();
+            Map<Integer, String> resultMap = new HashMap<Integer, String>();
+             Map<Integer, String> innerMatch = new HashMap<Integer, String>();
              
             for(Entry<Integer, String> report: searchMap.entrySet()){
                 String s = report.getValue();
